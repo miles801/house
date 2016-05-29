@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="eccrm.base.datadic.domain">
+    <class name="eccrm.base.datadic.domain.DataDic" table="sys_dic">
+        <id name="id" column="ID" length="40">
+            <generator class="uuid"/>
+        </id>
+        <property name="name" column="name" type="string" length="40" not-null="true"/>
+        <property name="className" column="class_name" type="string" length="100" not-null="true"/>
+        <property name="code" column="code" type="string" length="40" not-null="true"/>
+
+
+        <!-- 公共属性 -->
+        <property name="status" column="status" type="string" length="40"/>
+        <property name="description" column="description" type="string" length="1000"/>
+        <property name="creatorId" column="creator_id" type="string" length="40" update="false"/>
+        <property name="creatorName" column="creator_name" type="string" length="40"/>
+        <property name="createdDatetime" column="created_datetime" type="timestamp" update="false"/>
+        <property name="modifierId" column="modifier_id" type="string" length="40"/>
+        <property name="modifierName" column="modifier_name" type="string" length="40"/>
+        <property name="modifiedDatetime" column="modified_datetime" type="timestamp"/>
+    </class>
+</hibernate-mapping>

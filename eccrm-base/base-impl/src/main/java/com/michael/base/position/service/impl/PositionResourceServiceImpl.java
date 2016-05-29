@@ -1,0 +1,95 @@
+package com.michael.base.position.service.impl;
+
+import com.michael.base.position.bo.PositionResourceBo;
+import com.michael.base.position.dao.PositionResourceDao;
+import com.michael.base.position.domain.PositionResource;
+import com.michael.base.position.service.PositionResourceService;
+import com.michael.base.position.vo.PositionResourceVo;
+import com.ycrl.core.beans.BeanWrapBuilder;
+import com.ycrl.core.beans.BeanWrapCallback;
+import com.ycrl.core.hibernate.validator.ValidatorUtils;
+import com.ycrl.core.pager.PageVo;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @author Michael
+ */
+@Service("positionResourceService")
+public class PositionResourceServiceImpl implements PositionResourceService, BeanWrapCallback<PositionResource, PositionResourceVo> {
+    @Resource
+    private PositionResourceDao positionResourceDao;
+
+    @Override
+    public String save(PositionResource positionResource) {
+        ValidatorUtils.validate(positionResource);
+        String id = positionResourceDao.save(positionResource);
+        return id;
+    }
+
+    @Override
+    public void grant(String positionId, List<String> resourceIds) {
+        Assert.hasText(positionId, "授权失败!岗位ID不能为空!");
+
+        // 删除之前岗位的所有权限
+        positionResourceDao.deleteByPosition(positionId);
+
+        // 保存新的权限
+        if (resourceIds != null) {
+            for (String resourceId : resourceIds) {
+                PositionResource pr = new PositionResource();
+                pr.setPositionId(positionId);
+                pr.setResourceId(resourceId);
+                positionResourceDao.save(pr);
+            }
+        }
+    }
+
+    @Override
+    public void update(PositionResource positionResource) {
+        ValidatorUtils.validate(positionResource);
+        positionResourceDao.update(positionResource);
+    }
+
+    @Override
+    public PageVo pageQuery(PositionResourceBo bo) {
+        PageVo vo = new PageVo();
+        Long total = positionResourceDao.getTotal(bo);
+        vo.setTotal(total);
+        if (total == null || total == 0) return vo;
+        List<PositionResource> positionResourceList = positionResourceDao.query(bo);
+        List<PositionResourceVo> vos = BeanWrapBuilder.newInstance()
+                .setCallback(this)
+                .wrapList(positionResourceList, PositionResourceVo.class);
+        vo.setData(vos);
+        return vo;
+    }
+
+
+    @Override
+    public PositionResourceVo findById(String id) {
+        PositionResource positionResource = positionResourceDao.findById(id);
+        return BeanWrapBuilder.newInstance()
+                .wrap(positionResource, PositionResourceVo.class);
+    }
+
+    @Override
+    public void deleteByIds(String[] ids) {
+        if (ids == null || ids.length == 0) return;
+        for (String id : ids) {
+            positionResourceDao.deleteById(id);
+        }
+    }
+
+    @Override
+    public List<String> queryByPosition(String positionId) {
+        return positionResourceDao.queryByPosition(positionId);
+    }
+
+    @Override
+    public void doCallback(PositionResource positionResource, PositionResourceVo vo) {
+    }
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="eccrm.base.datadic.domain">
+    <class name="eccrm.base.datadic.domain.DataDicItem" table="sys_dic_item">
+        <id name="id" column="ID" length="40">
+            <generator class="uuid"/>
+        </id>
+        <property name="label" column="label" type="string" length="40" not-null="true"/>
+        <property name="fieldName" column="field_name" type="string" length="100" not-null="true"/>
+        <property name="conditionType" column="condition_type" type="string" length="40" not-null="true"/>
+        <property name="value" column="value" type="string" length="200"/>
+        <property name="valueType" column="value_type" type="string" length="40"/>
+        <property name="valueSource" column="value_source" type="string" length="40" not-null="true"/>
+        <property name="dicId" column="dic_id" type="string" length="40" not-null="true"/>
+        <property name="dicCode" column="dic_code" type="string" length="40" not-null="true"/>
+        <property name="dicName" column="dic_name" type="string" length="100"/>
+
+
+        <!-- 公共属性 -->
+        <property name="status" column="status" type="string" length="40"/>
+        <property name="description" column="description" type="string" length="1000"/>
+        <property name="creatorId" column="creator_id" type="string" length="40" update="false"/>
+        <property name="creatorName" column="creator_name" type="string" length="40"/>
+        <property name="createdDatetime" column="created_datetime" type="timestamp" update="false"/>
+        <property name="modifierId" column="modifier_id" type="string" length="40"/>
+        <property name="modifierName" column="modifier_name" type="string" length="40"/>
+        <property name="modifiedDatetime" column="modified_datetime" type="timestamp"/>
+    </class>
+</hibernate-mapping>

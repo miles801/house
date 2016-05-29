@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="eccrm.base.im.domain" auto-import="false">
+    <class name="News" table="im_news">
+        <id name="id" column="id" length="40">
+            <generator class="uuid"/>
+        </id>
+        <property name="title" column="title" type="string" length="200" not-null="true"/>
+        <property name="summary" column="summary" type="string" length="200"/>
+        <property name="content" column="content" type="string" length="4000"/>
+        <property name="category" column="category" type="string" length="40"/>
+        <property name="startTime" column="start_time" type="timestamp"/>
+        <property name="endTime" column="end_time" type="timestamp"/>
+        <property name="isTop" column="is_top" type="boolean"/>
+        <property name="recordRead" column="record_read" type="boolean"/>
+        <property name="receiverType" column="receiver_type" type="string" length="40" not-null="true"/>
+
+        <property name="publishState" column="publish_state" type="string" length="40"/>
+        <property name="publisherId" column="publisher_id" type="string" length="40"/>
+        <property name="publisherName" column="publisher_name" type="string" length="40"/>
+        <property name="publishTime" column="publish_time" type="timestamp"/>
+
+        <!-- 公共属性 -->
+        <property name="status" column="status" type="string" length="40"/>
+        <property name="description" column="description" type="string" length="1000"/>
+        <property name="creatorId" column="creator_id" type="string" length="40" update="false"/>
+        <property name="creatorName" column="creator_name" type="string" length="40"/>
+        <property name="createdDatetime" column="created_datetime" type="timestamp" update="false"/>
+        <property name="modifierId" column="modifier_id" type="string" length="40"/>
+        <property name="modifierName" column="modifier_name" type="string" length="40"/>
+        <property name="modifiedDatetime" column="modified_datetime" type="timestamp"/>
+    </class>
+</hibernate-mapping>
