@@ -1,4 +1,5 @@
 /**
+* ${cnName}列表
 * Created by ${author!'CODE GENERATOR'} <#if current??>on ${current}</#if>.
 */
 (function (window, angular, $) {
@@ -28,15 +29,18 @@
                     });
                     CommonUtils.loading(promise, 'Loading...');
                 });
+            },
+            finishInit: function () {
+                this.query();
             }
-        }
+        };
     </#if>
 
         // 删除或批量删除
         $scope.remove = function (id) {
             ModalFactory.confirm({
                 scope: $scope,
-                content: '数据一旦删除将不可恢复，请确认!',
+                content: '<span class="text-danger">数据一旦删除将不可恢复，请确认!</span>',
                 callback: function () {
                     var promise = ${className}Service.deleteByIds({ids: id}, function(){
                         AlertFactory.success('删除成功!');

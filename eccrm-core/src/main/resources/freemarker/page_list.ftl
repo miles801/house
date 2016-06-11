@@ -36,25 +36,6 @@
                                 <span class="glyphicons search"></span>
                                 查询
                         </a>
-                        <#if listPage.queryBarButtons??>
-                            <#list listPage.queryBarButtons as button>
-                                <#if button.url?? >
-                                    <a type="button" class="btn btn-green btn-min" ng-href="${button.url!'#'}" >
-                                        <#if button.icon??>
-                                            <span class="glyphicons ${button.icon}" ></span >
-                                        </#if>
-                                    ${button.name}
-                                    </a >
-                                <#else>
-                                    <button type="button" class="btn btn-green btn-min" ng-click="${button.click!''}" >
-                                        <#if button.icon??>
-                                            <span class="glyphicons ${button.icon}" ></span >
-                                        </#if>
-                                    ${button.name}
-                                    </button >
-                                </#if>
-                            </#list>
-                        </#if>
                 </span>
             </div >
             <div class="block-content" >
@@ -125,12 +106,8 @@
                                         <a ng-click="view(foo.id)" bo-text="foo.name"></a>
                                     </td >
                                     <td>
-                                        <a class="cp" title="编辑" ng-click="modify(foo.id);">
-                                            <i class="icons edit"></i>
-                                        </a>
-                                        <a class="cp" title="删除" ng-click="remove(foo.id);">
-                                            <i class="icons fork"></i>
-                                        </a>
+                                        <a class="btn-op blue"  ng-click="modify(foo.id);">编辑</a>
+                                        <a class="btn-op red"  ng-click="remove(foo.id);">删除</a>
                                     </td>
                                 </tr>
                             </tbody >

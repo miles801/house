@@ -57,18 +57,18 @@
             var id = options.id;
             $scope.save = function () {
                 var promise = ${className}Service.save($scope.beans, function(data){
-AlertFactory.success('保存成功!');
-angular.isFunction(callback) && callback();
-$scope.$hide();
+                    AlertFactory.success('保存成功!');
+                    angular.isFunction(callback) && callback();
+                    $scope.$hide();
                 });
                 CommonUtils.loading(promise, '保存中...');
             };
 
             $scope.update = function () {
                 var promise = ${className}Service.update($scope.beans, function(data){
-AlertFactory.success('更新成功!');
-angular.isFunction(callback) && callback();
-$scope.$hide();
+                    AlertFactory.success('更新成功!');
+                    angular.isFunction(callback) && callback();
+                    $scope.$hide();
                 });
                 CommonUtils.loading(promise, '更新中...');
             };
@@ -89,10 +89,11 @@ $scope.$hide();
                 load(id);
             } else {
                 load(id, function () {
-$('.modal-body').find('input,select,textarea,.icon').attr('disabled', 'disabled');
+                    $('.modal-body').find('input,select,textarea').attr('disabled', 'disabled');
+                    $('.modal-body').find('.icons.icon').remove();
                 });
             }
-};
+        };
         return {
             add: function (options, callback) {
                 var o = angular.extend({}, options, {pageType: 'add'});
@@ -111,7 +112,7 @@ $('.modal-body').find('input,select,textarea,.icon').attr('disabled', 'disabled'
                     CommonUtils.errorDialog('没有获得ID');
                     throw '没有获得ID!';
                 }
-var o = angular.extend({}, options, {pageType: 'view'});
+                var o = angular.extend({}, options, {pageType: 'view'});
                 common(o, callback);
             }
         }

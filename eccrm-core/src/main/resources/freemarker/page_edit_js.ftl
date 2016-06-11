@@ -1,5 +1,5 @@
 /**
- *
+ * ${cnName}编辑
  */
 (function (window, angular, $) {
     var app = angular.module('${name}.${entity}.edit', [
@@ -30,9 +30,6 @@
             CommonUtils.loading(promise, '保存中...');
         };
 
-
-        $scope.beans = {
-        };
 
         // 更新
         $scope.update = function () {
