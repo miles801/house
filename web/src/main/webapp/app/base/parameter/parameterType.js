@@ -32,6 +32,7 @@
     });
     var controller = function ($scope, AlertFactory, ModalFactory, ParameterType, ParameterTypeModal, CommonUtils) {
         var ztreeObj;// ztree对象
+        console.dir(ParameterType);
         $scope.query = function () {
             if (!$scope.id) return;
             var promise = ParameterType.children({id: $scope.id}, function (data) {

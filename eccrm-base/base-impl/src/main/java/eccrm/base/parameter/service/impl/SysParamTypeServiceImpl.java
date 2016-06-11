@@ -1,6 +1,7 @@
 package eccrm.base.parameter.service.impl;
 
 import com.ycrl.core.beans.BeanWrapBuilder;
+import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.pager.PageVo;
 import eccrm.base.common.enums.CommonStatus;
 import eccrm.base.constant.ParameterConstant;
@@ -11,10 +12,7 @@ import eccrm.base.parameter.domain.SysParamType;
 import eccrm.base.parameter.service.ParameterContainer;
 import eccrm.base.parameter.service.SysParamTypeService;
 import eccrm.base.parameter.vo.SysParamTypeVo;
-import eccrm.core.VoHelper;
-import eccrm.core.VoWrapper;
 import eccrm.utils.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -26,7 +24,7 @@ import java.util.List;
  * @datetime: 2014-06-20
  */
 @Service("sysParamTypeService")
-public class SysParamTypeServiceImpl implements SysParamTypeService, VoWrapper<SysParamType, SysParamTypeVo> {
+public class SysParamTypeServiceImpl implements SysParamTypeService, BeanWrapCallback<SysParamType, SysParamTypeVo> {
     @Resource
     private SysParamTypeDao dao;
 
@@ -55,13 +53,13 @@ public class SysParamTypeServiceImpl implements SysParamTypeService, VoWrapper<S
         vo.setTotal(total);
         if (total == 0) return vo;
         List<SysParamType> sysParamTypes = dao.query(bo);
-        vo.setData(VoHelper.wrapVos(sysParamTypes, this));
+        vo.setData(BeanWrapBuilder.newInstance().setCallback(this).wrapList(sysParamTypes, SysParamTypeVo.class));
         return vo;
     }
 
     @Override
     public SysParamTypeVo findById(String id) {
-        return wrap(dao.findById(id));
+        return BeanWrapBuilder.newInstance().wrap(dao.findById(id), SysParamTypeVo.class);
     }
 
 
@@ -117,19 +115,6 @@ public class SysParamTypeServiceImpl implements SysParamTypeService, VoWrapper<S
     }
 
 
-    public SysParamTypeVo wrap(SysParamType sysParamType) {
-        if (sysParamType == null) return null;
-        SysParamTypeVo vo = new SysParamTypeVo();
-        BeanUtils.copyProperties(sysParamType, vo);
-        List<SysParamType> children = sysParamType.getChildren();
-        if (children != null && children.size() > 0) {
-            vo.setChildren(VoHelper.wrapVos(children, this));
-        }
-        ParameterContainer container = ParameterContainer.getInstance();
-        vo.setStatusName(container.getSystemName(ParameterConstant.COMMON_STATE, vo.getStatus()));
-        return vo;
-    }
-
     @Override
     public boolean hasName(String parentId, String name) {
         if (StringUtils.isEmpty(name)) {
@@ -161,7 +146,7 @@ public class SysParamTypeServiceImpl implements SysParamTypeService, VoWrapper<S
         if (containSelf) {
             types.add(0, dao.findById(id));
         }
-        return BeanWrapBuilder.newInstance().wrapList(types, SysParamTypeVo.class);
+        return BeanWrapBuilder.newInstance().setCallback(this).wrapList(types, SysParamTypeVo.class);
     }
 
     @Override
@@ -176,6 +161,12 @@ public class SysParamTypeServiceImpl implements SysParamTypeService, VoWrapper<S
         bo.setStatus(CommonStatus.ACTIVE.getValue());
         List<SysParamType> params = dao.query(bo);
         return BeanWrapBuilder.newInstance().wrapList(params, SysParamTypeVo.class);
+    }
+
+    @Override
+    public void doCallback(SysParamType bean, SysParamTypeVo vo) {
+        ParameterContainer container = ParameterContainer.getInstance();
+        vo.setStatusName(container.getSystemNameWithNoQuery(ParameterConstant.COMMON_STATE, vo.getStatus()));
     }
 
     @Override

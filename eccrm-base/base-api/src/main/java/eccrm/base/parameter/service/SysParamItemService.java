@@ -83,4 +83,12 @@ public interface SysParamItemService {
      * @return 基础参数集合
      */
     List<SysParamItemVo> fetchCascade(String typeCode, String value);
+
+    /**
+     * 获取指定类型、指定值对应的中文名称
+     * @param type 编号
+     * @param value 值
+     * @return 中文名称
+     */
+    String findName(String type, String value);
 }

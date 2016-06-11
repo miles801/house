@@ -19,11 +19,11 @@
                     limit: $scope.pager.limit || 10
                 }, $scope.condition);
                 var defer = $q.defer();
-                var result = BusinessParamItem.query(param);
-                AlertFactory.handle($scope, result, function (data) {
+                var promise = BusinessParamItem.query(param, function (data) {
                     $scope.parameters = data.data;
                     defer.resolve(data.data);
                 });
+                CommonUtils.loading(promise);
                 return defer.promise;
             }
         };
@@ -121,8 +121,7 @@
             }
         };
         var initTree = $scope.initTree = function () {
-            var result = BusinessParamType.queryOther();
-            AlertFactory.handle($scope, result, function (data) {
+            var promise = BusinessParamType.queryOther(function (data) {
                 data = data.data || [];
                 var tree = [
                     {name: '业务参数', open: true}
@@ -133,7 +132,8 @@
                     $scope.queryItems();
                 }
                 ztreeObj = $.fn.zTree.init($("#treeDemo"), setting, tree);
-            })
+            });
+            CommonUtils.loading(promise);
         };
         initTree();
 

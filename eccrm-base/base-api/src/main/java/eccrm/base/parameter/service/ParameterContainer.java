@@ -212,7 +212,9 @@ public class ParameterContainer {
         }
         // 从本地容器中获取，没有则返回，否则遍历
         List<SysParamItemVo> vos = systemContainer.get(type);
-        if (vos == null) return null;
+        if (vos == null) {
+            return SystemContainer.getInstance().getBean(SysParamItemService.class).findName(type, value);
+        }
         for (SysParamItemVo vo : vos) {
             if (vo.getValue().equals(value)) {
                 return vo.getName();

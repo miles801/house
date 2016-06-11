@@ -155,7 +155,7 @@ public class SysParamItemServiceImpl implements SysParamItemService, BeanWrapCal
     public void doCallback(SysParamItem item, SysParamItemVo vo) {
         ParameterContainer container = ParameterContainer.getInstance();
         vo.setTypeName(container.getSystemTypeName(vo.getType()));
-        vo.setStatusName(container.getSystemName(ParameterConstant.COMMON_STATE, vo.getStatus()));
+        vo.setStatusName(container.getSystemNameWithNoQuery(ParameterConstant.COMMON_STATE, vo.getStatus()));
         String cascadeType = item.getCascadeTypeCode();
         // 设置级联信息
         if (StringUtils.isNotEmpty(cascadeType)) {
@@ -169,5 +169,12 @@ public class SysParamItemServiceImpl implements SysParamItemService, BeanWrapCal
                 vo.setCascadeItemName(name);
             }
         }
+    }
+
+    @Override
+    public String findName(String type, String value) {
+        Assert.hasText(type, "查询失败!类型编号不能为空!");
+        Assert.hasText(value, "查询失败!参数值不能为空!");
+        return dao.queryName(type, value);
     }
 }

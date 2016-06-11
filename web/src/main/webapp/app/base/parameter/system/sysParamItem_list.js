@@ -125,8 +125,7 @@
             }
         };
         var initTree = $scope.initTree = function () {
-            var result = SysParamType.queryUsing();
-            AlertFactory.handle($scope, result, function (data) {
+            var promise = SysParamType.queryUsing(function (data) {
                 data = data.data || [];
                 var tree = [
                     {name: '系统参数', open: true}
@@ -138,7 +137,8 @@
                     $scope.queryItems();
                 }
                 ztreeObj = $.fn.zTree.init($("#treeDemo"), setting, tree);
-            })
+            });
+            CommonUtils.loading(promise);
         };
         initTree();
 

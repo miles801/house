@@ -124,7 +124,7 @@ public class SysParamTypeDaoImpl extends HibernateDaoHelper implements SysParamT
         Criteria criteria = createRowCountsCriteria(SysParamType.class);
         criteria.add(Restrictions.eq("name", name));
         if (parentId != null) {
-            criteria.add(Restrictions.eq("parent.id", parentId));
+            criteria.add(Restrictions.eq("parentId", parentId));
         }
         long total = (Long) criteria.uniqueResult();
         return total > 0;

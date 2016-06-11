@@ -119,7 +119,7 @@ public class BusinessParamTypeDaoImpl extends HibernateDaoHelper implements Busi
         Criteria criteria = createRowCountsCriteria(BusinessParamType.class);
         criteria.add(Restrictions.eq("name", name));
         if (parentId != null) {
-            criteria.add(Restrictions.eq("parent.id", parentId));
+            criteria.add(Restrictions.eq("parentId", parentId));
         }
         long total = (Long) criteria.uniqueResult();
         return total > 0;
