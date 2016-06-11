@@ -37,8 +37,8 @@
                                 <span class="glyphicons plus"></span> 新建
                             </a>
 
-                            <a class="btn btn-green btn-min" ng-click="deleteOrCancel();" ng-disabled="!anyOne">
-                                <span class="glyphicons remove_2"></span> 注销
+                            <a class="btn btn-green btn-min" ng-click="remove();" ng-disabled="!anyOne">
+                                <span class="glyphicons remove_2"></span> 删除
                             </a>
 	                    </span>
 
@@ -54,19 +54,18 @@
                                                  anyone-selected="anyOne"></div>
                                         </td>
                                         <td>名称</td>
+                                        <td style="width: 120px;">类型</td>
                                         <td>拼音</td>
                                         <td>区号</td>
                                         <td>邮政编码</td>
-                                        <td class="length-min">类型</td>
                                         <td>上级区域</td>
                                         <td class="length-min">显示顺序</td>
-                                        <td class="length-min">状态</td>
                                         <td class="length-min">操作</td>
                                     </tr>
                                     </thead>
                                     <tbody class="table-body" ng-cloak>
-                                    <tr ng-show="!regions || !regions.total">
-                                        <td colspan="10" class="text-center">没有符合条件的记录！</td>
+                                    <tr ng-show="!regions.data.length">
+                                        <td colspan="9" class="text-center">没有符合条件的记录！</td>
                                     </tr>
                                     <tr bindonce ng-repeat="foo in regions.data">
                                         <td align="center">
@@ -75,20 +74,15 @@
                                         <td title="点击查询明细！"
                                             style="cursor: pointer;text-decoration: underline;color:#0000ff"
                                             ng-click="view(foo.id)" bo-text="foo.name"></td>
+                                        <td class="text-center" bo-text="foo.type | regionType"></td>
                                         <td bo-text="foo.pinyin"></td>
                                         <td bo-text="foo.code"></td>
                                         <td bo-text="foo.zipcode"></td>
-                                        <td class="text-center" bo-text="foo.type | regionType"></td>
                                         <td bo-text="foo.parentName"></td>
                                         <td class="text-center" bo-text="foo.sequenceNo"></td>
-                                        <td class="text-center" bo-text="foo.status | regionStatus"></td>
                                         <td>
-                                            <a ng-click="modify(foo.id);" class="btn btn-tiny ph0" title="编辑">
-                                                <i class="icons edit"></i>
-                                            </a>
-                                            <a ng-click="deleteOrCancel(foo.id);" class="btn btn-tiny ph0" title="注销！">
-                                                <i class="icons fork"></i>
-                                            </a>
+                                            <a ng-click="modify(foo.id);" class="btn-op blue">编辑 </a>
+                                            <a ng-click="remove(foo.id);" class="btn-op red">删除 </a>
                                         </td>
                                     </tr>
                                     </tbody>

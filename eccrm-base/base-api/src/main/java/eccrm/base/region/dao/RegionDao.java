@@ -2,7 +2,6 @@ package eccrm.base.region.dao;
 
 import eccrm.base.region.bo.RegionBo;
 import eccrm.base.region.domain.Region;
-import eccrm.utils.tree.DynamicTreeDao;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * @author miles
  * @datetime 2014-03-25
  */
-public interface RegionDao extends DynamicTreeDao<Region> {
+public interface RegionDao {
 
     String save(Region region);
 
@@ -52,4 +51,6 @@ public interface RegionDao extends DynamicTreeDao<Region> {
      * @param city 城市id
      */
     Region getBelongProvence(String city);
+
+    public Region findById(String id);
 }

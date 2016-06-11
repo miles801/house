@@ -64,21 +64,18 @@
             getRegionTree: function (callback) {
                 return {
                     maxHeight: 250,
+                    simpleData: {
+                        enable: true,
+                        idKey: "id",
+                        pIdKey: 'parentId'
+                    },
                     // 初识数据加载
                     data: function (ck) {
                         return CommonUtils.promise(function (defer) {
-                            RegionService.tree({root: true}, function (data) {
+                            RegionService.tree(function (data) {
                                 data = data.data || [];
                                 defer.resolve(data);
                             });
-                        });
-                    },
-                    // 异步数据使用方法
-                    // callback一定要调用，否则树将不会被刷出来
-                    async: function (node, ck) {
-                        var pid = node.id;
-                        RegionService.tree({parentId: pid}, function (data) {
-                            ck.call(node, data.data || []);
                         });
                     },
                     click: callback
@@ -98,6 +95,7 @@
                     data: {
                         simpleData: {
                             enable: true,
+                            idKey: "id",
                             pIdKey: 'parentId'
                         }
                     },
@@ -106,17 +104,6 @@
                             if (angular.isFunction(onClick)) {
                                 scope.$apply(function () {
                                     onClick.call(this, node);
-                                });
-                            }
-                        },
-                        onExpand: function (event, treeId, node) {
-                            if (node['_hasQuery'] == undefined) {
-                                var ztreeObj = this.getZTreeObj(treeId);
-                                var promise = RegionService.tree({parentId: node.id});
-                                CommonUtils.loading(promise, '查询中...', function (data) {
-                                    node.children = data.data || [];
-                                    node['_hasQuery'] = true;
-                                    ztreeObj.refresh();
                                 });
                             }
                         }
@@ -131,48 +118,12 @@
                 return defer.promise;
             },
 
-            // 废弃，不要使用
-            province: function (parentId) {
-
-                var that = this;
-                var defer = $q.defer();
-                RegionService.tree({parentId: parentId, valid: true}, function (data) {
-                    defer.resolve(data);
-                });
-                return defer.promise;
-            },
-
-            // 废弃，不要使用
-            city: function (provinceId, callback) {
-                if (!provinceId) throw '没有获得省份的ID';
-                var defer = $q.defer();
-                RegionService.tree({parentId: provinceId, valid: true}, function (data) {
-                    defer.resolve(data || []);
-                });
-                return defer.promise;
-            },
-
-            // 废弃，不要使用
-            district: function (cityId, callback) {
-                if (!cityId) throw '没有获得城市的ID';
-                var defer = $q.defer();
-                RegionService.tree({parentId: cityId, valid: true}, function (data) {
-                    defer.resolve(data || []);
-                });
-                return defer.promise;
-
-            }
         }
     });
 
     //行政区域相关的常量
     app.service('RegionConstant', function (RegionService, CommonUtils) {
         return {
-            //行政区域状态
-            status: [
-                {code: 'ACTIVE', name: '启用'},
-                {code: 'CANCELED', name: '注销'}
-            ],
             //行政区域类型
             type: [
                 {code: 0, name: '国家'},
@@ -195,11 +146,8 @@
             },
             //新建时行政区域的默认值
             defaults: {
-                creatorName: CommonUtils.loginContext().username,
-                status: 'ACTIVE',
-                type: 3,
-                sequenceNo: 0,
-                createdDatetime: new Date().getTime()
+                type: 2,
+                sequenceNo: 1
             }
         }
     });
@@ -216,15 +164,4 @@
         }
     });
 
-    //行政区域状态转换器
-    app.filter('regionStatus', function (RegionConstant) {
-        return function (value) {
-            if (!value) return '';
-            var i = 0;
-            for (; i < RegionConstant.status.length; i++) {
-                if (value == RegionConstant.status[i].code)return RegionConstant.status[i].name;
-            }
-            return '不合法的类型值[' + value + ']!';
-        }
-    })
 })(angular);

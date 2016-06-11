@@ -1,48 +1,123 @@
 package eccrm.base.region.bo;
 
-import eccrm.base.region.domain.Region;
+import com.ycrl.core.hibernate.criteria.BO;
+import com.ycrl.core.hibernate.criteria.Condition;
+import com.ycrl.core.hibernate.criteria.LikeModel;
+import com.ycrl.core.hibernate.criteria.MatchModel;
 
 /**
  * @author miles
  * @datetime 2014-03-25
  */
 
-public class RegionBo extends Region {
+public class RegionBo implements BO {
+    @Condition
+    private Integer type;
     /**
-     * 只查询根节点的数据
+     * 名称
      */
-    private Boolean root;
-    /**
-     * 上级id
-     */
-/*    private String parentId;*/
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String name;
+
 
     /**
-     * 有效的
+     * 区号
      */
-    private Boolean valid;
+    @Condition
+    private String code;
+    /**
+     * 邮编
+     */
+    @Condition
+    private String zipcode;
+    @Condition
+    private String parentId;
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String parentName;
 
-    public Boolean getRoot() {
-        return root;
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String pinyin;
+    /**
+     * 简拼
+     */
+    @Condition
+    private String jp;
+
+    /**
+     * 是否删除
+     */
+    @Condition
+    private Boolean deleted;
+
+    public Integer getType() {
+        return type;
     }
 
-    public void setRoot(Boolean root) {
-        this.root = root;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
- /*   public String getParentId() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public String getParentId() {
         return parentId;
     }
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
-    }*/
-
-    public Boolean getValid() {
-        return valid;
     }
 
-    public void setValid(Boolean valid) {
-        this.valid = valid;
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public String getPinyin() {
+        return pinyin;
+    }
+
+    public void setPinyin(String pinyin) {
+        this.pinyin = pinyin;
+    }
+
+    public String getJp() {
+        return jp;
+    }
+
+    public void setJp(String jp) {
+        this.jp = jp;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

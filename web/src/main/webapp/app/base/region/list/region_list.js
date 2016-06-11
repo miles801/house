@@ -45,21 +45,32 @@
         };
 
         // 删除
-        $scope.deleteOrCancel = function (id) {
-            ModalFactory.remove($scope, function () {
-                if (!id) {
-                    var items = [];
-                    angular.forEach($scope.items, function (v) {
-                        items.push(v.id);
-                    });
-                    if (!items || items.length < 1) {
-                        AlertFactory.error($scope, '请选择至少一条数据后再进行删除/注销操作!', '错误操作!');
-                        return;
-                    }
-                    id = items.join(',');
+        $scope.remove = function (id) {
+            if (!id) {
+                var items = [];
+                angular.forEach($scope.items, function (v) {
+                    items.push(v.id);
+                });
+                if (!items || items.length < 1) {
+                    AlertFactory.error($scope, '请选择至少一条数据后再进行删除/注销操作!', '错误操作!');
+                    return;
                 }
-                var result = RegionService.deleteByIds({ids: id});
-                CommonUtils.loading(result, '删除中...', initTree);
+                id = items.join(',');
+            }
+            if (!id) {
+                AlertFactory.warning('请选择要删除的数据!');
+                return;
+            }
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '<span class="text-danger">数据一旦删除后，不可恢复，请确认!</span>',
+                callback: function () {
+                    var result = RegionService.deleteByIds({ids: id});
+                    CommonUtils.loading(result, '删除中...', function () {
+                        AlertFactory.success('删除成功!');
+                        initTree();
+                    });
+                }
             });
         };
 
@@ -74,7 +85,9 @@
             view: {showIcon: false},
             data: {
                 simpleData: {
-                    enable: true
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "parentId"
                 }
             },
             callback: {
@@ -82,43 +95,22 @@
                     $scope.condition.parentId = treeNode.id;
                     $scope.current = treeNode;
                     $scope.query();
-                },
-                onExpand: function (event, treeId, treeNode) {
-                    var obj = this.getZTreeObj(treeId);
-                    if (!(treeNode.children && treeNode.children.length > 0)) {
-                        RegionService.tree({parentId: treeNode.id}, function (data) {
-                            // 过滤数据，当层级达到市级时，不再展开下级节点
-                            var children = data.data || [];
-                            angular.forEach(children, function (v) {
-                                if (v.type === 2) {
-                                    v.isParent = false;
-                                }
-                            });
-                            treeNode.children = children;
-                            obj.refresh();
-                        });
-                    }
                 }
             }
         };
         var initTree = function () {
             RegionService.tree({root: true}, function (data) {
                 data = data.data || [];
-                //默认加载第一个菜单的数据到列表页面
-                if (data && data.length > 0) {
-                    $scope.condition.path = data[0].path;
-                } else {
-                    delete $scope.condition.path;
-                }
                 if (!data || data.length == 0) {
                     data = [
                         {name: '行政区域'}
                     ];
                 }
-                var tree = $.fn.zTree.init($("#treeDemo"), setting, data);
+                angular.forEach(data, function (o) {
+                    o.expand = true;
+                });
+                $.fn.zTree.init($("#treeDemo"), setting, data);
                 $scope.query();
-                // 展开第一级菜单（手动触发expand事件）
-                tree.expandNode(tree.getNodes()[0], true, true, true, true);
             })
         };
         initTree();

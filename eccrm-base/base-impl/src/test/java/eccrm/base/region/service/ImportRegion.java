@@ -80,7 +80,6 @@ public class ImportRegion {
             region.setId(id);
             region.setSequenceNo(i);
             region.setType(RegionType.PROVINCE.getValue());
-            region.setLeaf(false);
             session.save(region);
             i++;
             if (i % 10 == 0) {
@@ -133,11 +132,9 @@ public class ImportRegion {
             region.setCode(regions.get(name));// 设置区号
             Region parent = new Region();
             parent.setId(provinceId);
-            region.setParent(parent);
             region.setZipcode(zipcode);
             region.setSequenceNo(sequenceNo++);
             region.setType(RegionType.CITY.getValue());
-            region.setLeaf(false);
             session.save(region);
             if (i % 10 == 0) {
                 session.flush();
@@ -178,10 +175,8 @@ public class ImportRegion {
             region.setJp(getJP(name));
             Region parent = new Region();
             parent.setId((1000 + Integer.parseInt(cityId)) + "");
-            region.setParent(parent);
             region.setSequenceNo(sequenceNo++);
             region.setType(RegionType.DISTRICT.getValue());
-            region.setLeaf(true);
             i++;
             session.save(region);
             if (i % 10 == 0) {

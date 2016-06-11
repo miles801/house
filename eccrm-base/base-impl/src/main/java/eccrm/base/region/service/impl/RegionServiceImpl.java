@@ -11,7 +11,6 @@ import eccrm.base.region.domain.Region;
 import eccrm.base.region.service.RegionService;
 import eccrm.base.region.vo.RegionVo;
 import eccrm.core.VoHelper;
-import eccrm.utils.tree.DynamicTreeBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -28,26 +27,17 @@ import java.util.List;
 public class RegionServiceImpl implements RegionService, BeanWrapCallback<Region, RegionVo> {
     @Resource
     private RegionDao regionDao;
-    private DynamicTreeBuilder builder;
-
-    private DynamicTreeBuilder getBuilder() {
-        if (builder == null) {
-            builder = new DynamicTreeBuilder(regionDao);
-        }
-        return builder;
-    }
 
     @Override
     public String save(Region region) {
         region.setId(UUIDGenerator.generate());
+        region.setDeleted(false);
         String id = regionDao.save(region);
-        getBuilder().save(region);
         return id;
     }
 
     @Override
     public void update(Region region) {
-        getBuilder().update(region);
         regionDao.update(region);
     }
 
@@ -75,7 +65,7 @@ public class RegionServiceImpl implements RegionService, BeanWrapCallback<Region
             RegionBo bo = new RegionBo();
             bo.setParentId(id);
             Long total = regionDao.getTotal(bo);
-            Assert.isTrue(total == null || total == 0, "删除失败!该组织机构下包含子组织机构，不允许删除!");
+            Assert.isTrue(total == null || total == 0, "删除失败!行政区域下包含子的行政区域，不允许删除!");
             regionDao.deleteById(id);
         }
     }
@@ -85,7 +75,6 @@ public class RegionServiceImpl implements RegionService, BeanWrapCallback<Region
         //查询数据
         List<Region> regions = regionDao.query(bo);
         return BeanWrapBuilder.newInstance()
-                .addProperties(new String[]{"id", "name", "type"})
                 .setCallback(this)
                 .wrapList(regions, RegionVo.class);
     }
@@ -112,18 +101,11 @@ public class RegionServiceImpl implements RegionService, BeanWrapCallback<Region
         if (region == null) return null;
         RegionVo vo = new RegionVo();
         BeanUtils.copyProperties(region, vo);
-        vo.setIsParent(!region.getLeaf());
         return vo;
     }
 
     @Override
     public void doCallback(Region region, RegionVo vo) {
-        vo.setIsParent(!region.getLeaf());
-        Region parent = region.getParent();
-        if (parent != null) {
-            vo.setParentId(parent.getId());
-            vo.setParentName(parent.getName());
-        }
     }
 
     @Override

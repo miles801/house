@@ -1,9 +1,9 @@
 package eccrm.base.region.dao.impl;
 
 import com.ycrl.core.HibernateDaoHelper;
+import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import com.ycrl.core.pager.OrderNode;
 import com.ycrl.core.pager.Pager;
-import eccrm.base.common.enums.CommonStatus;
 import eccrm.base.region.bo.RegionBo;
 import eccrm.base.region.dao.RegionDao;
 import eccrm.base.region.domain.Region;
@@ -11,8 +11,8 @@ import eccrm.utils.Argument;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 
-import java.io.Serializable;
 import java.util.List;
 
 
@@ -63,10 +63,8 @@ public class RegionDaoImpl extends HibernateDaoHelper implements RegionDao {
     }
 
     @Override
-    public Region findById(Serializable id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id must not be null!");
-        }
+    public Region findById(String id) {
+        Assert.hasText(id, "查询失败!行政区域ID不能为空!");
         return (Region) getSession().get(Region.class, id);
     }
 
@@ -82,37 +80,8 @@ public class RegionDaoImpl extends HibernateDaoHelper implements RegionDao {
         return (max == null ? 1 : max + 1);
     }
 
-    @Override
-    public void evict(Region region) {
-        if (region == null) return;
-        getSession().evict(region);
-    }
-
     private void initCriteria(Criteria criteria, RegionBo bo) {
-        if (bo == null) bo = new RegionBo();
-        criteria.add(Example.create(bo).enableLike(MatchMode.ANYWHERE).ignoreCase());
-        //只查询符合条件的根节点
-        Boolean root = bo.getRoot();
-        if (root != null && root) {
-            criteria.add(Restrictions.isNull("parentId"));
-        }
-
-        Boolean valid = bo.getValid();
-        if (valid != null && valid) {
-            criteria.add(Restrictions.eq("status", CommonStatus.ACTIVE.getValue()));
-        }
-        //只查询指定id的直接子节点
-        String parentId = bo.getParentId();
-        if (parentId != null && !"".equals(parentId.trim())) {
-            criteria.add(Restrictions.eq("parentId", parentId));
-        }
-    }
-
-    @Override
-    public long childSize(Serializable id) {
-        return (Long) createRowCountsCriteria(Region.class)
-                .add(Restrictions.eq("parentId", id))
-                .uniqueResult();
+        CriteriaUtils.addCondition(criteria,bo);
     }
 
     @Override

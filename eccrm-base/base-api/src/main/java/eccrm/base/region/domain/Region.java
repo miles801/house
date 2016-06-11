@@ -1,64 +1,75 @@
 package eccrm.base.region.domain;
 
 import com.ycrl.base.common.CommonDomain;
-import eccrm.core.enums.EnumClass;
-import eccrm.core.enums.EnumSymbol;
-import eccrm.utils.tree.DynamicTree;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author miles
  * @datetime 2014-03-25
  */
-public class Region extends CommonDomain implements DynamicTree, EnumSymbol {
+@Entity
+@Table(name = "sys_region")
+public class Region extends CommonDomain {
+    /**
+     * 国家0、省1、市2、区3...
+     */
+    @Column(nullable = false)
+    @NotNull(message = "行政区域类型不能为空!")
+    private Integer type;
+    /**
+     * 名称
+     */
+    @Column(length = 40,nullable = false)
+    @NotNull(message = "行政区域名称不能为空!")
+    private String name;
+
 
     /**
      * 区号
      */
+    @Column(length = 10)
     private String code;
     /**
-     * 省、市、区...
+     * 邮编
      */
-    @EnumClass(RegionType.class)
-    private Integer type;
+    @Column(length = 6)
     private String zipcode;
+    /**
+     * 排序号
+     */
+    @Column
     private Integer sequenceNo;
-    private Region parent;
+    @Column(length = 40)
     private String parentId;
-    private String name;
-    private Boolean leaf;
+    @Column(length = 40)
+    private String parentName;
 
     /**
      * 全拼
      */
+    @Column(length = 40)
     private String pinyin;
     /**
      * 简拼
      */
+    @Column(length = 10)
     private String jp;
 
-    public Boolean getLeaf() {
-        return leaf;
+    /**
+     * 是否删除
+     */
+    @Column
+    private Boolean deleted;
+    public Integer getType() {
+        return type;
     }
 
-    public void setLeaf(Boolean leaf) {
-        this.leaf = leaf;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-
-    public Region getParent() {
-        return parent;
-    }
-
-    public void setParent(Region parent) {
-        this.parent = parent;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getCode() {
@@ -67,14 +78,6 @@ public class Region extends CommonDomain implements DynamicTree, EnumSymbol {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getZipcode() {
@@ -93,9 +96,28 @@ public class Region extends CommonDomain implements DynamicTree, EnumSymbol {
         this.sequenceNo = sequenceNo;
     }
 
-    @Override
-    public void setLeaf(boolean leaf) {
-        this.leaf = leaf;
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPinyin() {
@@ -114,11 +136,11 @@ public class Region extends CommonDomain implements DynamicTree, EnumSymbol {
         this.jp = jp;
     }
 
-    public String getParentId() {
-        return parentId;
+    public Boolean getDeleted() {
+        return deleted;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -29,8 +29,10 @@
                 }
                 callback = callback || cfg.callback;
 
-                var _t = this;
-                var modal = $modal({scope: scope, template: CommonUtils.contextPathURL('app/base/region/template/region-modal-edit.html')});
+                var modal = $modal({
+                    scope: scope,
+                    template: CommonUtils.contextPathURL('app/base/region/template/region-modal-edit.html')
+                });
 
                 var $scope = modal.$scope;
 
@@ -51,19 +53,18 @@
                 if (cfg.type == 'add') {
                     $scope.save = function (createNew) {
                         RegionService.save($scope.region, function (data) {
-                            if (data && data.success) {
-                                if (createNew == true) {
-                                    $scope.region = {
-                                        sequenceNo: ($scope.region.sequenceNo || 0) + 1
-                                    }
-                                } else {
-                                    if (callback && angular.isFunction(callback)) {
-                                        callback.call($scope, data.id);
-                                    }
-                                    $scope.$hide();
-                                }
+                            AlertFactory.success('保存成功!');
+                            if (callback && angular.isFunction(callback)) {
+                                callback.call($scope, data.id);
+                            }
+                            if (createNew == true) {
+                                $scope.region.name = null;
+                                $scope.region.pinyin = null;
+                                $scope.region.jp = null;
+                                $scope.region.zipcode = null;
+                                $scope.region.sequenceNo = ($scope.region.sequenceNo || 0) + 1;
                             } else {
-                                AlertFactory.saveError($scope, data);
+                                $scope.$hide();
                             }
                         });
                     };
@@ -93,10 +94,6 @@
                     RegionService.get({id: cfg.id}, function (data) {
                         data = data.data || {};
                         $scope.region = data;
-                        $scope.region.parent = {
-                            id: data.parentId,
-                            name: data.parentName
-                        };
                         $('input,select,textarea').attr('disabled', 'disabled');
                     });
 
@@ -108,23 +105,21 @@
                     // 初识数据加载
                     data: function (callback) {
                         return CommonUtils.promise(function (defer) {
-                            RegionService.tree({root: true}, function (data) {
+                            RegionService.tree(function (data) {
                                 data = data.data || [];
                                 defer.resolve(data);
                             });
                         });
                     },
-                    // 异步数据使用方法
-                    // callback一定要调用，否则树将不会被刷出来
-                    async: function (node, callback) {
-                        var pid = node.id;
-                        RegionService.tree({parentId: pid}, function (data) {
-                            callback.call(node, data.data || []);
-                        });
-                    },
                     click: function (data) {
-                        $scope.region.parent = data;
+                        $scope.region.parentId = data.id;
+                        $scope.region.parentName = data.name;
                     }
+                };
+
+                $scope.clearParent = function () {
+                    $scope.region.parentId = null;
+                    $scope.region.parentName = null;
                 };
                 //模态对话框显示后要执行的操作
                 ModalFactory.afterShown(modal, cfg.afterShown);
