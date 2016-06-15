@@ -1,9 +1,9 @@
 package com.michael.spec.web;
 
-import com.michael.spec.bo.BuildingBo;
-import com.michael.spec.domain.Building;
-import com.michael.spec.service.BuildingService;
-import com.michael.spec.vo.BuildingVo;
+import com.michael.spec.bo.BlockBo;
+import com.michael.spec.domain.Block;
+import com.michael.spec.service.BlockService;
+import com.michael.spec.vo.BlockVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
@@ -17,32 +17,33 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author Michael
  */
 @Controller
-@RequestMapping(value = {"/house/building"})
-public class BuildingCtrl extends BaseController {
+@RequestMapping(value = {"/house/block"})
+public class BlockCtrl extends BaseController {
     @Resource
-    private BuildingService buildingService;
+    private BlockService blockService;
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String toList() {
-        return "base/building/list/building_list";
+        return "base/block/list/block_list";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAdd(HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.ADD);
-        return "house/building/edit/building_edit";
+        return "base/block/edit/block_edit";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     public void save(HttpServletRequest request, HttpServletResponse response) {
-        Building building = GsonUtils.wrapDataToEntity(request, Building.class);
-        String id = buildingService.save(building);
+        Block block = GsonUtils.wrapDataToEntity(request, Block.class);
+        String id = blockService.save(block);
         GsonUtils.printData(response, id);
     }
 
@@ -50,14 +51,14 @@ public class BuildingCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
-        return "house/building/edit/building_edit";
+        return "base/block/edit/block_edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public void update(HttpServletRequest request, HttpServletResponse response) {
-        Building building = GsonUtils.wrapDataToEntity(request, Building.class);
-        buildingService.update(building);
+        Block block = GsonUtils.wrapDataToEntity(request, Block.class);
+        blockService.update(block);
         GsonUtils.printSuccess(response);
     }
 
@@ -65,29 +66,41 @@ public class BuildingCtrl extends BaseController {
     public String toDetail(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);
         request.setAttribute("id", id);
-        return "house/building/edit/building_edit";
+        return "base/block/edit/block_edit";
     }
 
     @ResponseBody
     @RequestMapping(value = "/get", params = {"id"}, method = RequestMethod.GET)
     public void findById(@RequestParam String id, HttpServletResponse response) {
-        BuildingVo vo = buildingService.findById(id);
+        BlockVo vo = blockService.findById(id);
         GsonUtils.printData(response, vo);
     }
 
     @ResponseBody
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
-        BuildingBo bo = GsonUtils.wrapDataToEntity(request, BuildingBo.class);
-        PageVo pageVo = buildingService.pageQuery(bo);
+        BlockBo bo = GsonUtils.wrapDataToEntity(request, BlockBo.class);
+        PageVo pageVo = blockService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/query", params = "buildingId", method = RequestMethod.POST)
+    public void query(String buildingId, HttpServletRequest request, HttpServletResponse response) {
+        BlockBo bo = GsonUtils.wrapDataToEntity(request, BlockBo.class);
+        if (bo == null) {
+            bo = new BlockBo();
+        }
+        bo.setBuildingId(buildingId);
+        List<Block> data = blockService.query(bo);
+        GsonUtils.printData(response, data);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", params = {"ids"}, method = RequestMethod.DELETE)
     public void deleteByIds(@RequestParam String ids, HttpServletResponse response) {
         String[] idArr = ids.split(",");
-        buildingService.deleteByIds(idArr);
+        blockService.deleteByIds(idArr);
         GsonUtils.printSuccess(response);
     }
 

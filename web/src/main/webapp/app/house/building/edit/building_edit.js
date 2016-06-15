@@ -56,16 +56,12 @@
         $scope.back = CommonUtils.back;
 
         // 保存
-        $scope.save = function (createNew) {
+        $scope.save = function () {
             var promise = BuildingService.save($scope.beans, function (data) {
                 AlertFactory.success('保存成功!');
                 CommonUtils.addTab('update');
-                if (createNew === true) {
-                    $scope.beans = {};
-                } else {
-                    $scope.form.$setValidity('committed', false);
-                    CommonUtils.delay($scope.back, 2000);
-                }
+                $scope.pageType = 'modify';
+                $scope.load(id);
             });
             CommonUtils.loading(promise, '保存中...');
         };
@@ -87,10 +83,36 @@
             var promise = BuildingService.get({id: id}, function (data) {
                 $scope.beans = data.data || {};
                 $scope.cityAndArea = $scope.beans.cityName + ' - ' + $scope.beans.areaName;
+
+                $scope.initTab(id);
             });
             CommonUtils.loading(promise, 'Loading...');
         };
 
+        /**
+         * 初始化页签，当新增页面保存成功后打开
+         * 更新、明细页面自动打开
+         * @param id 楼盘ID
+         */
+        $scope.initTab = function (id) {
+            // 楼栋信息
+            CommonUtils.addTab({
+                title: '楼栋信息',
+                url: 'app/house/block/list/block_list.jsp?id=' + id,
+                active: false
+            });
+            CommonUtils.addTab({
+                title: '单元信息',
+                url: 'app/house/block/list/block_list.jsp?id=' + id,
+                active: false
+            });
+            // 楼栋信息
+            CommonUtils.addTab({
+                title: '房间信息',
+                url: 'app/house/block/list/block_list.jsp?id=' + id,
+                active: false
+            });
+        };
 
         if (pageType == 'add') {
             $scope.beans = {};
