@@ -103,7 +103,7 @@
             });
             CommonUtils.addTab({
                 title: '单元信息',
-                url: 'app/house/block/list/block_list.jsp?id=' + id,
+                url: 'app/house/unit/list/unit_list.jsp?id=' + id,
                 active: false
             });
             // 楼栋信息

@@ -1,7 +1,9 @@
 package com.michael.spec.service.impl;
 
 import com.michael.spec.bo.BlockBo;
+import com.michael.spec.bo.UnitBo;
 import com.michael.spec.dao.BlockDao;
+import com.michael.spec.dao.UnitDao;
 import com.michael.spec.domain.Block;
 import com.michael.spec.service.BlockService;
 import com.michael.spec.vo.BlockVo;
@@ -10,6 +12,7 @@ import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -21,6 +24,9 @@ import java.util.List;
 public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, BlockVo> {
     @Resource
     private BlockDao blockDao;
+
+    @Resource
+    private UnitDao unitDao;
 
     @Override
     public String save(Block block) {
@@ -61,6 +67,11 @@ public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, B
     public void deleteByIds(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
+            // 判断是否具有单元信息
+            UnitBo bo = new UnitBo();
+            bo.setBlockId(id);
+            Long total = unitDao.getTotal(bo);
+            Assert.isTrue(total == null || total == 0, "删除失败!该楼栋下已经存在单元信息，无法删除!");
             blockDao.deleteById(id);
         }
     }
