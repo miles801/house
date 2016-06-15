@@ -109,7 +109,7 @@
             // 楼栋信息
             CommonUtils.addTab({
                 title: '房间信息',
-                url: 'app/house/block/list/block_list.jsp?id=' + id,
+                url: 'app/house/room/list/room_list.jsp?id=' + id,
                 active: false
             });
         };

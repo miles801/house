@@ -1,6 +1,7 @@
 package com.michael.spec.service.impl;
 
 import com.michael.spec.bo.UnitBo;
+import com.michael.spec.dao.RoomDao;
 import com.michael.spec.dao.UnitDao;
 import com.michael.spec.domain.Unit;
 import com.michael.spec.service.HouseParams;
@@ -12,6 +13,7 @@ import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,6 +25,9 @@ import java.util.List;
 public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, UnitVo> {
     @Resource
     private UnitDao unitDao;
+
+    @Resource
+    private RoomDao roomDao;
 
     @Override
     public String save(Unit unit) {
@@ -63,6 +68,8 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
     public void deleteByIds(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
+            long counts = roomDao.getUnitRoomCounts(id);
+            Assert.isTrue(counts == 0, "删除失败!该单元下已经存在了房间信息，无法直接删除!");
             unitDao.deleteById(id);
         }
     }
