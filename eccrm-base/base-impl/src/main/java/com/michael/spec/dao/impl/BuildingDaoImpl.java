@@ -5,7 +5,9 @@ import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.domain.Building;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
+import com.ycrl.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -55,6 +57,18 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
     public void delete(Building building) {
         Assert.notNull(building, "要删除的对象不能为空!");
         getSession().delete(building);
+    }
+
+    @Override
+    public boolean hasName(String name, String id) {
+        Assert.hasText(name, "查询失败!楼盘名称不能为空!");
+        Criteria criteria = createRowCountsCriteria(Building.class)
+                .add(Restrictions.eq("name", name));
+        if (StringUtils.isNotEmpty(id)) {
+            criteria.add(Restrictions.ne("id", id));
+        }
+        Long total = (Long) criteria.uniqueResult();
+        return total != null && total > 0;
     }
 
     @Override

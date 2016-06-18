@@ -12,6 +12,7 @@ import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,14 +27,20 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
 
     @Override
     public String save(Building building) {
-        ValidatorUtils.validate(building);
+        validate(building);
         String id = buildingDao.save(building);
         return id;
     }
 
+    private void validate(Building building) {
+        ValidatorUtils.validate(building);
+        boolean exists = buildingDao.hasName(building.getName(), building.getId());
+        Assert.isTrue(!exists, "操作失败!名称重复!");
+    }
+
     @Override
     public void update(Building building) {
-        ValidatorUtils.validate(building);
+        validate(building);
         buildingDao.update(building);
     }
 

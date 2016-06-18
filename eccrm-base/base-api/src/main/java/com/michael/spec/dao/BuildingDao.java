@@ -33,4 +33,13 @@ public interface BuildingDao {
      * 必须保证该实体是存在的（一般是get或者load得到的对象）
      */
     void delete(Building building);
+
+    /**
+     * 判断指定名称的楼盘是否存在
+     *
+     * @param name 楼盘名称
+     * @param id   楼盘ID
+     * @return true：存在
+     */
+    boolean hasName(String name, String id);
 }
