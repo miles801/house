@@ -3,9 +3,11 @@ package com.michael.spec.dao.impl;
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomView;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -31,15 +33,15 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Room> query(RoomBo bo) {
-        Criteria criteria = createCriteria(Room.class);
+    public List<RoomView> query(RoomBo bo) {
+        Criteria criteria = createCriteria(RoomView.class);
         initCriteria(criteria, bo);
         return criteria.list();
     }
 
     @Override
     public Long getTotal(RoomBo bo) {
-        Criteria criteria = createRowCountsCriteria(Room.class);
+        Criteria criteria = createRowCountsCriteria(RoomView.class);
         initCriteria(criteria, bo);
         return (Long) criteria.uniqueResult();
     }
@@ -65,6 +67,15 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
                 .add(Restrictions.eq("unitId", unitId))
                 .uniqueResult();
         return total == null ? 0 : total;
+    }
+
+    @Override
+    public String maxKey(String buildingId) {
+        Assert.hasText(buildingId, "查询失败!楼盘ID不能为空!");
+        return (String) createCriteria(RoomView.class)
+                .setProjection(Projections.max("roomKey"))
+                .add(Restrictions.eq("buildingId", buildingId))
+                .uniqueResult();
     }
 
     @Override

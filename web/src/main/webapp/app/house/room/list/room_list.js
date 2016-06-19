@@ -109,6 +109,7 @@
             if (!bean) {
                 var unit = $scope.unit;
                 $scope.beans.push({
+                    buildingId: buildingId,
                     blockId: $scope.condition.blockId, blockCode: $scope.blockCode,
                     unitId: unit.id, unitCode: unit.code, code: unit.doorCode,
                     square: unit.square, type: unit.type, orient: unit.orient

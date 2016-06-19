@@ -2,6 +2,7 @@ package com.michael.spec.web;
 
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomView;
 import com.michael.spec.service.RoomService;
 import com.michael.spec.vo.RoomVo;
 import com.ycrl.base.common.JspAccessType;
@@ -92,7 +93,7 @@ public class RoomCtrl extends BaseController {
             bo = new RoomBo();
         }
         bo.setUnitId(unitId);
-        List<Room> data = roomService.query(bo);
+        List<RoomView> data = roomService.query(bo);
         GsonUtils.printData(response, data);
     }
 

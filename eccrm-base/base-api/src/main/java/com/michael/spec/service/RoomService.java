@@ -2,6 +2,7 @@ package com.michael.spec.service;
 
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomView;
 import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.pager.PageVo;
 
@@ -23,7 +24,13 @@ public interface RoomService {
     void update(Room room);
 
     /**
-     * 分页查询
+     * 设置房屋相关信息
+     */
+    void setRoomInfo(Room room);
+
+
+    /**
+     * 分页查询,返回RoomView的集合
      */
     PageVo pageQuery(RoomBo bo);
 
@@ -37,5 +44,5 @@ public interface RoomService {
      */
     void deleteByIds(String[] ids);
 
-    List<Room> query(RoomBo bo);
+    List<RoomView> query(RoomBo bo);
 }

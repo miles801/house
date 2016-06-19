@@ -2,6 +2,7 @@ package com.michael.spec.dao;
 
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomView;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface RoomDao {
     /**
      * 高级查询接口
      */
-    List<Room> query(RoomBo bo);
+    List<RoomView> query(RoomBo bo);
 
     /**
      * 查询总记录数
@@ -41,4 +42,12 @@ public interface RoomDao {
      * @return 房间数量
      */
     long getUnitRoomCounts(String unitId);
+
+    /**
+     * 查询指定楼盘中你最大的房屋编号
+     *
+     * @param buildingId 楼盘ID
+     * @return 编号
+     */
+    String maxKey(String buildingId);
 }

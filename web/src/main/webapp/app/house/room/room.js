@@ -37,7 +37,30 @@
     });
 
     app.service('RoomParam', function (ParameterLoader) {
-        return {};
+        return {
+            orient: function (callback) {
+                ParameterLoader.loadBusinessParam('ORIENT', callback);
+            },
+            /**
+             * 产权性质
+             */
+            property: function (callback) {
+                ParameterLoader.loadBusinessParam('HOUSE_PROPERTY', callback);
+            },
+            /**
+             * 现状
+             */
+            useType: function (callback) {
+                ParameterLoader.loadBusinessParam('HOUSE_USE_TYPE', callback);
+
+            },
+            /**
+             * 状态
+             */
+            status: function (callback) {
+                ParameterLoader.loadSysParam('HOUSE_STATUS', callback);
+            }
+        };
     });
 
 })(angular);
