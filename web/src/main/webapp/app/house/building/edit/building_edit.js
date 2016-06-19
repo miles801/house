@@ -60,8 +60,7 @@
             var promise = BuildingService.save($scope.beans, function (data) {
                 AlertFactory.success('保存成功!');
                 CommonUtils.addTab('update');
-                $scope.pageType = 'modify';
-                $scope.load(id);
+                window.location.href = "/house/building/modify?id=" + data.data;
             });
             CommonUtils.loading(promise, '保存中...');
         };
