@@ -108,6 +108,9 @@
             var result = ResourceService.get({id: id}, function (data) {
                 data = data.data;
                 $scope.beans = data;
+                if ($scope.beans.icon) {
+                    $('#icon').html('<img style="height: 100px;width: 48px;" src="' + CommonUtils.contextPathURL('/attachment/download?id=' + $scope.beans.icon) + '"/>');
+                }
                 if (angular.isFunction(callback)) {
                     callback(data.data);
                 }
