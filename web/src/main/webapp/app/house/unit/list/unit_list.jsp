@@ -65,53 +65,54 @@
             <div class="block-content">
                 <div class="content-wrap">
                     <div class="table-responsive panel panel-table">
-                        <table class="table table-striped table-hover">
-                            <thead class="table-header">
-                            <tr>
-                                <td>单元号</td>
-                                <td>门牌号</td>
-                                <td>面积(m2)</td>
-                                <td>户型</td>
-                                <td>朝向</td>
-                                <td style="width: 180px;">操作</td>
-                            </tr>
-                            </thead>
-                            <tbody class="table-body">
-                            <tr ng-show="!beans.length">
-                                <td colspan="6" class="text-center">
-                                    <a class="btn-op blue" ng-click="!condition.blockId || add();"
-                                       ng-disabled="!condition.blockId" ng-cloak>新建</a>
-                                </td>
-                            </tr>
-                            <tr ng-repeat="foo in beans" ng-cloak>
-                                <td title="点击查询明细！" style="cursor: pointer;">
-                                    <form name="form" role="form" style="margin: 0;padding: 0;">
+                        <form name="form" role="form" style="margin: 0;padding: 0;">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-header">
+                                <tr>
+                                    <td>单元号</td>
+                                    <td>门牌号</td>
+                                    <td>面积(m2)</td>
+                                    <td>户型</td>
+                                    <td>朝向</td>
+                                    <td style="width: 180px;">操作</td>
+                                </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                <tr ng-show="!beans.length">
+                                    <td colspan="6" class="text-center">
+                                        <a class="btn-op blue" ng-click="!condition.blockId || add();"
+                                           ng-disabled="!condition.blockId" ng-cloak>新建</a>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="foo in beans" ng-cloak>
+                                    <td title="点击查询明细！" style="cursor: pointer;">
                                         <input type="text" name="code" ng-model="foo.code" validate validate-required/>
-                                    </form>
-                                </td>
-                                <td>
-                                    <input type="text" ng-model="foo.doorCode" validate validate-required/>
-                                </td>
-                                <td>
-                                    <input type="text" ng-model="foo.square" validate validate-required
-                                           validate-float/>
-                                </td>
-                                <td>
-                                    <input type="text" ng-model="foo.type" validate validate-required/>
-                                </td>
-                                <td>
-                                    <select ng-model="foo.orient"
-                                            ng-options="o.value as o.name for o in orients"></select>
-                                </td>
-                                <td>
-                                    <a class="btn-op blue" ng-disabled="!(form.$valid && form.$dirty)"
-                                       ng-click="save(foo,form);">保存</a>
-                                    <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
-                                    <a class="btn-op green" ng-click="add(foo);">新建</a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="foo.doorCode" validate validate-required/>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="foo.square" validate validate-required
+                                               validate-float/>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="foo.type" validate validate-required
+                                               validate-options="typeValid"/>
+                                    </td>
+                                    <td>
+                                        <select ng-model="foo.orient"
+                                                ng-options="o.value as o.name for o in orients"></select>
+                                    </td>
+                                    <td>
+                                        <a class="btn-op blue" ng-disabled="!(form.$valid && form.$dirty)"
+                                           ng-click="save(foo,form);">保存</a>
+                                        <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
+                                        <a class="btn-op green" ng-click="add(foo);">新建</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -45,9 +45,18 @@ public class RoomView {
     @Column
     private Double square;
 
-    @ApiField("户型")
+    @ApiField("户型-室")
     @Column(length = 40)
-    private String type;
+    private String type1;
+    @ApiField("户型-厅")
+    @Column(length = 40)
+    private String type2;
+    @ApiField("户型-厨")
+    @Column(length = 40)
+    private String type3;
+    @ApiField("户型-卫")
+    @Column(length = 40)
+    private String type4;
     @ApiField("朝向")
     @Column(length = 40)
     private String orient;
@@ -202,12 +211,36 @@ public class RoomView {
         this.square = square;
     }
 
-    public String getType() {
-        return type;
+    public String getType1() {
+        return type1;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType1(String type1) {
+        this.type1 = type1;
+    }
+
+    public String getType2() {
+        return type2;
+    }
+
+    public void setType2(String type2) {
+        this.type2 = type2;
+    }
+
+    public String getType3() {
+        return type3;
+    }
+
+    public void setType3(String type3) {
+        this.type3 = type3;
+    }
+
+    public String getType4() {
+        return type4;
+    }
+
+    public void setType4(String type4) {
+        this.type4 = type4;
     }
 
     public String getOrient() {

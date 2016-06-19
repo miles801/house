@@ -17,4 +17,13 @@ public interface BaseParameter {
      */
     public static final String DUTY = "BP_DUTY";
 
+    /**
+     * 学历
+     */
+    public static final String EDU = "BP_EDU";
+    /**
+     * 婚姻状况
+     */
+    public static final String MARRIAGE = "BP_MARRIAGE";
+
 }

@@ -5,6 +5,7 @@ import com.ycrl.base.common.CommonDomain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * 楼盘信息
@@ -86,6 +87,12 @@ public class Building extends CommonDomain {
     // 绿化率
     @Column
     private Float greenPercent;
+
+    @NotNull(message = "负责人不能为空")
+    @Column(nullable = false, length = 40)
+    private String masterId;
+    @Column(nullable = false, length = 40)
+    private String masterName;
     // 学区
     @Column(length = 100)
     private String school;
@@ -99,6 +106,22 @@ public class Building extends CommonDomain {
     private String col4;
     @Column(length = 100)
     private String col5;
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(String masterId) {
+        this.masterId = masterId;
+    }
+
+    public String getMasterName() {
+        return masterName;
+    }
+
+    public void setMasterName(String masterName) {
+        this.masterName = masterName;
+    }
 
     public String getCityName() {
         return cityName;

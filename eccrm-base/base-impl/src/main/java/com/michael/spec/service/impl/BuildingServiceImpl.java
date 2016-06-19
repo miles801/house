@@ -8,8 +8,10 @@ import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.BuildingVo;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
+import com.ycrl.utils.string.StringUtils;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -27,6 +29,10 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
 
     @Override
     public String save(Building building) {
+        if (StringUtils.isEmpty(building.getMasterId())) {
+            building.setMasterId(SecurityContext.getEmpId());
+            building.setMasterName(SecurityContext.getEmpName());
+        }
         validate(building);
         String id = buildingDao.save(building);
         return id;

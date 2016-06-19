@@ -108,12 +108,20 @@
         $scope.add = function (bean) {
             if (!bean) {
                 var unit = $scope.unit;
-                $scope.beans.push({
+                var newItem = {
                     buildingId: buildingId,
                     blockId: $scope.condition.blockId, blockCode: $scope.blockCode,
                     unitId: unit.id, unitCode: unit.code, code: unit.doorCode,
-                    square: unit.square, type: unit.type, orient: unit.orient
-                });
+                    square: unit.square, orient: unit.orient
+                };
+                if (unit.type && /\d-\d-\d-\d/.test(unit.type)) {
+                    var types = unit.type.split('-');
+                    newItem.type1 = types[0] || 0;
+                    newItem.type2 = types[1] || 0;
+                    newItem.type3 = types[2] || 0;
+                    newItem.type4 = types[3] || 0;
+                }
+                $scope.beans.push(newItem);
             } else {
                 var o = angular.extend({}, bean);
                 o.code = null;

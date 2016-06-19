@@ -48,6 +48,18 @@ public class BuildingBo implements BO {
     @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
     private String propertyName;
 
+    @Condition
+    private String masterId;
+
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(String masterId) {
+        this.masterId = masterId;
+    }
+
     public String getName() {
         return name;
     }

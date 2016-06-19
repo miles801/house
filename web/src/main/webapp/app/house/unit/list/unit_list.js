@@ -93,6 +93,13 @@
             }
         };
 
+        $scope.typeValid = {
+            validateMsg: '格式必须是:x室x厅x厨x卫这样的数据，例如：3-2-1-2',
+            validateFn: function (value) {
+                return /\d-\d-\d-\d/g.test(value);
+            }
+        };
+
         // 更新
         $scope.save = function (bean, form) {
             var promise;

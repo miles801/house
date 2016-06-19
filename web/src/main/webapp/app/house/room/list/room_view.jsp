@@ -74,6 +74,17 @@
                                 <select ng-model="condition.orient" class="w150"
                                         ng-options="foo.value as foo.name for foo in orient"></select>
                             </div>
+                            <div class="item w240">
+                                <div class="form-label w80">
+                                    <label>户型:</label>
+                                </div>
+                                <div class="w150">
+                                    <input type="number" ng-model="condition.type1" style="width: 60px;float: left;"
+                                           placeholder="室"/>
+                                    <input type="number" ng-model="condition.type2"
+                                           style="width: 60px;margin-left: 10px;float: left;" placeholder="厅"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -100,6 +111,7 @@
                                 <td>单元</td>
                                 <td>楼层</td>
                                 <td>门牌号</td>
+                                <td>户型</td>
                                 <td>面积</td>
                                 <td>房屋现状</td>
                                 <td>业主姓名</td>
@@ -120,6 +132,7 @@
                                 <td bo-text="foo.unitCode"></td>
                                 <td bo-text="foo.floor"></td>
                                 <td bo-text="foo.code"></td>
+                                <td bo-text="foo.type1+'-'+foo.type2+'-'+foo.type3+'-'+foo.type4"></td>
                                 <td bo-text="foo.square"></td>
                                 <td bo-text="foo.houseUseTypeName"></td>
                                 <td bo-text="foo.customerName"></td>
