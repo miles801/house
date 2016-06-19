@@ -18,6 +18,9 @@
             // 更新
             update: {method: 'POST', params: {method: 'update'}, isArray: false},
 
+            // 添加客户
+            addCustomer: {method: 'POST', params: {method: 'customer', roomId: '@roomId'}, isArray: false},
+
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
 

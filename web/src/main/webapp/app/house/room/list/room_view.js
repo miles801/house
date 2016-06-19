@@ -50,5 +50,20 @@
         };
 
 
+        $scope.update = function (id) {
+            CommonUtils.addTab({
+                title: '录入房屋',
+                url: 'house/room/modify?id=' + id,
+                onUpdate: $scope.query
+            });
+        };
+
+        $scope.addCustomer = function (id, customerId) {
+            CommonUtils.addTab({
+                title: '业主录入',
+                url: 'house/customer/add?id=' + customerId + '&roomId=' + id,
+                onUpdate: $scope.query
+            });
+        };
     });
 })(window, angular, jQuery);

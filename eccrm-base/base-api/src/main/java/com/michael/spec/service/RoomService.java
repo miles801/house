@@ -1,6 +1,7 @@
 package com.michael.spec.service;
 
 import com.michael.spec.bo.RoomBo;
+import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.vo.RoomVo;
@@ -28,6 +29,13 @@ public interface RoomService {
      */
     void setRoomInfo(Room room);
 
+    /**
+     * 添加客户
+     *
+     * @param id       房屋ID
+     * @param customer 客户信息
+     */
+    void addCustomer(String id, Customer customer);
 
     /**
      * 分页查询,返回RoomView的集合

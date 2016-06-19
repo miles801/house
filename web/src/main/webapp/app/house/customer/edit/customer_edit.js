@@ -4,14 +4,16 @@
 (function (window, angular, $) {
     var app = angular.module('house.customer.edit', [
         'house.customer',
+        'house.room',
         'eccrm.angular',
         'eccrm.angularstrap'
     ]);
 
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam, RoomService, CustomerModal) {
 
         var pageType = $('#pageType').val();
         var id = $('#id').val();
+        var roomId = $('#roomId').val();
 
         $scope.back = CommonUtils.back;
 
@@ -36,17 +38,28 @@
             $scope.money.unshift({name: '请选择...'});
         });
         // 保存
-        $scope.save = function (createNew) {
-            var promise = CustomerService.save($scope.beans, function (data) {
-                AlertFactory.success('保存成功!');
-                CommonUtils.addTab('update');
-                if (createNew === true) {
-                    $scope.beans = {};
-                } else {
+        $scope.save = function () {
+            var promise;
+            if (roomId) {
+                $scope.beans.roomId = roomId;
+                promise = RoomService.addCustomer($scope.beans, function () {
+                    AlertFactory.success('保存成功!');
+                    CommonUtils.addTab('update');
                     $scope.form.$setValidity('committed', false);
                     CommonUtils.delay($scope.back, 2000);
-                }
-            });
+                });
+            } else {
+                promise = CustomerService.save($scope.beans, function (data) {
+                    AlertFactory.success('保存成功!');
+                    CommonUtils.addTab('update');
+                    if (createNew === true) {
+                        $scope.beans = {};
+                    } else {
+                        $scope.form.$setValidity('committed', false);
+                        CommonUtils.delay($scope.back, 2000);
+                    }
+                });
+            }
             CommonUtils.loading(promise, '保存中...');
         };
 
@@ -66,6 +79,12 @@
             CommonUtils.loading(promise, '更新中...');
         };
 
+        $scope.pickCustomer = function () {
+            CustomerModal.pick({}, function (o) {
+                $scope.beans = o;
+            });
+        };
+
         // 加载数据
         $scope.load = function (id) {
             var promise = CustomerService.get({id: id}, function (data) {
@@ -77,6 +96,9 @@
 
         if (pageType == 'add') {
             $scope.beans = {};
+            if (roomId && id) {
+                $scope.load(id);
+            }
         } else if (pageType == 'modify') {
             $scope.load(id);
         } else if (pageType == 'detail') {

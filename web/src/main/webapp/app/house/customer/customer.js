@@ -70,4 +70,64 @@
         };
     });
 
+    app.service('CustomerModal', ['$modal', 'CommonUtils', 'CustomerService', 'AlertFactory',
+        function ($modal, CommonUtils, CustomerService, AlertFactory) {
+            return {
+                /**
+                 * 选择一个客户
+                 * @param options 配置项
+                 * @param callback 回调
+                 */
+                pick: function (options, callback) {
+                    var modal = $modal({
+                        template: CommonUtils.contextPathURL('/app/house/customer/template/modal-customer.ftl.html'),
+                        backdrop: 'static'
+                    });
+                    var $scope = modal.$scope;
+                    options = options || {};
+                    $scope.condition = angular.extend({}, options.condition);
+                    callback = callback || options.callback;
+
+                    // 分页对象
+                    $scope.pager = {
+                        limit: 5,
+                        fetch: function () {
+                            return CommonUtils.promise(function (defer) {
+                                var param = angular.extend({status: 'ACTIVE'}, $scope.condition, options.condition, {
+                                    start: $scope.pager.start,
+                                    limit: $scope.pager.limit
+                                });
+                                var promise = CustomerService.pageQuery(param, function (data) {
+                                    data = data.data || {};
+                                    $scope.beans = data;
+                                    defer.resolve(data.total);
+                                });
+                                CommonUtils.loading(promise, '加载中...');
+                            });
+                        },
+                        finishInit: function () {
+                            this.query();
+                        }
+                    };
+
+                    // 清空查询条件
+                    $scope.clear = function () {
+                        $scope.condition = {};
+                    };
+
+                    // 查询
+                    $scope.query = function () {
+                        $scope.pager.query();
+                    };
+
+                    // 点击确认
+                    $scope.confirm = function () {
+                        if (angular.isFunction(callback)) {
+                            callback.call($scope, $scope.selected);
+                            modal.hide();
+                        }
+                    }
+                }
+            }
+        }]);
 })(angular);

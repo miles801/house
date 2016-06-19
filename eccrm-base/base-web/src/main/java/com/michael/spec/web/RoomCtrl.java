@@ -1,6 +1,7 @@
 package com.michael.spec.web;
 
 import com.michael.spec.bo.RoomBo;
+import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.service.RoomService;
@@ -52,7 +53,7 @@ public class RoomCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
-        return "base/room/edit/room_edit";
+        return "house/room/list/room_edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -83,6 +84,13 @@ public class RoomCtrl extends BaseController {
         RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);
         PageVo pageVo = roomService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/customer", params = "roomId", method = RequestMethod.POST)
+    public void addCustomer(String roomId, HttpServletRequest request, HttpServletResponse response) {
+        Customer customer = GsonUtils.wrapDataToEntity(request, Customer.class);
+        roomService.addCustomer(roomId, customer);
     }
 
     @ResponseBody

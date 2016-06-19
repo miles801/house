@@ -100,6 +100,13 @@ public class RoomView {
     @Column
     private String unitCode;
 
+    @Column
+    private String cusName;
+    @Column
+    private String cusPhone;
+    @Column
+    private String cusWechat;
+
     // ===============  数据字典   ===================
 
     @Transient
@@ -114,6 +121,30 @@ public class RoomView {
     @Transient
     @ApiField("朝向名称")
     private String orientName;
+
+    public String getCusName() {
+        return cusName;
+    }
+
+    public void setCusName(String cusName) {
+        this.cusName = cusName;
+    }
+
+    public String getCusPhone() {
+        return cusPhone;
+    }
+
+    public void setCusPhone(String cusPhone) {
+        this.cusPhone = cusPhone;
+    }
+
+    public String getCusWechat() {
+        return cusWechat;
+    }
+
+    public void setCusWechat(String cusWechat) {
+        this.cusWechat = cusWechat;
+    }
 
     public String getRoomKey() {
         return roomKey;

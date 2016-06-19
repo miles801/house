@@ -32,10 +32,6 @@
                     <button type="button" class="btn btn-green btn-min" ng-click="save()" ng-disabled="form.$invalid">
                         <span class="glyphicons disk_save"></span> 保存
                     </button>
-                        <button type="button" class="btn btn-green btn-min" ng-click="save(true)"
-                                ng-disabled="form.$invalid">
-                            <span class="glyphicons disk_open"></span> 保存并新建
-                        </button>
                     </c:if>
                     <c:if test="${pageType eq 'modify'}">
                     <button type="button" class="btn btn-green btn-min" ng-click="update()" ng-disabled="form.$invalid">
@@ -52,13 +48,24 @@
                 <form name="form" class="form-horizontal" role="form">
                     <div style="display: none;">
                         <input type="hidden" id="pageType" value="${pageType}"/>
+                        <input type="hidden" id="roomId" value="${roomId}"/>
                         <input type="hidden" id="id" value="${id}"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
                             <label>业主编号:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.code" placeholder="自动生成" readonly/>
+                        <c:if test="${roomId ne null}">
+                            <div class="col-2-half">
+                                <input class="col-12" type="text" ng-model="beans.code" placeholder="点击选择客户或手动录入"
+                                       readonly ng-click="pickCustomer();"/>
+                                <span class="add-on"><i class="icons icon user"></i></span>
+                            </div>
+                        </c:if>
+                        <c:if test="${roomId eq null}">
+                            <input class="col-2-half" type="text" ng-model="beans.code" placeholder="自动生成" readonly/>
+                        </c:if>
+
                         <div class="form-label col-1-half">
                             <label>业主姓名:</label>
                         </div>
@@ -210,5 +217,6 @@
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/customer.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/edit/customer_edit.js"></script>
 </html>

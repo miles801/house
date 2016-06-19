@@ -4,17 +4,22 @@ import com.michael.pinyin.SimplePinYin;
 import com.michael.pinyin.StandardStrategy;
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.BuildingDao;
+import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Building;
+import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
+import com.michael.spec.service.CustomerService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.service.RoomService;
 import com.michael.spec.vo.RoomVo;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
+import com.ycrl.utils.string.StringUtils;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -33,6 +38,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Resource
     private BuildingDao buildingDao;
+
+    @Resource
+    private CustomerDao customerDao;
 
     @Override
     public String save(Room room) {
@@ -64,6 +72,21 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     public void update(Room room) {
         ValidatorUtils.validate(room);
         roomDao.update(room);
+    }
+
+    @Override
+    public void addCustomer(String id, Customer customer) {
+        Assert.hasText(id, "操作失败!ID不能为空!");
+        Assert.notNull(customer, "操作失败!客户信息不能为空!");
+        String customerId = customer.getId();
+        if (StringUtils.isEmpty(customerId)) {
+            customerId = SystemContainer.getInstance().getBean(CustomerService.class).save(customer);
+        } else {
+            customerDao.update(customer);
+        }
+        Room room = roomDao.findById(id);
+        Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
+        room.setCustomerId(customerId);
     }
 
     @Override

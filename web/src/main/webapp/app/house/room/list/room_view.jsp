@@ -123,7 +123,7 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.total">
-                                <td colspan="13" class="text-center">无房屋信息!</td>
+                                <td colspan="14" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td bo-text="foo.roomKey"></td>
@@ -135,12 +135,13 @@
                                 <td bo-text="foo.type1+'-'+foo.type2+'-'+foo.type3+'-'+foo.type4"></td>
                                 <td bo-text="foo.square"></td>
                                 <td bo-text="foo.houseUseTypeName"></td>
-                                <td bo-text="foo.customerName"></td>
-                                <td bo-text="foo.cusMobile"></td>
+                                <td bo-text="foo.cusName"></td>
+                                <td bo-text="foo.cusPhone"></td>
                                 <td bo-text="foo.cusWechat"></td>
                                 <td bo-text="foo.statusName"></td>
                                 <td>
-                                    <a class="btn-op blue">录入</a>
+                                    <a class="btn-op blue" ng-click="update(foo.id);">房屋录入</a>
+                                    <a class="btn-op yellow" ng-click="addCustomer(foo.id,foo.customerId);">业主录入</a>
                                 </td>
                             </tr>
                             </tbody>
