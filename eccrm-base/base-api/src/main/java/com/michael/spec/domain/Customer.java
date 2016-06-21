@@ -52,13 +52,18 @@ public class Customer extends CommonDomain {
     private String age;
     @Column(length = 40)
     private String duty;
+    @ApiField("工作单位")
     @Column(length = 100)
     private String company;
 
+    @ApiField("教育程度")
     @Column(length = 40)
     private String education;
+
+    @ApiField("财产规模")
     @Column(length = 40)
     private String money;
+    @ApiField("婚姻状况")
     @Column(length = 40)
     private String marriage;
     @Column(length = 40)
@@ -69,8 +74,10 @@ public class Customer extends CommonDomain {
     private String carNo;
     @Column(length = 40)
     private String carType;
+    @ApiField("家庭人口")
     @Column
     private Integer familyCounts;
+    @ApiField("备注")
     @Column(length = 1000)
     private String description;
     @Column(length = 100)

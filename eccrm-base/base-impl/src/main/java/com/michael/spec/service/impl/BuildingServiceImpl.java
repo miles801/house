@@ -69,6 +69,7 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
     public BuildingVo findById(String id) {
         Building building = buildingDao.findById(id);
         return BeanWrapBuilder.newInstance()
+                .setCallback(this)
                 .wrap(building, BuildingVo.class);
     }
 

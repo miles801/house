@@ -4,12 +4,15 @@
 (function (window, angular, $) {
     var app = angular.module('house.room.detail', [
         'house.room',
+        'house.customer',
         'house.roomStar',
+        'house.roomNews',
         'eccrm.angular',
         'eccrm.angularstrap'
     ]);
 
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService, RoomStarService) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService,
+                                     RoomStarService, RoomNewsService, RoomNewsModal, CustomerService) {
 
         var id = $('#id').val();
 
@@ -53,12 +56,13 @@
                 url: 'house/room/modify?id=' + id,
                 onUpdate: function () {
                     $scope.load(id);
+                    $scope.loadNews();
                 }
             });
         };
         // 录入跟进
         $scope.addInfo = function (id) {
-            // FIXME 未实现
+            RoomNewsModal.add({roomId: id}, $scope.loadNews);
         };
         // 添加关注
         $scope.star = function (id) {
@@ -73,7 +77,77 @@
             // FIXME 未实现
         };
 
-        $scope.load(id);
+        // 查看小区信息
+        $scope.loadBuilding = function () {
+            var promise = RoomService.building({roomId: id}, function (data) {
+                $scope.building = data.data || {};
+            });
+            CommonUtils.loading(promise);
 
+        };
+        // 查看业主信息
+        $scope.loadCustomer = function () {
+            var promise = RoomService.customer({roomId: id}, function (data) {
+                $scope.customer = data.data || {};
+            });
+            CommonUtils.loading(promise);
+        };
+        $scope.pager = {
+            fetch: function () {
+                var start = this.start;
+                var limit = this.limit;
+                return CommonUtils.promise(function (defer) {
+                    var promise = RoomNewsService.pageQuery({
+                        roomId: id,
+                        start: start,
+                        limit: limit,
+                        orderBy: 'createdDatetime',
+                        reverse: true
+                    }, function (data) {
+                        $scope.news = data.data || {};
+                        defer.resolve($scope.news);
+                    });
+                    CommonUtils.loading(promise);
+                });
+            },
+            finishInit: function () {
+                this.query();
+            }
+        };
+        // 查看最新动态
+        $scope.loadNews = function () {
+            $scope.pager.query();
+        };
+
+        // 变更业主信息
+        $scope.changeCustomer = function (customerId) {
+            CommonUtils.addTab({
+                title: '业主信息',
+                url: 'house/customer/add?id=' + customerId + '&roomId=' + id,
+                onUpdate: function () {
+                    window.location.reload();
+                }
+            })
+        };
+
+        // 申请无效
+        $scope.applyInvalid = function (customerId) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '确定要将该客户申请为无效客户吗?',
+                callback: function () {
+                    var promise = CustomerService.applyInvalid({id: customerId}, function () {
+                        AlertFactory.success('操作成功!页面即将返回!');
+                        CommonUtils.delay($scope.back, 2000);
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
+        //
+        $scope.load(id);
+        $scope.loadBuilding();
+        $scope.loadCustomer();
+        // $scope.loadNews();
     });
 })(window, angular, jQuery);

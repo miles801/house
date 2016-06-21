@@ -15,6 +15,7 @@ import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.string.StringUtils;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
@@ -71,6 +72,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     public CustomerVo findById(String id) {
         Customer customer = customerDao.findById(id);
         return BeanWrapBuilder.newInstance()
+                .setCallback(this)
                 .wrap(customer, CustomerVo.class);
     }
 
@@ -80,6 +82,14 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         for (String id : ids) {
             customerDao.deleteById(id);
         }
+    }
+
+    @Override
+    public void applyInvalid(String id) {
+        Assert.hasText(id, "申请失败!客户ID不能为空!");
+        Customer customer = customerDao.findById(id);
+        Assert.notNull(customer, "申请失败!客户不存在，请刷新后重试!");
+        customer.setStatus(Room.STATUS_APPLY_INVALID);
     }
 
     @Override

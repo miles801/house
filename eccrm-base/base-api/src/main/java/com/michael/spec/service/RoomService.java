@@ -4,6 +4,8 @@ import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
+import com.michael.spec.vo.BuildingVo;
+import com.michael.spec.vo.CustomerVo;
 import com.ycrl.core.pager.PageVo;
 
 import java.util.List;
@@ -52,4 +54,20 @@ public interface RoomService {
     void deleteByIds(String[] ids);
 
     List<RoomView> query(RoomBo bo);
+
+    /**
+     * 获取房屋所属的客户
+     *
+     * @param roomId 房屋ID
+     * @return 客户信息
+     */
+    CustomerVo getCustomer(String roomId);
+
+    /**
+     * 获取房屋所属的小区信息
+     *
+     * @param roomId 房屋ID
+     * @return 小区信息
+     */
+    BuildingVo getBuilding(String roomId);
 }

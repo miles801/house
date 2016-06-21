@@ -1,0 +1,39 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title">
+                    <span>跟进</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="form" class="form-horizontal">
+                    <div class="row">
+                        <div class="form-label col-3">
+                            <label validate-error="form.type">跟进方式:</label>
+                        </div>
+                        <select ng-model="beans.type" class="col-6"
+                                ng-options="foo.value as foo.name for foo in types"
+                                name="type" validate validate-required></select>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-label col-3">
+                            <label validate-error="form.content">跟进信息:</label>
+                        </div>
+                        <textarea ng-model="beans.content" class="col-6" rows="6"
+                                  maxlength="500" name="content" validate validate-required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-primary" ng-disabled="form.$invalid"
+                        ng-click="save();">保存
+                </button>
+                <button type="button" class="btn btn-default" ng-click="$hide()">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+

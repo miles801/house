@@ -18,6 +18,9 @@
             // 更新
             update: {method: 'POST', params: {method: 'update'}, isArray: false},
 
+            // 申请无效
+            applyInvalid: {method: 'POST', params: {method: 'applyInvalid', id: "@id"}, isArray: false},
+
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
 

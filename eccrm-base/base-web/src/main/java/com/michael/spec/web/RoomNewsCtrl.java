@@ -1,12 +1,9 @@
 package com.michael.spec.web;
 
-import com.michael.spec.bo.RoomBo;
-import com.michael.spec.domain.Customer;
-import com.michael.spec.domain.Room;
-import com.michael.spec.domain.RoomView;
-import com.michael.spec.service.RoomService;
-import com.michael.spec.vo.BuildingVo;
-import com.michael.spec.vo.CustomerVo;
+import com.michael.spec.bo.RoomNewsBo;
+import com.michael.spec.domain.RoomNews;
+import com.michael.spec.service.RoomNewsService;
+import com.michael.spec.vo.RoomNewsVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
@@ -20,33 +17,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * @author Michael
  */
 @Controller
-@RequestMapping(value = {"/house/room"})
-public class RoomCtrl extends BaseController {
+@RequestMapping(value = {"/house/roomNews"})
+public class RoomNewsCtrl extends BaseController {
     @Resource
-    private RoomService roomService;
+    private RoomNewsService roomNewsService;
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String toList() {
-        return "base/room/list/room_list";
+        return "base/roomNews/list/roomNews_list";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAdd(HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.ADD);
-        return "base/room/edit/room_edit";
+        return "base/roomNews/edit/roomNews_edit";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     public void save(HttpServletRequest request, HttpServletResponse response) {
-        Room room = GsonUtils.wrapDataToEntity(request, Room.class);
-        roomService.save(room);
+        RoomNews roomNews = GsonUtils.wrapDataToEntity(request, RoomNews.class);
+        roomNewsService.save(roomNews);
         GsonUtils.printSuccess(response);
     }
 
@@ -54,14 +50,14 @@ public class RoomCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
-        return "house/room/list/room_edit";
+        return "base/roomNews/edit/roomNews_edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     public void update(HttpServletRequest request, HttpServletResponse response) {
-        Room room = GsonUtils.wrapDataToEntity(request, Room.class);
-        roomService.update(room);
+        RoomNews roomNews = GsonUtils.wrapDataToEntity(request, RoomNews.class);
+        roomNewsService.update(roomNews);
         GsonUtils.printSuccess(response);
     }
 
@@ -69,62 +65,29 @@ public class RoomCtrl extends BaseController {
     public String toDetail(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);
         request.setAttribute("id", id);
-        return "base/room/edit/room_edit";
+        return "base/roomNews/edit/roomNews_edit";
     }
 
     @ResponseBody
     @RequestMapping(value = "/get", params = {"id"}, method = RequestMethod.GET)
     public void findById(@RequestParam String id, HttpServletResponse response) {
-        RoomView vo = roomService.findById(id);
+        RoomNewsVo vo = roomNewsService.findById(id);
         GsonUtils.printData(response, vo);
     }
 
     @ResponseBody
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
-        RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);
-        PageVo pageVo = roomService.pageQuery(bo);
+        RoomNewsBo bo = GsonUtils.wrapDataToEntity(request, RoomNewsBo.class);
+        PageVo pageVo = roomNewsService.pageQuery(bo);
         GsonUtils.printData(response, pageVo);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/customer", params = "roomId", method = RequestMethod.POST)
-    public void addCustomer(String roomId, HttpServletRequest request, HttpServletResponse response) {
-        Customer customer = GsonUtils.wrapDataToEntity(request, Customer.class);
-        roomService.addCustomer(roomId, customer);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/customer", params = "roomId", method = RequestMethod.GET)
-    public void getCustomer(String roomId, HttpServletRequest request, HttpServletResponse response) {
-        CustomerVo customerVo = roomService.getCustomer(roomId);
-        GsonUtils.printData(response, customerVo);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/building", params = "roomId", method = RequestMethod.GET)
-    public void getBuilding(String roomId, HttpServletRequest request, HttpServletResponse response) {
-        BuildingVo vo = roomService.getBuilding(roomId);
-        GsonUtils.printData(response, vo);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/query", params = "unitId", method = RequestMethod.POST)
-    public void query(String unitId, HttpServletRequest request, HttpServletResponse response) {
-        RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);
-        if (bo == null) {
-            bo = new RoomBo();
-        }
-        bo.setUnitId(unitId);
-        List<RoomView> data = roomService.query(bo);
-        GsonUtils.printData(response, data);
     }
 
     @ResponseBody
     @RequestMapping(value = "/delete", params = {"ids"}, method = RequestMethod.DELETE)
     public void deleteByIds(@RequestParam String ids, HttpServletResponse response) {
         String[] idArr = ids.split(",");
-        roomService.deleteByIds(idArr);
+        roomNewsService.deleteByIds(idArr);
         GsonUtils.printSuccess(response);
     }
 

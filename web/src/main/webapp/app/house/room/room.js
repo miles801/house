@@ -21,6 +21,12 @@
             // 添加客户
             addCustomer: {method: 'POST', params: {method: 'customer', roomId: '@roomId'}, isArray: false},
 
+            // 查询房屋的所属客户
+            customer: {method: 'GET', params: {method: 'customer', roomId: '@roomId'}, isArray: false},
+            
+            // 查询房屋的所属小区
+            building: {method: 'GET', params: {method: 'building', roomId: '@roomId'}, isArray: false},
+
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
 

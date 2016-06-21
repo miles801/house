@@ -6,13 +6,10 @@ import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.dao.RoomDao;
-import com.michael.spec.domain.Building;
-import com.michael.spec.domain.Customer;
-import com.michael.spec.domain.Room;
-import com.michael.spec.domain.RoomView;
-import com.michael.spec.service.CustomerService;
-import com.michael.spec.service.HouseParams;
-import com.michael.spec.service.RoomService;
+import com.michael.spec.domain.*;
+import com.michael.spec.service.*;
+import com.michael.spec.vo.BuildingVo;
+import com.michael.spec.vo.CustomerVo;
 import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapCallback;
@@ -20,6 +17,7 @@ import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.string.StringUtils;
 import eccrm.base.parameter.service.ParameterContainer;
+import eccrm.utils.BeanCopyUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -70,21 +68,74 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public void update(Room room) {
         ValidatorUtils.validate(room);
-        roomDao.update(room);
+        String id = room.getId();
+        room.setId(null);
+        Room origin = roomDao.findRoomById(id);
+        Assert.notNull(origin, "更新失败!房屋不存在!请刷新后重试!");
+        RoomNews news = new RoomNews();
+        news.setRoomId(id);
+        StringBuilder builder = new StringBuilder();
+        String template = "<span style=\"margin:0 15px;\">--></span><span style=\"font-weight:700;color:#ff0000;\">";
+        if (!StringUtils.equals(origin.getType1() + origin.getType2() + origin.getType3() + origin.getType4(), room.getType1() + room.getType2() + room.getType3() + room.getType4())) {
+            builder.append("户型：").append(origin.getType1()).append("-").append(origin.getType2()).append("-").append(origin.getType3()).append("-").append(origin.getType4())
+                    .append(template)
+                    .append(room.getType1()).append("-").append(room.getType2()).append("-").append(room.getType3()).append("-").append(room.getType4())
+                    .append("</spa><br/>");
+        }
+        ParameterContainer container = ParameterContainer.getInstance();
+        if (!StringUtils.equals(origin.getOrient(), room.getOrient())) {
+            builder.append("朝向：").append(container.getBusinessName(HouseParams.ORIENT, origin.getOrient()))
+                    .append(template)
+                    .append(container.getBusinessName(HouseParams.ORIENT, room.getOrient()))
+                    .append("</spa><br/>");
+        }
+        if (!StringUtils.equals(origin.getHouseUseType(), room.getHouseUseType())) {
+            builder.append("房屋现状：").append(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, origin.getHouseUseType()))
+                    .append(template)
+                    .append(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, room.getHouseUseType()))
+                    .append("</spa><br/>");
+        }
+        if (!StringUtils.equals(origin.getSquare() + "", room.getSquare() + "")) {
+            builder.append("面积：").append(origin.getSquare())
+                    .append(template)
+                    .append(room.getSquare())
+                    .append("</spa><br/>");
+        }
+        news.setContent(builder.toString());
+        SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
+        BeanCopyUtils.copyPropertiesExclude(room, origin, new String[]{"id"});
     }
 
     @Override
     public void addCustomer(String id, Customer customer) {
         Assert.hasText(id, "操作失败!ID不能为空!");
         Assert.notNull(customer, "操作失败!客户信息不能为空!");
+        RoomNewsService roomNewsService = SystemContainer.getInstance().getBean(RoomNewsService.class);
+        CustomerService customerService = SystemContainer.getInstance().getBean(CustomerService.class);
         String customerId = customer.getId();
         if (StringUtils.isEmpty(customerId)) {
             customerId = SystemContainer.getInstance().getBean(CustomerService.class).save(customer);
         } else {
-            customerDao.update(customer);
+            customerService.update(customer);
         }
         Room room = roomDao.findRoomById(id);
         Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
+
+        // 设置变更信息（添加到最新动态）
+        String originCustomerId = room.getCustomerId();
+        RoomNews news = new RoomNews();
+        news.setRoomId(id);
+        if (StringUtils.isEmpty(originCustomerId)) {
+            news.setContent(String.format("添加业主：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
+        } else if (!StringUtils.equals(originCustomerId, customerId)) {
+            Customer originCustomer = customerDao.findById(originCustomerId);
+            news.setContent(String.format("变更业主：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", originCustomer != null ? originCustomer.getName() : "", customer.getName()));
+        } else {
+            news.setContent("修改业主信息");
+        }
+
+        roomNewsService.save(news);
+
         room.setCustomerId(customerId);
     }
 
@@ -130,6 +181,30 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             wrapParamName(roomView);
         }
         return roomViews;
+    }
+
+    @Override
+    public CustomerVo getCustomer(String roomId) {
+        Assert.hasText(roomId, "查询失败!房屋ID不能为空!");
+        Room room = roomDao.findRoomById(roomId);
+        Assert.notNull(room, "查询失败!房屋不存在!");
+        String customerId = room.getCustomerId();
+        if (StringUtils.isEmpty(customerId)) {
+            return null;
+        }
+        return SystemContainer.getInstance().getBean(CustomerService.class).findById(customerId);
+    }
+
+    @Override
+    public BuildingVo getBuilding(String roomId) {
+        Assert.hasText(roomId, "查询失败!房屋ID不能为空!");
+        Room room = roomDao.findRoomById(roomId);
+        Assert.notNull(room, "查询失败!房屋不存在!");
+        String buildingId = room.getBuildingId();
+        if (StringUtils.isEmpty(buildingId)) {
+            return null;
+        }
+        return SystemContainer.getInstance().getBean(BuildingService.class).findById(buildingId);
     }
 
     private void wrapParamName(RoomView roomView) {

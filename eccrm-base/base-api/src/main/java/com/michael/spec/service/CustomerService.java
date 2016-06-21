@@ -35,4 +35,10 @@ public interface CustomerService {
      */
     void deleteByIds(String[] ids);
 
+    /**
+     * 申请为无效
+     *
+     * @param id 客户ID
+     */
+    void applyInvalid(String id);
 }

@@ -79,6 +79,13 @@ public class CustomerCtrl extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/applyInvalid", params = {"id"}, method = RequestMethod.POST)
+    public void applyInvalid(@RequestParam String id, HttpServletResponse response) {
+        customerService.applyInvalid(id);
+        GsonUtils.printSuccess(response);
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
         CustomerBo bo = GsonUtils.wrapDataToEntity(request, CustomerBo.class);
