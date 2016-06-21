@@ -4,11 +4,12 @@
 (function (window, angular, $) {
     var app = angular.module('house.room.detail', [
         'house.room',
+        'house.roomStar',
         'eccrm.angular',
         'eccrm.angularstrap'
     ]);
 
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService, RoomStarService) {
 
         var id = $('#id').val();
 
@@ -60,8 +61,11 @@
             // FIXME 未实现
         };
         // 添加关注
-        $scope.star = function () {
-            // FIXME 未实现
+        $scope.star = function (id) {
+            var promise = RoomStarService.star({roomId: id}, function () {
+                AlertFactory.success('关注成功!');
+            });
+            CommonUtils.loading(promise);
         };
 
         // 查看成交记录

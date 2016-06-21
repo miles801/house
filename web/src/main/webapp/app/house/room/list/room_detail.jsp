@@ -235,5 +235,6 @@
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/room/roomStar.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/list/room_detail.js"></script>
 </html>
