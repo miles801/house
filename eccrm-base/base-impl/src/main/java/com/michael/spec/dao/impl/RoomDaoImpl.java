@@ -79,9 +79,15 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
     }
 
     @Override
-    public Room findById(String id) {
+    public Room findRoomById(String id) {
         Assert.hasText(id, "ID不能为空!");
         return (Room) getSession().get(Room.class, id);
+    }
+
+    @Override
+    public RoomView findById(String id) {
+        Assert.hasText(id, "ID不能为空!");
+        return (RoomView) getSession().get(RoomView.class, id);
     }
 
     private void initCriteria(Criteria criteria, RoomBo bo) {

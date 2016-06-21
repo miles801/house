@@ -15,7 +15,6 @@ import com.michael.spec.service.HouseParams;
 import com.michael.spec.service.RoomService;
 import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.SystemContainer;
-import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
@@ -84,7 +83,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         } else {
             customerDao.update(customer);
         }
-        Room room = roomDao.findById(id);
+        Room room = roomDao.findRoomById(id);
         Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
         room.setCustomerId(customerId);
     }
@@ -100,13 +99,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         Long total = roomDao.getTotal(bo);
         vo.setTotal(total);
         if (total == null || total == 0) return vo;
-        ParameterContainer container = ParameterContainer.getInstance();
         List<RoomView> roomViews = roomDao.query(bo);
         for (RoomView roomView : roomViews) {
-            roomView.setStatusName(container.getSystemName(HouseParams.HOUSE_STATUS, roomView.getStatus()));
-            roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
-            roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
-            roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
+            wrapParamName(roomView);
         }
         vo.setData(roomViews);
         return vo;
@@ -114,10 +109,10 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
 
     @Override
-    public RoomVo findById(String id) {
-        Room room = roomDao.findById(id);
-        return BeanWrapBuilder.newInstance()
-                .wrap(room, RoomVo.class);
+    public RoomView findById(String id) {
+        RoomView roomView = roomDao.findById(id);
+        wrapParamName(roomView);
+        return roomView;
     }
 
     @Override
@@ -131,14 +126,18 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public List<RoomView> query(RoomBo bo) {
         List<RoomView> roomViews = roomDao.query(bo);
-        ParameterContainer container = ParameterContainer.getInstance();
         for (RoomView roomView : roomViews) {
-            roomView.setStatusName(container.getSystemName(HouseParams.HOUSE_STATUS, roomView.getStatus()));
-            roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
-            roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
-            roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
+            wrapParamName(roomView);
         }
         return roomViews;
+    }
+
+    private void wrapParamName(RoomView roomView) {
+        ParameterContainer container = ParameterContainer.getInstance();
+        roomView.setStatusName(container.getSystemName(HouseParams.HOUSE_STATUS, roomView.getStatus()));
+        roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
+        roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
+        roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
     }
 
     @Override

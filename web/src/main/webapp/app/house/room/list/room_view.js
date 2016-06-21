@@ -58,6 +58,13 @@
             });
         };
 
+        $scope.detail = function (id) {
+            CommonUtils.addTab({
+                title: '房屋明细',
+                url: '/app/house/room/list/room_detail.jsp?id=' + id
+            });
+
+        };
         $scope.addCustomer = function (id, customerId) {
             CommonUtils.addTab({
                 title: '业主录入',

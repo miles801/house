@@ -25,7 +25,9 @@ public interface RoomDao {
      */
     Long getTotal(RoomBo bo);
 
-    Room findById(String id);
+    RoomView findById(String id);
+
+    Room findRoomById(String id);
 
     void deleteById(String id);
 

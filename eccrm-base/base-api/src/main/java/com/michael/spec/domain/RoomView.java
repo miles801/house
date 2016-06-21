@@ -106,6 +106,12 @@ public class RoomView {
     private String cusPhone;
     @Column
     private String cusWechat;
+    @Column
+    private String creatorId;
+    @Column
+    private String creatorName;
+    @Column
+    private String createdDatetime;
 
     // ===============  数据字典   ===================
 
@@ -121,6 +127,30 @@ public class RoomView {
     @Transient
     @ApiField("朝向名称")
     private String orientName;
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatedDatetime() {
+        return createdDatetime;
+    }
+
+    public void setCreatedDatetime(String createdDatetime) {
+        this.createdDatetime = createdDatetime;
+    }
 
     public String getCusName() {
         return cusName;

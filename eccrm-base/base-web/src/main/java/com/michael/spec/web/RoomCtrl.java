@@ -5,7 +5,6 @@ import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.service.RoomService;
-import com.michael.spec.vo.RoomVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
@@ -74,7 +73,7 @@ public class RoomCtrl extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/get", params = {"id"}, method = RequestMethod.GET)
     public void findById(@RequestParam String id, HttpServletResponse response) {
-        RoomVo vo = roomService.findById(id);
+        RoomView vo = roomService.findById(id);
         GsonUtils.printData(response, vo);
     }
 

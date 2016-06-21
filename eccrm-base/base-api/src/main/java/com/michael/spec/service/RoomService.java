@@ -4,7 +4,6 @@ import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
-import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.pager.PageVo;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public interface RoomService {
     /**
      * 根据ID查询对象的信息
      */
-    RoomVo findById(String id);
+    RoomView findById(String id);
 
     /**
      * 批量删除
