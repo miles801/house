@@ -4,15 +4,16 @@
 (function (window, angular, $) {
     var app = angular.module('house.room.detail', [
         'house.room',
-        'house.customer',
-        'house.roomStar',
-        'house.roomNews',
+        'house.customer',       // 客户
+        'house.roomStar',       // 关注
+        'house.roomBusiness',   // 交易记录
+        'house.roomNews',       // 最新动态
         'eccrm.angular',
         'eccrm.angularstrap'
     ]);
 
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService,
-                                     RoomStarService, RoomNewsService, RoomNewsModal, CustomerService) {
+                                     RoomStarService, RoomNewsService, RoomNewsModal, CustomerService, RoomBusinessModal) {
 
         var id = $('#id').val();
 
@@ -74,7 +75,7 @@
 
         // 查看成交记录
         $scope.viewBuyLog = function () {
-            // FIXME 未实现
+            RoomBusinessModal.query(id);
         };
 
         // 查看小区信息
@@ -121,6 +122,10 @@
 
         // 变更业主信息
         $scope.changeCustomer = function (customerId) {
+            if (!customerId) {
+                AlertFactory.error('该房屋暂时没有业主!无法变更!');
+                return;
+            }
             CommonUtils.addTab({
                 title: '变更业主',
                 url: 'house/customer/add?id=' + customerId + '&roomId=' + id,

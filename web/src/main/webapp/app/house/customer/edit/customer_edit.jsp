@@ -51,15 +51,49 @@
                         <input type="hidden" id="roomId" value="${roomId}"/>
                         <input type="hidden" id="id" value="${id}"/>
                     </div>
+                    <%-- 变更房主 --%>
+                    <c:if test="${pageType eq 'add' && roomId ne null && id ne null}">
+                        <div class="row">
+                            <div class="form-label col-1-half">
+                                <label>交易时间:</label>
+                            </div>
+                            <div class="col-2-half">
+                                <input type="text" class="col-12" eccrm-my97="{}" ng-model="rb.occurDate" readonly
+                                       validate validate-required placeholder="点击选择时间..."/>
+                                <span class="add-on"><i class="icons icon clock"
+                                                        ng-click="rb.occurDate=null;"></i></span>
+                            </div>
+                            <div class="form-label col-1-half">
+                                <label validate-error="form.businessType">交易类型:</label>
+                            </div>
+                            <select ng-model="rb.type" class="col-2-half" name="businessType"
+                                    ng-options="foo.value as foo.name for foo in businessType"
+                                    validate validate-required>
+                            </select>
+                            <div class="form-label col-1-half">
+                                <label>成交价格:</label>
+                            </div>
+                            <input ng-model="rb.price" class="col-2-half" type="text" validate validate-required
+                                   validate-float
+                                   placeholder="单位是元"/>
+                        </div>
+                        <div class="ycrl split" style="margin-top:15px;"></div>
+                        <h3 class="text-center">新客户信息</h3>
+                    </c:if>
                     <div class="row">
                         <div class="form-label col-1-half">
                             <label>业主编号:</label>
                         </div>
-                        <c:if test="${roomId ne null}">
+                        <c:if test="${roomId ne null && pageType eq 'add'}">
                             <div class="col-2-half">
-                                <input class="col-12" type="text" ng-model="beans.code" placeholder="点击选择客户或手动录入"
-                                       readonly ng-click="pickCustomer();"/>
+                                <input class="col-12" type="text" ng-model="beans.code" readonly
+                                       placeholder="点击选择客户或手动录入" ng-click="pickCustomer();"/>
                                 <span class="add-on"><i class="icons icon user"></i></span>
+                            </div>
+                        </c:if>
+                        <c:if test="${roomId ne null && pageType ne 'add'}">
+                            <div class="col-2-half">
+                                <input class="col-12" type="text" ng-model="beans.code" readonly/>
                             </div>
                         </c:if>
                         <c:if test="${roomId eq null}">

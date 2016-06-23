@@ -1,0 +1,57 @@
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" style="width: 800px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="$hide()">&times;</button>
+                <h4 class="modal-title">
+                    <span>交易记录</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form name="form" class="form-horizontal">
+                    <div class="row float">
+                        <div class="col" style="margin-left: 8px;">
+                            <button type="button" class="btn btn-blue" ng-click="query()">
+                                <span class="glyphicons binoculars"></span>查询
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="table-responsive panel panel-table first-min">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-header">
+                                <tr>
+                                    <td>序号</td>
+                                    <td>交易时间</td>
+                                    <td>交易类型</td>
+                                    <td>卖方</td>
+                                    <td>买方</td>
+                                    <td>成交价格</td>
+                                </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                <tr ng-show="!beans.total">
+                                    <td colspan="6" class="text-center">没有查询到数据！</td>
+                                </tr>
+                                <tr bindonce ng-repeat="foo in beans.data">
+                                    <td bo-text="$index+1"></td>
+                                    <td bo-text="foo.occurDate|eccrmDate"></td>
+                                    <td bo-text="foo.typeName"></td>
+                                    <td bo-text="foo.originCustomerName"></td>
+                                    <td bo-text="foo.newCustomerName"></td>
+                                    <td bo-text="foo.price|number:2"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="list-pagination" eccrm-page="pager" style="z-index: 1;"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -78,6 +78,12 @@
              */
             money: function (callback) {
                 ParameterLoader.loadBusinessParam('MONEY_STAGE', callback);
+            },
+            /**
+             * 交易类型
+             */
+            businessType: function (callback) {
+                ParameterLoader.loadBusinessParam('ROOM_BUSINESS_TYPE', callback);
             }
         };
     });

@@ -15,6 +15,9 @@
         var id = $('#id').val();
         var roomId = $('#roomId').val();
 
+        // 是否为变更业主
+        var isChange = !!(pageType == 'add' && id && roomId);
+        var customerId = id;
         $scope.back = CommonUtils.back;
 
         // 年龄段
@@ -22,6 +25,14 @@
             $scope.age = data;
             $scope.age.unshift({name: '请选择...'});
         });
+        if (isChange) {
+            id = null;  // 将ID置为空
+            // 交易类型
+            CustomerParam.businessType(function (data) {
+                $scope.businessType = data;
+                $scope.businessType.unshift({name: '请选择...'});
+            });
+        }
         // 教育程度
         CustomerParam.education(function (data) {
             $scope.education = data;
@@ -40,9 +51,26 @@
         // 保存
         $scope.save = function () {
             var promise;
-            if (roomId) {
+            if (isChange) {
+                var o = {
+                    roomId: roomId,
+                    customer: $scope.beans,
+                    roomBusiness: $scope.rb
+                };
+                o.roomBusiness.originCustomerId = id;
+                promise = RoomService.addCustomer(o, function () {
+                    AlertFactory.success('保存成功!');
+                    CommonUtils.addTab('update');
+                    $scope.form.$setValidity('committed', false);
+                    CommonUtils.delay($scope.back, 2000);
+                });
+            } else if (roomId) {
                 $scope.beans.roomId = roomId;
-                promise = RoomService.addCustomer($scope.beans, function () {
+                var o = {
+                    roomId: roomId,
+                    customer: $scope.beans
+                };
+                promise = RoomService.addCustomer(o, function () {
                     AlertFactory.success('保存成功!');
                     CommonUtils.addTab('update');
                     $scope.form.$setValidity('committed', false);

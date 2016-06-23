@@ -212,7 +212,7 @@
                                     <span class="w720">{{customer.description}}</span>
                                 </div>
                             </div>
-                            <div class="row text-center" style="clear:both;margin: 10px 0;">
+                            <div class="row text-center" style="clear:both;margin: 10px 0;" ng-if="customer.id">
                                 <a type="button" class="btn btn-blue" ng-click="changeCustomer(customer.id);">
                                     变更业主
                                 </a>
@@ -265,5 +265,6 @@
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/roomStar.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/customer.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/roomNews.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/room/roomBusiness.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/list/room_detail.js"></script>
 </html>
