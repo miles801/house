@@ -131,7 +131,23 @@ public class RoomCtrl extends BaseController {
     }
 
 
-    // 批量将房屋设置为有效
+    // 批量申请新增
+    @ResponseBody
+    @RequestMapping(value = "/batchAdd", params = {"ids"}, method = RequestMethod.POST)
+    public void batchAdd(@RequestParam String ids, HttpServletResponse response) {
+        roomService.batchAdd(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量申请修改
+    @ResponseBody
+    @RequestMapping(value = "/batchModify", params = {"ids"}, method = RequestMethod.POST)
+    public void batchModify(@RequestParam String ids, HttpServletResponse response) {
+        roomService.batchPass(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量同意
     @ResponseBody
     @RequestMapping(value = "/batchPass", params = {"ids"}, method = RequestMethod.POST)
     public void batchPass(@RequestParam String ids, HttpServletResponse response) {
@@ -139,7 +155,7 @@ public class RoomCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
-    // 批量将房屋设置为"未录入“
+    // 批量拒绝
     @ResponseBody
     @RequestMapping(value = "/batchDeny", params = {"ids"}, method = RequestMethod.POST)
     public void batchDeny(@RequestParam String ids, HttpServletResponse response) {

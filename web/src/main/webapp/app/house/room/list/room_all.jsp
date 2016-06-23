@@ -17,7 +17,7 @@
     </script>
 </head>
 <body>
-<div class="main condition-row-2" ng-app="house.room.view" ng-controller="Ctrl">
+<div class="main condition-row-2" ng-app="house.room.all" ng-controller="Ctrl">
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -118,17 +118,14 @@
                                 <td>手机</td>
                                 <td>微信</td>
                                 <td>状态</td>
-                                <td>跟进录入</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.total">
-                                <td colspan="14" class="text-center">无房屋信息!</td>
+                                <td colspan="13" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
-                                <td>
-                                    <a class="cp" ng-click="detail(foo.id)" bo-text="foo.roomKey"></a>
-                                </td>
+                                <td bo-text="foo.roomKey"></td>
                                 <td bo-text="foo.buildingName"></td>
                                 <td bo-text="foo.blockCode"></td>
                                 <td bo-text="foo.unitCode"></td>
@@ -140,16 +137,7 @@
                                 <td bo-text="foo.cusName"></td>
                                 <td bo-text="foo.cusPhone"></td>
                                 <td bo-text="foo.cusWechat"></td>
-                                <td bo-text="foo.statusName">
-                                    <span bo-text="foo.statusName"
-                                          ng-class="{'btn-danger':foo.status=='INACTIVE'}"></span>
-                                </td>
-                                <td class="text-left">
-                                    <a class="btn-op blue" ng-click="update(foo.id);">房屋录入</a>
-                                    <a class="btn-op yellow" ng-click="addCustomer(foo.id,foo.customerId);"
-                                       ng-if="!foo.customerId">业主录入</a>
-                                    <a class="btn-op red" ng-click="applyAdd(foo.id);" ng-if="foo.status=='INACTIVE'">新增申请</a>
-                                </td>
+                                <td bo-text="foo.statusName"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -162,5 +150,5 @@
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/app/house/room/list/room_view.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/room/list/room_all.js"></script>
 </html>

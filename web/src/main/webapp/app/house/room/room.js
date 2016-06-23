@@ -26,9 +26,16 @@
 
             // 查询房屋的所属小区
             building: {method: 'GET', params: {method: 'building', roomId: '@roomId'}, isArray: false},
+            // 申请无效
+            applyInvalid: {method: 'POST', params: {method: 'applyInvalid', ids: "@ids"}, isArray: false},
 
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
+
+            // 批量新增
+            batchAdd: {method: 'POST', params: {method: 'batchAdd', ids: '@ids'}, isArray: false},
+            // 批量修改
+            batchModify: {method: 'POST', params: {method: 'batchModify', ids: '@ids'}, isArray: false},
             // 批量同意
             batchPass: {method: 'POST', params: {method: 'batchPass', ids: '@ids'}, isArray: false},
             // 批量拒绝

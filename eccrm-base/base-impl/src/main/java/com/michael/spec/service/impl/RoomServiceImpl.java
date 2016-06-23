@@ -148,9 +148,35 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         room.setCustomerId(customerId);
     }
 
-    @Override
-    public void setRoomInfo(Room room) {
 
+    @Override
+    public void batchAdd(String[] ids) {
+        Assert.notEmpty(ids, "操作失败!ID不能为空!");
+        for (String id : ids) {
+            Room room = roomDao.findRoomById(id);
+            // 只有“未录入”可以申请为新增
+            if (room != null && Room.STATUS_INACTIVE.equals(room.getStatus())) {
+                room.setStatus(Room.STATUS_APPLY_ADD);
+            }
+        }
+    }
+
+    @Override
+    public void batchModify(String[] ids) {
+        Assert.notEmpty(ids, "操作失败!ID不能为空!");
+        for (String id : ids) {
+            Room room = roomDao.findRoomById(id);
+            if (room == null) {
+                continue;
+            }
+            room.setStatus(Room.STATUS_APPLY_MODIFY);
+        }
+    }
+
+    @Override
+    public void applyInvalid(String[] ids) {
+        Assert.notEmpty(ids, "申请失败!房屋ID不能为空!");
+        roomDao.batchSetStatus(ids, Room.STATUS_APPLY_INVALID);
     }
 
     @Override

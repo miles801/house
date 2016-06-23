@@ -44,7 +44,7 @@
             </div>
             <div class="block-content">
                 <div class="content-wrap">
-                    <div class="row">
+                    <div class="row" style="margin-top:0;">
                         <div class="row">
                             <div class="form-label col-1-half">
                                 <label>楼栋:</label>

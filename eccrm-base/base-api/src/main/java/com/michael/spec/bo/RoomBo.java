@@ -6,6 +6,8 @@ import com.ycrl.core.hibernate.criteria.Condition;
 import com.ycrl.core.hibernate.criteria.LikeModel;
 import com.ycrl.core.hibernate.criteria.MatchModel;
 
+import java.util.List;
+
 /**
  * @author Michael
  */
@@ -70,6 +72,27 @@ public class RoomBo implements BO {
 
     @Condition(matchMode = MatchModel.IN, target = "orient")
     private String orients;
+
+    @Condition(matchMode = MatchModel.IN, target = "status")
+    private List<String> statusInclude;
+    @Condition(matchMode = MatchModel.NOT_IN, target = "status")
+    private List<String> statusExclude;
+
+    public List<String> getStatusInclude() {
+        return statusInclude;
+    }
+
+    public void setStatusInclude(List<String> statusInclude) {
+        this.statusInclude = statusInclude;
+    }
+
+    public List<String> getStatusExclude() {
+        return statusExclude;
+    }
+
+    public void setStatusExclude(List<String> statusExclude) {
+        this.statusExclude = statusExclude;
+    }
 
     public String getType1() {
         return type1;

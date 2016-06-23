@@ -26,10 +26,6 @@ public interface RoomService {
      */
     void update(Room room);
 
-    /**
-     * 设置房屋相关信息
-     */
-    void setRoomInfo(Room room);
 
     /**
      * 添加客户
@@ -72,6 +68,27 @@ public interface RoomService {
      * @return 小区信息
      */
     BuildingVo getBuilding(String roomId);
+
+    /**
+     * 批量新增
+     *
+     * @param ids ID列表
+     */
+    void batchAdd(String[] ids);
+
+    /**
+     * 批量修改
+     *
+     * @param ids ID列表
+     */
+    void batchModify(String[] ids);
+
+    /**
+     * 申请为无效
+     *
+     * @param ids ID列表
+     */
+    void applyInvalid(String[] ids);
 
     /**
      * 批量通过房屋（即将房屋的状态设置为“正常”）
