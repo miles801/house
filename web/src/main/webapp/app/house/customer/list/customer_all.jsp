@@ -55,12 +55,6 @@
                     <span>客户列表</span>
                 </div>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="add();">
-                            <span class="glyphicons plus"></span> 新建
-                        </a>
-                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();">
-                            <span class="glyphicons plus"></span> 导出
-                        </a>
                 </span>
             </div>
             <div class="block-content">
@@ -74,14 +68,12 @@
                                 <td>年龄段</td>
                                 <td>手机</td>
                                 <td>微信</td>
-                                <td>名下房产</td>
                                 <td>状态</td>
-                                <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="8" class="text-center">没有查询到数据！</td>
+                                <td colspan="6" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td title="点击查询明细！" style="cursor: pointer;">
@@ -91,15 +83,7 @@
                                 <td bo-text="foo.ageName"></td>
                                 <td bo-text="foo.phone1|contact:foo.phone2:foo.phone3"></td>
                                 <td bo-text="foo.wechat"></td>
-                                <td bo-test="foo.roomCounts"></td>
                                 <td bo-text="foo.statusName"></td>
-                                <td class="text-left">
-                                    <a class="btn-op blue" ng-click="modify(foo.id);">跟进</a>
-                                    <a class="btn-op yellow" ng-click="applyInvalid(foo.id);"
-                                       ng-if="foo.status=='ACTIVE'">无效申请</a>
-                                    <a class="btn-op yellow" ng-click="applyAdd(foo.id);"
-                                       ng-if="foo.status=='INACTIVE'">新增申请</a>
-                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -112,5 +96,5 @@
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/customer.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/app/house/customer/list/customer_list.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/customer/list/customer_all.js"></script>
 </html>

@@ -5,6 +5,8 @@ import com.ycrl.core.hibernate.criteria.Condition;
 import com.ycrl.core.hibernate.criteria.LikeModel;
 import com.ycrl.core.hibernate.criteria.MatchModel;
 
+import java.util.List;
+
 /**
  * @author Michael
  */
@@ -39,6 +41,37 @@ public class CustomerBo implements BO {
     private String education;
     @Condition
     private String money;
+
+    @Condition
+    private String status;
+    @Condition(matchMode = MatchModel.IN, target = "status")
+    private List<String> statusInclude;
+    @Condition(matchMode = MatchModel.NOT_IN, target = "status")
+    private List<String> statusExclude;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public List<String> getStatusInclude() {
+        return statusInclude;
+    }
+
+    public void setStatusInclude(List<String> statusInclude) {
+        this.statusInclude = statusInclude;
+    }
+
+    public List<String> getStatusExclude() {
+        return statusExclude;
+    }
+
+    public void setStatusExclude(List<String> statusExclude) {
+        this.statusExclude = statusExclude;
+    }
 
     public String getCode() {
         return code;

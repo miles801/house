@@ -9,9 +9,7 @@
         'house.customer'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
-        $scope.condition = {
-            statusInclude: ['INACTIVE', 'ACTIVE']
-        };
+        $scope.condition = {};
 
         //查询数据
         $scope.query = function () {
@@ -57,43 +55,6 @@
                 title: '新增业主管理',
                 url: '/house/customer/add',
                 onUpdate: $scope.query
-            });
-        };
-
-        $scope.applyAdd = function (id) {
-            if (!id) {
-                id = $scope.items.map(function (o) {
-                    return o.id;
-                }).join(',');
-            }
-            ModalFactory.confirm({
-                scope: $scope,
-                content: '是否确定将选中的客户申请为“正常”客户?',
-                callback: function () {
-                    var promise = CustomerService.batchAdd({ids: id}, function () {
-                        AlertFactory.success('操作成功!');
-                        $scope.query();
-                    });
-                    CommonUtils.loading(promise);
-                }
-            });
-        };
-        $scope.applyInvalid = function (id) {
-            if (!id) {
-                id = $scope.items.map(function (o) {
-                    return o.id;
-                }).join(',');
-            }
-            ModalFactory.confirm({
-                scope: $scope,
-                content: '是否确定将选中的客户申请为“无效”客户?',
-                callback: function () {
-                    var promise = CustomerService.applyInvalid({ids: id}, function () {
-                        AlertFactory.success('操作成功!');
-                        $scope.query();
-                    });
-                    CommonUtils.loading(promise);
-                }
             });
         };
 

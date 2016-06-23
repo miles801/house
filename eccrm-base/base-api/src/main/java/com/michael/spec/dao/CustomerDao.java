@@ -46,4 +46,6 @@ public interface CustomerDao {
      * @return 客户
      */
     Customer findByPhone(String phone);
+
+    void batchSetStatus(String[] customerIds, String status);
 }

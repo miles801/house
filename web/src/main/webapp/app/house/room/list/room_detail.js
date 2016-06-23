@@ -122,10 +122,20 @@
         // 变更业主信息
         $scope.changeCustomer = function (customerId) {
             CommonUtils.addTab({
-                title: '业主信息',
+                title: '变更业主',
                 url: 'house/customer/add?id=' + customerId + '&roomId=' + id,
                 onUpdate: function () {
                     window.location.reload();
+                }
+            })
+        };
+        // 修改业主信息
+        $scope.modifyCustomer = function (customerId) {
+            CommonUtils.addTab({
+                title: '修改业主信息',
+                url: 'house/customer/modify?id=' + customerId + '&roomId=' + id,
+                onUpdate: function () {
+                    $scope.loadCustomer();
                 }
             })
         };
@@ -136,7 +146,7 @@
                 scope: $scope,
                 content: '确定要将该客户申请为无效客户吗?',
                 callback: function () {
-                    var promise = CustomerService.applyInvalid({id: customerId}, function () {
+                    var promise = CustomerService.applyInvalid({ids: customerId}, function () {
                         AlertFactory.success('操作成功!页面即将返回!');
                         CommonUtils.delay($scope.back, 2000);
                     });

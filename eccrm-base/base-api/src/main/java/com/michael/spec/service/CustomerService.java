@@ -36,9 +36,53 @@ public interface CustomerService {
     void deleteByIds(String[] ids);
 
     /**
+     * 批量新增
+     *
+     * @param ids 客户ID
+     */
+    void batchAdd(String[] ids);
+
+    /**
+     * 批量修改
+     *
+     * @param ids 客户ID
+     */
+    void batchModify(String[] ids);
+
+    /**
      * 申请为无效
      *
-     * @param id 客户ID
+     * @param ids 客户ID
      */
-    void applyInvalid(String id);
+    void applyInvalid(String[] ids);
+
+    /**
+     * 批量将客户设置为无效
+     *
+     * @param ids 客户ID集合
+     */
+    void batchPassInvalid(String[] ids);
+
+    /**
+     * 给指定客户添加一套房产
+     *
+     * @param customerId 客户ID
+     * @param roomId     房屋ID
+     * @return 客户所拥有的最新的房产数量
+     */
+    Integer addRoom(String customerId, String roomId);
+
+    /**
+     * 批量通过客户（即将客户的状态设置为“正常”）
+     *
+     * @param customerIds 客户ID列表
+     */
+    void batchPass(String[] customerIds);
+
+    /**
+     * 批量不通过（即将客户的状态设置为“未录入”）
+     *
+     * @param customerIds 客户ID列表
+     */
+    void batchDeny(String[] customerIds);
 }

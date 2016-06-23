@@ -1,7 +1,6 @@
 package com.michael.spec.web;
 
 import com.michael.spec.bo.RoomBo;
-import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.service.RoomService;
@@ -12,6 +11,7 @@ import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
 import com.ycrl.utils.gson.GsonUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -90,8 +90,10 @@ public class RoomCtrl extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/customer", params = "roomId", method = RequestMethod.POST)
     public void addCustomer(String roomId, HttpServletRequest request, HttpServletResponse response) {
-        Customer customer = GsonUtils.wrapDataToEntity(request, Customer.class);
-        roomService.addCustomer(roomId, customer);
+        RoomData roomData = GsonUtils.wrapDataToEntity(request, RoomData.class);
+        Assert.notNull(roomData, "操作失败!数据不能为空!");
+        Assert.notNull(roomData.getCustomer(), "操作失败!客户信息不能为空!");
+        roomService.addCustomer(roomId, roomData.getCustomer(), roomData.getRoomBusiness());
     }
 
     @ResponseBody
@@ -128,4 +130,20 @@ public class RoomCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+
+    // 批量将房屋设置为有效
+    @ResponseBody
+    @RequestMapping(value = "/batchPass", params = {"ids"}, method = RequestMethod.POST)
+    public void batchPass(@RequestParam String ids, HttpServletResponse response) {
+        roomService.batchPass(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量将房屋设置为"未录入“
+    @ResponseBody
+    @RequestMapping(value = "/batchDeny", params = {"ids"}, method = RequestMethod.POST)
+    public void batchDeny(@RequestParam String ids, HttpServletResponse response) {
+        roomService.batchDeny(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
 }

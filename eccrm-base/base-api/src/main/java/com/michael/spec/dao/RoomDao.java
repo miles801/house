@@ -52,4 +52,12 @@ public interface RoomDao {
      * @return 编号
      */
     String maxKey(String buildingId);
+
+    /**
+     * 批量设置房屋状态
+     *
+     * @param ids    房屋ID集合
+     * @param status 状态值
+     */
+    void batchSetStatus(String[] ids, String status);
 }

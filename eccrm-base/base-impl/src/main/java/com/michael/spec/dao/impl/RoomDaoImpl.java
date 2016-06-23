@@ -79,6 +79,16 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
     }
 
     @Override
+    public void batchSetStatus(String[] ids, String status) {
+        Assert.hasText("操作失败!状态不能为空!");
+        Assert.notEmpty(ids, "操作失败!房屋ID不能为空!");
+        getSession().createQuery("update " + Room.class.getName() + " r set r.status=? where r.id in(:ids)")
+                .setParameter(0, status)
+                .setParameterList("ids", ids)
+                .executeUpdate();
+    }
+
+    @Override
     public Room findRoomById(String id) {
         Assert.hasText(id, "ID不能为空!");
         return (Room) getSession().get(Room.class, id);

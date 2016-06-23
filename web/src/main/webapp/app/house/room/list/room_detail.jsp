@@ -214,7 +214,11 @@
                             </div>
                             <div class="row text-center" style="clear:both;margin: 10px 0;">
                                 <a type="button" class="btn btn-blue" ng-click="changeCustomer(customer.id);">
-                                    业主信息修改 </a>
+                                    变更业主
+                                </a>
+                                <a type="button" class="btn btn-blue" ng-click="modifyCustomer(customer.id);">
+                                    业主信息修改
+                                </a>
                                 <a type="button" class="btn btn-blue" ng-click="applyInvalid(customer.id);"> 申请无效 </a>
                             </div>
                         </div>

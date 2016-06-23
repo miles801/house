@@ -101,6 +101,10 @@ public class Customer extends CommonDomain {
     @Column(length = 100)
     private String c10;
 
+    @ApiField("房屋套数")
+    @Column
+    private Integer roomCounts;
+
     /**
      * @see com.michael.spec.service.HouseParams#HOUSE_STATUS
      * @see Room
@@ -109,6 +113,14 @@ public class Customer extends CommonDomain {
     @Column(length = 40, nullable = false)
     private String status;
 
+
+    public Integer getRoomCounts() {
+        return roomCounts;
+    }
+
+    public void setRoomCounts(Integer roomCounts) {
+        this.roomCounts = roomCounts;
+    }
 
     public String getStatus() {
         return status;

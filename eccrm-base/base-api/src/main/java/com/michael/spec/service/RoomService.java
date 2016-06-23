@@ -3,6 +3,7 @@ package com.michael.spec.service;
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomBusiness;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.vo.BuildingVo;
 import com.michael.spec.vo.CustomerVo;
@@ -33,10 +34,11 @@ public interface RoomService {
     /**
      * 添加客户
      *
-     * @param id       房屋ID
-     * @param customer 客户信息
+     * @param id           房屋ID
+     * @param customer     客户信息
+     * @param roomBusiness 成交记录
      */
-    void addCustomer(String id, Customer customer);
+    void addCustomer(String id, Customer customer, RoomBusiness roomBusiness);
 
     /**
      * 分页查询,返回RoomView的集合
@@ -70,4 +72,18 @@ public interface RoomService {
      * @return 小区信息
      */
     BuildingVo getBuilding(String roomId);
+
+    /**
+     * 批量通过房屋（即将房屋的状态设置为“正常”）
+     *
+     * @param ids 房屋ID列表
+     */
+    void batchPass(String[] ids);
+
+    /**
+     * 批量不通过（即将房屋的状态设置为“未录入”）
+     *
+     * @param ids 房屋ID列表
+     */
+    void batchDeny(String[] ids);
 }

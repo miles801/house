@@ -82,6 +82,16 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
                 .uniqueResult();
     }
 
+    @Override
+    public void batchSetStatus(String[] customerIds, String status) {
+        Assert.hasText("操作失败!状态不能为空!");
+        Assert.notEmpty(customerIds, "操作失败!客户ID不能为空!");
+        getSession().createQuery("update " + Customer.class.getName() + " c set c.status=? where c.id in(:ids)")
+                .setParameter(0, status)
+                .setParameterList("ids", customerIds)
+                .executeUpdate();
+    }
+
     private void initCriteria(Criteria criteria, CustomerBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         if (bo == null) {

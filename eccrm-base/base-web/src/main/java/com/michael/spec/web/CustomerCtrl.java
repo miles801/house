@@ -3,11 +3,13 @@ package com.michael.spec.web;
 import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.service.CustomerService;
+import com.michael.spec.service.RoomService;
 import com.michael.spec.vo.CustomerVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
 import com.ycrl.utils.gson.GsonUtils;
+import com.ycrl.utils.string.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 public class CustomerCtrl extends BaseController {
     @Resource
     private CustomerService customerService;
+    @Resource
+    private RoomService roomService;
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String toList() {
@@ -53,6 +57,7 @@ public class CustomerCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
+        request.setAttribute("roomId", request.getParameter("roomId"));
         return "house/customer/edit/customer_edit";
     }
 
@@ -60,7 +65,13 @@ public class CustomerCtrl extends BaseController {
     @ResponseBody
     public void update(HttpServletRequest request, HttpServletResponse response) {
         Customer customer = GsonUtils.wrapDataToEntity(request, Customer.class);
-        customerService.update(customer);
+        // 如果传递了房屋ID，则表示更新客户的信息时，同时添加日志，否则只是单纯的更改客户信息
+        String roomId = request.getParameter("roomId");
+        if (StringUtils.isNotEmpty(roomId)) {
+            roomService.addCustomer(roomId, customer, null);
+        } else {
+            customerService.update(customer);
+        }
         GsonUtils.printSuccess(response);
     }
 
@@ -79,11 +90,52 @@ public class CustomerCtrl extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/applyInvalid", params = {"id"}, method = RequestMethod.POST)
-    public void applyInvalid(@RequestParam String id, HttpServletResponse response) {
-        customerService.applyInvalid(id);
+    @RequestMapping(value = "/applyInvalid", params = {"ids"}, method = RequestMethod.POST)
+    public void applyInvalid(@RequestParam String ids, HttpServletResponse response) {
+        customerService.applyInvalid(ids.split(","));
         GsonUtils.printSuccess(response);
     }
+
+    // 批量设置为无效
+    @ResponseBody
+    @RequestMapping(value = "/batchPassInvalid", params = {"ids"}, method = RequestMethod.POST)
+    public void batchPassInvalid(@RequestParam String ids, HttpServletResponse response) {
+        customerService.batchPassInvalid(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量申请添加
+    @ResponseBody
+    @RequestMapping(value = "/batchAdd", params = {"ids"}, method = RequestMethod.POST)
+    public void batchAdd(@RequestParam String ids, HttpServletResponse response) {
+        customerService.batchAdd(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量申请修改
+    @ResponseBody
+    @RequestMapping(value = "/batchModify", params = {"ids"}, method = RequestMethod.POST)
+    public void batchModify(@RequestParam String ids, HttpServletResponse response) {
+        customerService.batchModify(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量同意申请
+    @ResponseBody
+    @RequestMapping(value = "/batchPass", params = {"ids"}, method = RequestMethod.POST)
+    public void batchPass(@RequestParam String ids, HttpServletResponse response) {
+        customerService.batchPass(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量拒绝申请
+    @ResponseBody
+    @RequestMapping(value = "/batchDeny", params = {"ids"}, method = RequestMethod.POST)
+    public void batchDeny(@RequestParam String ids, HttpServletResponse response) {
+        customerService.batchDeny(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)

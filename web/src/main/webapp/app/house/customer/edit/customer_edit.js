@@ -70,6 +70,7 @@
 
         // 更新
         $scope.update = function () {
+            $scope.beans.roomId = roomId || '';
             var promise = CustomerService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
                 $scope.form.$setValidity('committed', false);

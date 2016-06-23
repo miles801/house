@@ -107,14 +107,15 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     }
 
     @Override
-    public void addCustomer(String id, Customer customer) {
+    public void addCustomer(String id, Customer customer, RoomBusiness roomBusiness) {
         Assert.hasText(id, "操作失败!ID不能为空!");
         Assert.notNull(customer, "操作失败!客户信息不能为空!");
-        RoomNewsService roomNewsService = SystemContainer.getInstance().getBean(RoomNewsService.class);
-        CustomerService customerService = SystemContainer.getInstance().getBean(CustomerService.class);
+        SystemContainer beanContainer = SystemContainer.getInstance();
+        RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
+        CustomerService customerService = beanContainer.getBean(CustomerService.class);
         String customerId = customer.getId();
         if (StringUtils.isEmpty(customerId)) {
-            customerId = SystemContainer.getInstance().getBean(CustomerService.class).save(customer);
+            customerId = beanContainer.getBean(CustomerService.class).save(customer);
         } else {
             customerService.update(customer);
         }
@@ -130,6 +131,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         } else if (!StringUtils.equals(originCustomerId, customerId)) {
             Customer originCustomer = customerDao.findById(originCustomerId);
             news.setContent(String.format("变更业主：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", originCustomer != null ? originCustomer.getName() : "", customer.getName()));
+
+            // 保存成交记录
+            Assert.notNull(roomBusiness, "变更业主时成交记录不能为空!");
+            Assert.notNull(roomBusiness.getPrice(), "变更业主时，成交价格不能为空!");
+            roomBusiness.setRoomId(id);
+            roomBusiness.setOriginCustomerId(originCustomerId);
+            roomBusiness.setNewCustomerId(customerId);
+            beanContainer.getBean(RoomBusinessService.class).save(roomBusiness);
         } else {
             news.setContent("修改业主信息");
         }
@@ -142,6 +151,16 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public void setRoomInfo(Room room) {
 
+    }
+
+    @Override
+    public void batchPass(String[] ids) {
+        roomDao.batchSetStatus(ids, Room.STATUS_ACTIVE);
+    }
+
+    @Override
+    public void batchDeny(String[] ids) {
+        roomDao.batchSetStatus(ids, Room.STATUS_INACTIVE);
     }
 
     @Override

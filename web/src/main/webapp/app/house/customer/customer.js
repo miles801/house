@@ -16,13 +16,22 @@
             save: {method: 'POST', params: {method: 'save'}, isArray: false},
 
             // 更新
-            update: {method: 'POST', params: {method: 'update'}, isArray: false},
+            update: {method: 'POST', params: {method: 'update', roomId: '@roomId'}, isArray: false},
 
             // 申请无效
-            applyInvalid: {method: 'POST', params: {method: 'applyInvalid', id: "@id"}, isArray: false},
+            applyInvalid: {method: 'POST', params: {method: 'applyInvalid', ids: "@ids"}, isArray: false},
 
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
+
+            // 批量新增
+            batchAdd: {method: 'POST', params: {method: 'batchAdd', ids: '@ids'}, isArray: false},
+            // 批量修改
+            batchModify: {method: 'POST', params: {method: 'batchModify', ids: '@ids'}, isArray: false},
+            // 批量同意
+            batchPass: {method: 'POST', params: {method: 'batchPass', ids: '@ids'}, isArray: false},
+            // 批量拒绝
+            batchDeny: {method: 'POST', params: {method: 'batchDeny', ids: '@ids'}, isArray: false},
 
             // 分页查询
             pageQuery: {
