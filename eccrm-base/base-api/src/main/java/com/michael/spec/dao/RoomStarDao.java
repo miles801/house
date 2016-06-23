@@ -1,7 +1,8 @@
 package com.michael.spec.dao;
 
-import com.michael.spec.bo.RoomStarBo;
+import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.RoomStar;
+import com.michael.spec.domain.RoomView;
 
 import java.util.List;
 
@@ -17,12 +18,12 @@ public interface RoomStarDao {
     /**
      * 高级查询接口
      */
-    List<RoomStar> query(RoomStarBo bo);
+    List<RoomView> query(RoomBo bo);
 
     /**
      * 查询总记录数
      */
-    Long getTotal(RoomStarBo bo);
+    Long getTotal(RoomBo bo);
 
     RoomStar findById(String id);
 

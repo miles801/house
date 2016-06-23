@@ -1,11 +1,16 @@
 package com.michael.spec.dao.impl;
 
-import com.michael.spec.bo.RoomStarBo;
+import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.RoomStarDao;
 import com.michael.spec.domain.RoomStar;
+import com.michael.spec.domain.RoomView;
 import com.ycrl.core.HibernateDaoHelper;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -31,16 +36,25 @@ public class RoomStarDaoImpl extends HibernateDaoHelper implements RoomStarDao {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<RoomStar> query(RoomStarBo bo) {
-        Criteria criteria = createCriteria(RoomStar.class);
+    public List<RoomView> query(RoomBo bo) {
+        Criteria criteria = createCriteria(RoomView.class);
         initCriteria(criteria, bo);
+        criteria.add(Property.forName("id").in(myStarRoomCriteria()));
         return criteria.list();
     }
 
+    private DetachedCriteria myStarRoomCriteria() {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(RoomStar.class);
+        detachedCriteria.setProjection(Projections.property("roomId"));
+        detachedCriteria.add(Restrictions.eq("empId", SecurityContext.getEmpId()));
+        return detachedCriteria;
+    }
+
     @Override
-    public Long getTotal(RoomStarBo bo) {
-        Criteria criteria = createRowCountsCriteria(RoomStar.class);
+    public Long getTotal(RoomBo bo) {
+        Criteria criteria = createRowCountsCriteria(RoomView.class);
         initCriteria(criteria, bo);
+        criteria.add(Property.forName("id").in(myStarRoomCriteria()));
         return (Long) criteria.uniqueResult();
     }
 
@@ -74,7 +88,7 @@ public class RoomStarDaoImpl extends HibernateDaoHelper implements RoomStarDao {
         return (RoomStar) getSession().get(RoomStar.class, id);
     }
 
-    private void initCriteria(Criteria criteria, RoomStarBo bo) {
+    private void initCriteria(Criteria criteria, RoomBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);
     }

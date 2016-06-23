@@ -18,6 +18,9 @@
             // 取消关注
             cancel: {method: 'POST', params: {method: 'cancel', roomId: '@roomId'}, isArray: false},
 
+            // 判断指定的房屋是否已经关注
+            isStar: {method: 'GET', params: {method: 'isStar', roomId: '@roomId'}, isArray: false},
+
             // 分页查询
             pageQuery: {
                 method: 'POST',

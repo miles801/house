@@ -74,7 +74,8 @@
                     <div class="row text-center" style="margin: 10px 0;">
                         <a type="button" class="btn btn-blue" ng-click="modifyRoom(beans.id);"> 修改房屋信息 </a>
                         <a type="button" class="btn btn-blue" ng-click="addInfo(beans.id);"> 录入跟进 </a>
-                        <a type="button" class="btn btn-blue" ng-click="star(beans.id);"> 添加关注 </a>
+                        <a type="button" class="btn btn-blue" ng-click="star(beans.id);" ng-cloak ng-disabled="isStar">
+                            添加关注 </a>
                         <a type="button" class="btn btn-blue" ng-click="viewBuyLog();"> 查看成交记录 </a>
                     </div>
 

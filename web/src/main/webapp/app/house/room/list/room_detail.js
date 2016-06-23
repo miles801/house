@@ -20,6 +20,12 @@
         $scope.back = CommonUtils.back;
 
 
+        // 该房屋是否已经关注
+        $scope.isStar = false;
+        RoomStarService.isStar({roomId: id}, function (data) {
+            $scope.isStar = data.data || false;
+        });
+
         // 朝向
         RoomParam.orient(function (data) {
             $scope.orients = data || [];
@@ -68,6 +74,7 @@
         // 添加关注
         $scope.star = function (id) {
             var promise = RoomStarService.star({roomId: id}, function () {
+                $scope.isStar = true;
                 AlertFactory.success('关注成功!');
             });
             CommonUtils.loading(promise);

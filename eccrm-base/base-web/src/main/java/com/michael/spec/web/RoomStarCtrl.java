@@ -1,6 +1,6 @@
 package com.michael.spec.web;
 
-import com.michael.spec.bo.RoomStarBo;
+import com.michael.spec.bo.RoomBo;
 import com.michael.spec.service.RoomStarService;
 import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.pager.PageVo;
@@ -54,12 +54,24 @@ public class RoomStarCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    /**
+     * 指定的房屋是否已经被关注
+     *
+     * @param roomId 房屋ID
+     */
+    @RequestMapping(value = "/isStar", params = "roomId", method = RequestMethod.GET)
+    @ResponseBody
+    public void isStar(String roomId, HttpServletRequest request, HttpServletResponse response) {
+        boolean stared = roomStarService.isStar(roomId, SecurityContext.getEmpId());
+        GsonUtils.printData(response, stared);
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/pageQuery", method = RequestMethod.POST)
     public void pageQuery(HttpServletRequest request, HttpServletResponse response) {
-        RoomStarBo bo = GsonUtils.wrapDataToEntity(request, RoomStarBo.class);
-        PageVo pageVo = roomStarService.pageQuery(bo);
+        RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);
+        PageVo pageVo = roomStarService.myStarRoom(bo);
         GsonUtils.printData(response, pageVo);
     }
 
