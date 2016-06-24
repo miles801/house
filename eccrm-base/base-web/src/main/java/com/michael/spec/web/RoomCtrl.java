@@ -1,5 +1,10 @@
 package com.michael.spec.web;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.michael.poi.exp.ExportEngine;
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
@@ -9,6 +14,7 @@ import com.michael.spec.vo.CustomerVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
+import com.ycrl.utils.gson.DateStringConverter;
 import com.ycrl.utils.gson.GsonUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -20,6 +26,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -161,5 +171,34 @@ public class RoomCtrl extends BaseController {
     public void batchDeny(@RequestParam String ids, HttpServletResponse response) {
         roomService.batchDeny(ids.split(","));
         GsonUtils.printSuccess(response);
+    }
+
+
+    // 导出数据
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    public String export(HttpServletRequest request, HttpServletResponse response) {
+        String param = request.getParameter("param");
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+                .create();
+        RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);
+        List<RoomView> data = roomService.query(bo);
+        String json = gson.toJson(data);
+        JsonElement element = gson.fromJson(json, JsonElement.class);
+        JsonObject o = new JsonObject();
+        o.add("c", element);
+        String disposition = null;//
+        try {
+            disposition = "attachment;filename=" + URLEncoder.encode("房屋数据.xlsx", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", disposition);
+        try {
+            new ExportEngine().export(response.getOutputStream(), this.getClass().getClassLoader().getResourceAsStream("export_room.xlsx"), o);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

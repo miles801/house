@@ -57,5 +57,14 @@
             });
         };
 
+        // 导出数据
+        $scope.exportData = function () {
+            if ($scope.pager.total < 1) {
+                AlertFactory.error('未获取到可以导出的数据!请先查询出数据!');
+                return;
+            }
+            window.location.href = CommonUtils.contextPathURL('/house/room/export' +
+                ' ?param=' + $.param($scope.condition));
+        };
     });
 })(window, angular, jQuery);
