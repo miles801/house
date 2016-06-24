@@ -58,8 +58,9 @@
                         <a type="button" class="btn btn-green btn-min" ng-click="add();">
                             <span class="glyphicons plus"></span> 新建
                         </a>
-                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();">
-                            <span class="glyphicons plus"></span> 导出
+                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
+                           ng-disabled="!beans.total">
+                            <span class="glyphicons plus"></span> 导出数据
                         </a>
                 </span>
             </div>

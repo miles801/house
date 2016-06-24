@@ -1,5 +1,10 @@
 package com.michael.spec.web;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.michael.poi.exp.ExportEngine;
 import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.service.CustomerService;
@@ -8,6 +13,7 @@ import com.michael.spec.vo.CustomerVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
+import com.ycrl.utils.gson.DateStringConverter;
 import com.ycrl.utils.gson.GsonUtils;
 import com.ycrl.utils.string.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -19,6 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Michael
@@ -153,4 +165,33 @@ public class CustomerCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    // 导出数据
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    public String export(HttpServletRequest request, HttpServletResponse response) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
+                .create();
+        CustomerBo bo = GsonUtils.wrapDataToEntity(request, CustomerBo.class);
+        List<CustomerVo> data = customerService.pageQuery(bo).getData();
+        if (data == null) {
+            data = new ArrayList<CustomerVo>();
+        }
+        String json = gson.toJson(data);
+        JsonElement element = gson.fromJson(json, JsonElement.class);
+        JsonObject o = new JsonObject();
+        o.add("c", element);
+        String disposition = null;//
+        try {
+            disposition = "attachment;filename=" + URLEncoder.encode("客户数据.xlsx", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", disposition);
+        try {
+            new ExportEngine().export(response.getOutputStream(), this.getClass().getClassLoader().getResourceAsStream("export_customer.xlsx"), o);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

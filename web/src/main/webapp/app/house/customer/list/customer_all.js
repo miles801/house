@@ -73,7 +73,17 @@
                 title: '查看业主管理',
                 url: '/house/customer/detail?id=' + id
             });
-        }
+        };
+
+        // 导出数据
+        $scope.exportData = function () {
+            if ($scope.pager.total < 1) {
+                AlertFactory.error('未获取到可以导出的数据!请先查询出数据!');
+                return;
+            }
+            window.location.href = CommonUtils.contextPathURL('/house/customer/export' +
+                ' ?param=' + $.param($scope.condition));
+        };
     });
 
     app.filter('contact', function () {

@@ -55,6 +55,9 @@
                     <span>客户列表</span>
                 </div>
                 <span class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="exportData();" ng-disabled="!beans.total">
+                            <span class="glyphicons plus"></span> 导出数据
+                        </a>
                 </span>
             </div>
             <div class="block-content">
