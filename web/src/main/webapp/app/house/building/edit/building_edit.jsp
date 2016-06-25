@@ -33,10 +33,6 @@
                     <button type="button" class="btn btn-green btn-min" ng-click="save()" ng-disabled="form.$invalid">
                         <span class="glyphicons disk_save"></span> 保存
                     </button>
-                        <button type="button" class="btn btn-green btn-min" ng-click="save(true)"
-                                ng-disabled="form.$invalid">
-                            <span class="glyphicons disk_open"></span> 保存并新建
-                        </button>
                     </c:if>
                     <c:if test="${pageType eq 'modify'}">
                     <button type="button" class="btn btn-green btn-min" ng-click="update()" ng-disabled="form.$invalid">

@@ -50,6 +50,12 @@
             }
         };
 
+        // 重新加载该页面
+        $scope.reload = function () {
+            window.location.reload();
+        };
+
+
         $scope.condition = {};
 
         //查询数据

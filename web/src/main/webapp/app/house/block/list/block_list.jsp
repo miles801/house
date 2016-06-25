@@ -49,37 +49,53 @@
                         </tr>
                         </thead>
                         <tbody class="table-body">
-                        <tr ng-show="!beans.length">
-                            <td colspan="5" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a></td>
-                        </tr>
-                        <tr ng-repeat="foo in beans" ng-cloak>
-                            <td title="点击查询明细！" style="cursor: pointer;">
-                                <form name="form" role="form" style="margin: 0;padding: 0;">
-                                    <input type="text" ng-model="foo.code" validate validate-required/>
-                                    <input type="hidden" ng-model="foo.unitCounts" validate validate-required
+                        <c:if test="${param.pageType ne 'detail'}">
+                            <tr ng-show="!beans.length">
+                                <td colspan="5" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a></td>
+                            </tr>
+                            <tr ng-repeat="foo in beans" ng-cloak>
+                                <td title="点击查询明细！" style="cursor: pointer;">
+                                    <form name="form" role="form" style="margin: 0;padding: 0;">
+                                        <input type="text" ng-model="foo.code" validate validate-required/>
+                                        <input type="hidden" ng-model="foo.unitCounts" validate validate-required
+                                               validate-int/>
+                                        <input type="hidden" ng-model="foo.physicalLevels" validate validate-required
+                                               validate-int/>
+                                        <input type="hidden" ng-model="foo.levels" validate validate-required
+                                               validate-int/>
+                                    </form>
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="foo.unitCounts" validate validate-required
                                            validate-int/>
-                                    <input type="hidden" ng-model="foo.physicalLevels" validate validate-required
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="foo.physicalLevels" validate validate-required
                                            validate-int/>
-                                    <input type="hidden" ng-model="foo.levels" validate validate-required validate-int/>
-                                </form>
-                            </td>
-                            <td>
-                                <input type="text" ng-model="foo.unitCounts" validate validate-required validate-int/>
-                            </td>
-                            <td>
-                                <input type="text" ng-model="foo.physicalLevels" validate validate-required
-                                       validate-int/>
-                            </td>
-                            <td>
-                                <input type="text" ng-model="foo.levels" validate validate-required validate-int/>
-                            </td>
-                            <td>
-                                <a class="btn-op blue" ng-disabled="form.$invalid ||!form.$dirty"
-                                   ng-click="save(foo,form);">保存</a>
-                                <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
-                                <a class="btn-op green" ng-click="add(foo);">新建</a>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <input type="text" ng-model="foo.levels" validate validate-required validate-int/>
+                                </td>
+                                <td>
+                                    <a class="btn-op blue" ng-disabled="form.$invalid ||!form.$dirty"
+                                       ng-click="save(foo,form);">保存</a>
+                                    <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
+                                    <a class="btn-op green" ng-click="add(foo);">新建</a>
+                                </td>
+                            </tr>
+                        </c:if>
+                        <c:if test="${param.pageType eq 'detail'}">
+                            <tr ng-show="!beans.length">
+                                <td colspan="5" class="text-center">无楼栋信息!</td>
+                            </tr>
+                            <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                <td bo-text="foo.code"></td>
+                                <td bo-text="foo.unitCounts"></td>
+                                <td bo-text="foo.physicalLevels"></td>
+                                <td bo-text="foo.levelsLevels"></td>
+                                <td></td>
+                            </tr>
+                        </c:if>
                         </tbody>
                     </table>
                 </div>

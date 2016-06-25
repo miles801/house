@@ -53,7 +53,14 @@
             $scope.cityAndArea = $scope.beans.cityName + ' - ' + $scope.beans.areaName;
         });
 
-        $scope.back = CommonUtils.back;
+        $scope.back = function () {
+            // 关闭所有页签
+            $scope.closeTab();
+
+            // 关闭当前页签
+            $(window.parent.document.body).find('ul.nav-tabs>li>span:eq(0)').trigger('click');
+
+        };
 
         // 保存
         $scope.save = function () {
@@ -94,21 +101,22 @@
          * @param id 楼盘ID
          */
         $scope.initTab = function (id) {
+            $scope.closeTab();
             // 楼栋信息
             CommonUtils.addTab({
                 title: '楼栋信息',
-                url: 'app/house/block/list/block_list.jsp?id=' + id,
+                url: 'app/house/block/list/block_list.jsp?id=' + id + '&pageType=' + pageType,
                 active: false
             });
             CommonUtils.addTab({
                 title: '单元信息',
-                url: 'app/house/unit/list/unit_list.jsp?id=' + id,
+                url: 'app/house/unit/list/unit_list.jsp?id=' + id + '&pageType=' + pageType,
                 active: false
             });
             // 楼栋信息
             CommonUtils.addTab({
                 title: '房间信息',
-                url: 'app/house/room/list/room_list.jsp?id=' + id,
+                url: 'app/house/room/list/room_list.jsp?id=' + id + '&pageType=' + pageType,
                 active: false
             });
         };
@@ -123,6 +131,12 @@
         } else {
             AlertFactory.error($scope, '错误的页面类型');
         }
+
+
+        // 关闭其他页签
+        $scope.closeTab = function () {
+            $(window.parent.document.body).find('ul.nav-tabs>li>span:gt(0)').trigger('click');
+        };
 
     });
 })(window, angular, jQuery);

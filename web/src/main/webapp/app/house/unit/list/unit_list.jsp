@@ -39,6 +39,9 @@
                                 <span class="glyphicons search"></span>
                                 查询
                         </a>
+                        <a type="button" class="btn btn-green btn-min" ng-click="reload();">
+                                刷新本页面
+                        </a>
                 </span>
             </div>
             <div class="block-content">
@@ -78,38 +81,54 @@
                                 </tr>
                                 </thead>
                                 <tbody class="table-body">
-                                <tr ng-show="!beans.length">
-                                    <td colspan="6" class="text-center">
-                                        <a class="btn-op blue" ng-click="!condition.blockId || add();"
-                                           ng-disabled="!condition.blockId" ng-cloak>新建</a>
-                                    </td>
-                                </tr>
-                                <tr ng-repeat="foo in beans" ng-cloak>
-                                    <td title="点击查询明细！" style="cursor: pointer;">
-                                        <input type="text" name="code" ng-model="foo.code" validate validate-required/>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-model="foo.doorCode" validate validate-required/>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-model="foo.square" validate validate-required
-                                               validate-float/>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-model="foo.type" validate validate-required
-                                               validate-options="typeValid"/>
-                                    </td>
-                                    <td>
-                                        <select ng-model="foo.orient"
-                                                ng-options="o.value as o.name for o in orients"></select>
-                                    </td>
-                                    <td>
-                                        <a class="btn-op blue" ng-disabled="!(form.$valid && form.$dirty)"
-                                           ng-click="save(foo,form);">保存</a>
-                                        <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
-                                        <a class="btn-op green" ng-click="add(foo);">新建</a>
-                                    </td>
-                                </tr>
+                                <c:if test="${param.pageType ne 'detail'}">
+                                    <tr ng-show="!beans.length">
+                                        <td colspan="6" class="text-center">
+                                            <a class="btn-op blue" ng-click="!condition.blockId || add();"
+                                               ng-disabled="!condition.blockId" ng-cloak>新建</a>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="foo in beans" ng-cloak>
+                                        <td title="点击查询明细！" style="cursor: pointer;">
+                                            <input type="text" name="code" ng-model="foo.code" validate
+                                                   validate-required/>
+                                        </td>
+                                        <td>
+                                            <input type="text" ng-model="foo.doorCode" validate validate-required/>
+                                        </td>
+                                        <td>
+                                            <input type="text" ng-model="foo.square" validate validate-required
+                                                   validate-float/>
+                                        </td>
+                                        <td>
+                                            <input type="text" ng-model="foo.type" validate validate-required
+                                                   validate-options="typeValid"/>
+                                        </td>
+                                        <td>
+                                            <select ng-model="foo.orient"
+                                                    ng-options="o.value as o.name for o in orients"></select>
+                                        </td>
+                                        <td>
+                                            <a class="btn-op blue" ng-disabled="!(form.$valid && form.$dirty)"
+                                               ng-click="save(foo,form);">保存</a>
+                                            <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
+                                            <a class="btn-op green" ng-click="add(foo);">新建</a>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                                <c:if test="${param.pageType eq 'detail'}">
+                                    <tr ng-show="!beans.length">
+                                        <td colspan="6" class="text-center">无单元数据!</td>
+                                    </tr>
+                                    <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                        <td bo-text="foo.code"></td>
+                                        <td bo-text="foo.doorCode"></td>
+                                        <td bo-text="foo.square"></td>
+                                        <td bo-text="foo.type"></td>
+                                        <td bo-text="foo.orientName"></td>
+                                        <td></td>
+                                    </tr>
+                                </c:if>
                                 </tbody>
                             </table>
                         </form>

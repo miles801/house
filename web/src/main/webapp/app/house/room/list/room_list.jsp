@@ -35,10 +35,12 @@
                 </span>
                 <span class="header-button">
                         <a type="button" class="btn btn-green btn-min"
-                           ng-disabled="!(condition.blockId && condition.unitId)" ng-click="query();"
-                           ng-cloak>
-                                <span class="glyphicons search"></span>
+                           ng-disabled="!(condition.blockId && condition.unitId)"
+                           ng-click="query();" ng-cloak>
                                 查询
+                        </a>
+                        <a type="button" class="btn btn-green btn-min" ng-click="reload();">
+                                刷新本页面
                         </a>
                 </span>
             </div>
@@ -89,52 +91,70 @@
                                 </tr>
                                 </thead>
                                 <tbody class="table-body">
-                                <tr ng-show="!beans.length">
-                                    <td colspan="8" class="text-center">
-                                        <a class="btn-op blue"
-                                           ng-click="!(condition.blockId && condition.unitId) || add();"
-                                           ng-disabled="!(condition.blockId && condition.unitId)" ng-cloak>新建</a>
-                                    </td>
-                                </tr>
-                                <tr bindonce ng-repeat="foo in beans" ng-cloak>
-                                    <td bo-text="foo.blockCode"></td>
-                                    <td bo-text="foo.unitCode"></td>
-                                    <td>
-                                        <input type="text" ng-model="foo.floor" validate validate-required
-                                               validate-int/>
-                                    </td>
-                                    <td>
-                                        <input type="text" name="code" ng-model="foo.code" validate validate-required/>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-model="foo.square" validate validate-required
-                                               validate-float/>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-model="foo.type1" style="width: 50px;" validate
-                                               validate-required validate-int
-                                               placeholder="室"/>
-                                        <input type="text" ng-model="foo.type2" style="width: 50px;" validate
-                                               validate-required validate-int
-                                               placeholder="厅"/>
-                                        <input type="text" ng-model="foo.type3" style="width: 50px;" validate
-                                               validate-required validate-int
-                                               placeholder="厨"/>
-                                        <input type="text" ng-model="foo.type4" style="width: 50px;" validate
-                                               validate-required validate-int
-                                               placeholder="卫"/>
-                                    </td>
-                                    <td>
-                                        <select ng-model="foo.orient"
-                                                ng-options="o.value as o.name for o in orients"></select>
-                                    </td>
-                                    <td>
-                                        <a class="btn-op blue" ng-disabled="!(form.$valid)"
-                                           ng-click="save(foo,form);">保存</a>
-                                        <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
-                                        <a class="btn-op green" ng-click="add(foo);">新建</a>
-                                    </td>
-                                </tr>
+                                <c:if test="${param.pageType ne 'detail'}">
+                                    <tr ng-show="!beans.length">
+                                        <td colspan="8" class="text-center">
+                                            <a class="btn-op blue"
+                                               ng-click="!(condition.blockId && condition.unitId) || add();"
+                                               ng-disabled="!(condition.blockId && condition.unitId)" ng-cloak>新建</a>
+                                        </td>
+                                    </tr>
+                                    <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                        <td bo-text="foo.blockCode"></td>
+                                        <td bo-text="foo.unitCode"></td>
+                                        <td>
+                                            <input type="text" ng-model="foo.floor" validate validate-required
+                                                   validate-int/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="code" ng-model="foo.code" validate
+                                                   validate-required/>
+                                        </td>
+                                        <td>
+                                            <input type="text" ng-model="foo.square" validate validate-required
+                                                   validate-float/>
+                                        </td>
+                                        <td>
+                                            <input type="text" ng-model="foo.type1" style="width: 50px;" validate
+                                                   validate-required validate-int
+                                                   placeholder="室"/>
+                                            <input type="text" ng-model="foo.type2" style="width: 50px;" validate
+                                                   validate-required validate-int
+                                                   placeholder="厅"/>
+                                            <input type="text" ng-model="foo.type3" style="width: 50px;" validate
+                                                   validate-required validate-int
+                                                   placeholder="厨"/>
+                                            <input type="text" ng-model="foo.type4" style="width: 50px;" validate
+                                                   validate-required validate-int
+                                                   placeholder="卫"/>
+                                        </td>
+                                        <td>
+                                            <select ng-model="foo.orient"
+                                                    ng-options="o.value as o.name for o in orients"></select>
+                                        </td>
+                                        <td>
+                                            <a class="btn-op blue" ng-disabled="!(form.$valid)"
+                                               ng-click="save(foo,form);">保存</a>
+                                            <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
+                                            <a class="btn-op green" ng-click="add(foo);">新建</a>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                                <c:if test="${param.pageType eq 'detail'}">
+                                    <tr ng-show="!beans.length">
+                                        <td colspan="8" class="text-center">无房屋信息</td>
+                                    </tr>
+                                    <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                        <td bo-text="foo.blockCode"></td>
+                                        <td bo-text="foo.unitCode"></td>
+                                        <td bo-text="foo.floor"></td>
+                                        <td bo-text="foo.code"></td>
+                                        <td bo-text="foo.square"></td>
+                                        <td bo-text="foo.type1+'-'+foo.type2+'-'+foo.type3+'-'+foo.type4"></td>
+                                        <td bo-text="foo.orientName"></td>
+                                        <td></td>
+                                    </tr>
+                                </c:if>
                                 </tbody>
                             </table>
                         </form>

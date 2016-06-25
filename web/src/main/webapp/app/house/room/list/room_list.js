@@ -148,6 +148,13 @@
             CommonUtils.loading(promise);
         };
 
+
+        // 重新加载该页面
+        $scope.reload = function () {
+            window.location.reload();
+        };
+        
+        
         $scope.loadBlock();
     });
 })(window, angular, jQuery);
