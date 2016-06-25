@@ -178,36 +178,6 @@
                         </div>
                         <textarea class="col-10-half" rows="6" ng-model="beans.description"></textarea>
                     </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>备注1:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.col1"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>备注2:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.col2"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>备注3:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.col3"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>备注4:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.col4"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>备注5:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.col5"/>
-                    </div>
                 </form>
             </div>
         </div>
