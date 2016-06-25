@@ -33,15 +33,33 @@
             </div>
             <div class="block-content">
                 <div class="content-wrap">
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>楼盘名称:</label>
+                    <div class="float">
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>楼盘名称:</label>
+                            </div>
+                            <input class="w120" type="text" ng-model="condition.name"/>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="condition.name"/>
-                        <div class="form-label col-1-half">
-                            <label>开发商:</label>
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>建筑类型:</label>
+                            </div>
+                            <select class="w120" ng-model="condition.type" ng-change="query();"
+                                    ng-options="foo.value as foo.name for foo in types"></select>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="condition.developerName"/>
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>学区:</label>
+                            </div>
+                            <input class="w120" type="text" ng-model="condition.school"/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w80">
+                                <label>均价:</label>
+                            </div>
+                            <input class="w100" type="text" ng-model="condition.price1"/>
+                            <input class="w100" type="text" ng-model="condition.price2" style="margin-left:10px;"/>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,44 +92,34 @@
                                          anyone-selected="anyone"></div>
                                 </td>
                                 <td>楼盘名称</td>
-                                <td>城市</td>
-                                <td>行政区域</td>
-                                <td>楼盘地址</td>
-                                <td>建筑年代</td>
+                                <td>均价(万/m2)</td>
                                 <td>建筑类型</td>
-                                <td>房屋权属</td>
-                                <td>房屋用途</td>
-                                <td>供暖方式</td>
-                                <td>开发商</td>
-                                <td>楼栋总数</td>
+                                <td>学区</td>
                                 <td>总户数</td>
-                                <td>车位总数</td>
-                                <td>绿化率</td>
+                                <td>录入户数</td>
+                                <td>有效户数</td>
+                                <td>负责人</td>
+                                <td>状态</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="16" class="text-center">没有查询到数据！</td>
+                                <td colspan="11" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.name"></a>
                                 </td>
-                                <td bo-text="foo.cityName"></td>
-                                <td bo-text="foo.areaName"></td>
-                                <td bo-text="foo.address"></td>
-                                <td bo-text="foo.year"></td>
+                                <td bo-text="foo.price"></td>
                                 <td bo-text="foo.typeName"></td>
-                                <td bo-text="foo.houseTypeName"></td>
-                                <td bo-text="foo.usagesName"></td>
-                                <td bo-text="foo.warmTypeName"></td>
-                                <td bo-text="foo.developerName"></td>
-                                <td bo-text="foo.buildingCounts"></td>
+                                <td bo-text="foo.school"></td>
                                 <td bo-text="foo.houseCounts"></td>
-                                <td bo-text="foo.carCounts"></td>
-                                <td bo-text="foo.greenPercent"></td>
+                                <td bo-text="foo.houseCounts1"></td>
+                                <td bo-text="foo.houseCounts2"></td>
+                                <td bo-text="foo.masterName"></td>
+                                <td bo-text="foo.statusName"></td>
                                 <td>
                                     <a class="btn-op blue" ng-click="modify(foo.id);">编辑</a>
                                     <a class="btn-op red" ng-click="remove(foo.id);">删除</a>

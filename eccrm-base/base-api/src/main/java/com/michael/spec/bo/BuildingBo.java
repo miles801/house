@@ -51,6 +51,39 @@ public class BuildingBo implements BO {
     @Condition
     private String masterId;
 
+    // 均价
+    @Condition(matchMode = MatchModel.GE, target = "price")
+    private String price1;
+    @Condition(matchMode = MatchModel.LT, target = "price")
+    private String price2;
+
+    // 学区
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String school;
+
+    public String getPrice1() {
+        return price1;
+    }
+
+    public void setPrice1(String price1) {
+        this.price1 = price1;
+    }
+
+    public String getPrice2() {
+        return price2;
+    }
+
+    public void setPrice2(String price2) {
+        this.price2 = price2;
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
 
     public String getMasterId() {
         return masterId;
