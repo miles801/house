@@ -38,6 +38,8 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
 
     @Override
     public void update(Unit unit) {
+        long counts = roomDao.getUnitRoomCounts(unit.getId());
+        Assert.isTrue(counts == 0, "更新失败!该单元下已经存在了房间信息，无法直接更新单元信息!");
         ValidatorUtils.validate(unit);
         unitDao.update(unit);
     }

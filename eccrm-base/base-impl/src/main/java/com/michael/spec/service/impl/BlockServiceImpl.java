@@ -37,6 +37,11 @@ public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, B
 
     @Override
     public void update(Block block) {
+        // 判断是否具有单元信息
+        UnitBo bo = new UnitBo();
+        bo.setBlockId(block.getId());
+        Long total = unitDao.getTotal(bo);
+        Assert.isTrue(total == null || total == 0, "更新失败!该楼栋下已经存在单元信息，无法进行更新操作!");
         ValidatorUtils.validate(block);
         blockDao.update(block);
     }
