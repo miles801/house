@@ -54,14 +54,13 @@
                     <span>员工</span>
                 </div>
                 <span class="header-button">
-                    <%--<
+                    <
                     a type="button" class="btn btn-green btn-min" ng-click="add();">
                         <span class="glyphicons plus"></span> 新建
                     </a>
                     <a type="button" class="btn btn-green btn-min" ng-click="remove();">
                         <span class="glyphicons plus"></span> 禁用
                     </a>
-                    --%>
                 </span>
             </div>
             <div class="block-content">
@@ -75,14 +74,12 @@
                                          anyone-selected="anyone"></div>
                                 </td>
                                 <td>姓名</td>
-                                <td>考勤编号</td>
                                 <td>登录名</td>
-                                <td>姓名的拼音（全拼）</td>
+                                <td>电话</td>
                                 <td>性别</td>
                                 <td>职务</td>
                                 <td>账号状态</td>
                                 <td>组织机构</td>
-                                <td>坐席号</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
