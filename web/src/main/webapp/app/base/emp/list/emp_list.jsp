@@ -54,8 +54,7 @@
                     <span>员工</span>
                 </div>
                 <span class="header-button">
-                    <
-                    a type="button" class="btn btn-green btn-min" ng-click="add();">
+                    <a type="button" class="btn btn-green btn-min" ng-click="add();">
                         <span class="glyphicons plus"></span> 新建
                     </a>
                     <a type="button" class="btn btn-green btn-min" ng-click="remove();">
@@ -85,29 +84,25 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="9" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.name"></a>
                                 </td>
-                                <td bo-text="foo.attendanceNo"></td>
                                 <td bo-text="foo.loginName"></td>
-                                <td bo-text="foo.pinyin"></td>
-                                <td bo-text="foo.sex"></td>
+                                <td bo-text="foo.phone"></td>
+                                <td bo-text="foo.sexName"></td>
                                 <td bo-text="foo.duty"></td>
                                 <td bo-text="foo.lockedName"></td>
                                 <td bo-text="foo.orgName"></td>
-                                <td bo-text="foo.code"></td>
                                 <td>
-                                    <%--
                                     <a ng-disabled="foo.locked!==0" ng-click="foo.locked!==0||modify(foo.id);" class="btn-op blue">编辑</a>
                                     <a ng-disabled="foo.locked!==0" ng-click="foo.locked!==0||remove(foo.id);"
                                        class="btn-op red">禁用</a>
                                     <a ng-disabled="foo.locked!==1" ng-click="foo.locked!==1 || start(foo.id);"
                                        class="btn-op green">启用</a>
-                                       --%>
                                 </td>
                             </tr>
                             </tbody>
