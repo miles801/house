@@ -25,8 +25,7 @@ public class Unit extends CommonDomain {
     @ApiField("单元号")
     private String code;
 
-    @NotNull
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     @ApiField("门牌号")
     private String doorCode;
 

@@ -28,7 +28,8 @@ public class Building extends CommonDomain {
     @Column(length = 40)
     private String areaName;
     // 楼盘名称
-    @Column(length = 40)
+    @NotNull(message = "楼盘名称不能为空!")
+    @Column(length = 40, nullable = false)
     private String name;
     // 楼盘地址
     @Column(length = 100)

@@ -41,6 +41,9 @@
             // 批量拒绝
             batchDeny: {method: 'POST', params: {method: 'batchDeny', ids: '@ids'}, isArray: false},
 
+            // 导入数据
+            importData: {method: 'POST', params: {method: 'import', attachmentIds: '@attachmentIds'}, isArray: false},
+            
             // 分页查询
             pageQuery: {
                 method: 'POST',

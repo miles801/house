@@ -223,6 +223,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                         String sexValue = params.get(sex);
                         if (StringUtils.isEmpty(sexValue)) {
                             sexValue = bpiDao.queryName(BaseParameter.SEX, sex);
+                            params.put(sex, sexValue);
                         }
                         customer.setSex(sexValue);
                     }
@@ -231,6 +232,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                         String marriageValue = params.get(marriage);
                         if (StringUtils.isEmpty(marriageValue)) {
                             marriageValue = bpiDao.queryName(BaseParameter.MARRIAGE, marriage);
+                            params.put(marriage, marriageValue);
                         }
                         customer.setMarriage(marriageValue);
                     }

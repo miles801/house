@@ -16,6 +16,7 @@ import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
 import com.ycrl.utils.gson.DateStringConverter;
 import com.ycrl.utils.gson.GsonUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
@@ -200,5 +202,33 @@ public class RoomCtrl extends BaseController {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    // 下载模板
+    @ResponseBody
+    @RequestMapping(value = "/template", method = RequestMethod.GET)
+    public void downloadTemplate(HttpServletResponse response) {
+        InputStream input = RoomCtrl.class.getClassLoader().getResourceAsStream("import_room.xlsx");
+        response.setContentType("application/vnd.ms-excel");
+        String disposition = null;//
+        try {
+            disposition = "attachment;filename=" + URLEncoder.encode("房屋数据导入模板.xlsx", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setHeader("Content-disposition", disposition);
+        try {
+            IOUtils.copy(input, response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/import", params = {"attachmentIds"}, method = RequestMethod.POST)
+    public void importData(@RequestParam String attachmentIds, HttpServletResponse response) {
+        roomService.importData(attachmentIds.split(","));
+        GsonUtils.printSuccess(response);
     }
 }

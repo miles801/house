@@ -2,6 +2,12 @@ package com.michael.spec.service.impl;
 
 import com.michael.pinyin.SimplePinYin;
 import com.michael.pinyin.StandardStrategy;
+import com.michael.poi.adapter.AnnotationCfgAdapter;
+import com.michael.poi.core.Context;
+import com.michael.poi.core.Handler;
+import com.michael.poi.core.ImportEngine;
+import com.michael.poi.core.RuntimeContext;
+import com.michael.poi.imp.cfg.Configuration;
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
@@ -16,14 +22,28 @@ import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.string.StringUtils;
+import eccrm.base.attachment.AttachmentProvider;
+import eccrm.base.attachment.utils.AttachmentHolder;
+import eccrm.base.attachment.vo.AttachmentVo;
+import eccrm.base.parameter.dao.BusinessParamItemDao;
+import eccrm.base.parameter.dao.SysParamItemDao;
 import eccrm.base.parameter.service.ParameterContainer;
 import eccrm.utils.BeanCopyUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -258,6 +278,150 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
         roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
         roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
+    }
+
+    @Override
+    public void importData(String[] attachmentIds) {
+        Logger logger = Logger.getLogger(CustomerServiceImpl.class);
+        Assert.notEmpty(attachmentIds, "数据文件不能为空，请重试!");
+
+        for (String id : attachmentIds) {
+            AttachmentVo vo = AttachmentProvider.getInfo(id);
+            Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
+            File file = AttachmentHolder.newInstance().getTempFile(id);
+            logger.info("准备导入数据：" + file.getAbsolutePath());
+            logger.info("初始化导入引擎....");
+            long start = System.currentTimeMillis();
+
+            // 初始化引擎
+            Configuration configuration = new AnnotationCfgAdapter(RoomDTO.class).parse();
+            configuration.setStartRow(2);
+            String newFilePath = file.getAbsolutePath() + vo.getFileName().substring(vo.getFileName().lastIndexOf(".")); //获取路径
+            try {
+                FileUtils.copyFile(file, new File(newFilePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            final Map<String, String> params = new HashMap<String, String>();
+            final SystemContainer beanContainer = SystemContainer.getInstance();
+            final BusinessParamItemDao bpiDao = beanContainer.getBean(BusinessParamItemDao.class);
+            // 获取session
+            SessionFactory sessionFactory = (SessionFactory) beanContainer.getBean("sessionFactory");
+            final Session session = sessionFactory.getCurrentSession();
+            configuration.setPath(newFilePath);
+            configuration.setHandler(new Handler<RoomDTO>() {
+                @Override
+                public void execute(RoomDTO dto) {
+                    Context context = RuntimeContext.get();
+                    Room room = new Room();
+                    BeanUtils.copyProperties(dto, room);
+
+                    // 设置楼盘
+                    String buildingName = dto.getBuildingName();
+                    Assert.hasText(buildingName, String.format("数据错误,楼盘/小区名称不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    String buildingId = (String) session.createQuery("select b.id from " + Building.class.getName() + " b where b.name=?")
+                            .setParameter(0, buildingName)
+                            .setMaxResults(1)
+                            .uniqueResult();
+                    if (StringUtils.isEmpty(buildingId)) {
+                        Building building = new Building();
+                        building.setName(buildingName);
+                        buildingId = beanContainer.getBean(BuildingService.class).save(building);
+                    }
+                    room.setBuildingId(buildingId);
+
+                    // 设置楼栋
+                    String blockName = dto.getBlockName();
+                    Assert.hasText(blockName, String.format("数据错误,楼栋信息不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    String blockId = (String) session.createQuery("select b.id from " + Block.class.getName() + " b where b.code=? and b.buildingId=?")
+                            .setParameter(0, blockName)
+                            .setParameter(1, buildingId)
+                            .setMaxResults(1)
+                            .uniqueResult();
+                    if (StringUtils.isEmpty(blockId)) {
+                        Block block = new Block();
+                        block.setBuildingId(buildingId);
+                        block.setCode(blockName);
+                        blockId = beanContainer.getBean(BlockService.class).save(block);
+                    }
+                    room.setBlockId(blockId);
+
+                    // 设置单元
+                    String unitName = dto.getUnitName();
+                    Assert.hasText(unitName, String.format("数据错误,单元信息不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    String unitId = (String) session.createQuery("select b.id from " + Unit.class.getName() + " b where b.code=? and b.blockId=?")
+                            .setParameter(0, unitName)
+                            .setParameter(1, blockId)
+                            .setMaxResults(1)
+                            .uniqueResult();
+                    if (StringUtils.isEmpty(unitId)) {
+                        Unit unit = new Unit();
+                        unit.setBlockId(blockId);
+                        unit.setCode(unitName);
+                        unitId = beanContainer.getBean(UnitService.class).save(unit);
+                    }
+                    room.setUnitId(unitId);
+
+                    // 设置参数-现状
+                    String useType = dto.getHouseUseType();
+                    if (StringUtils.isNotEmpty(useType)) {
+                        String userTypeValue = params.get(useType);
+                        if (StringUtils.isEmpty(userTypeValue)) {
+                            userTypeValue = bpiDao.queryName(HouseParams.HOUSE_USE_TYPE, useType);
+                            params.put(useType, userTypeValue);
+                        }
+                        room.setHouseUseType(userTypeValue);
+                    }
+                    // 设置参数-状态
+                    room.setStatus(Room.STATUS_ACTIVE);
+                    String status = dto.getStatus();
+                    if (StringUtils.isNotEmpty(status)) {
+                        String statusValue = params.get(status);
+                        if (StringUtils.isEmpty(statusValue)) {
+                            statusValue = beanContainer.getBean(SysParamItemDao.class).queryName(HouseParams.HOUSE_STATUS, status);
+                            params.put(status, statusValue);
+                        }
+                        room.setStatus(statusValue);
+                    }
+
+                    // 设置业主
+                    String cusName = dto.getCusName();
+                    String cusPhone = dto.getCusPhone();
+                    if (StringUtils.isNotEmpty(cusName)) {
+                        String cusId = (String) session.createQuery("select c.id from " + Customer.class.getName() + " c where c.name=? and c.phone1=?")
+                                .setParameter(0, cusName)
+                                .setParameter(1, cusPhone)
+                                .setMaxResults(1)
+                                .uniqueResult();
+                        if (StringUtils.isEmpty(cusId)) {
+                            Customer customer = new Customer();
+                            customer.setName(cusName);
+                            customer.setPhone1(cusPhone);
+                            cusId = beanContainer.getBean(CustomerService.class).save(customer);
+                        }
+                        room.setCustomerId(cusId);
+                    }
+
+                    // 真的保存房屋信息
+                    try {
+                        String roomId = save(room);
+
+                        // 给客户添加一套房源
+                        if (StringUtils.isNotEmpty(room.getCustomerId())) {
+                            beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                        }
+                    } catch (Exception e) {
+                        Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex(), e.getMessage()));
+                    }
+                }
+            });
+            logger.info("开始导入数据....");
+            ImportEngine engine = new ImportEngine(configuration);
+            engine.execute();
+            logger.info(String.format("导入数据成功,用时(%d)s....", (System.currentTimeMillis() - start) / 1000));
+            new File(newFilePath).delete();
+        }
     }
 
     @Override

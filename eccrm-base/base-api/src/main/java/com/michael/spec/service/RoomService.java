@@ -103,4 +103,11 @@ public interface RoomService {
      * @param ids 房屋ID列表
      */
     void batchDeny(String[] ids);
+
+    /**
+     * 数据导入
+     *
+     * @param attachmentIds 附件ID列表
+     */
+    void importData(String[] attachmentIds);
 }
