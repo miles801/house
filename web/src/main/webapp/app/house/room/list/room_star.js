@@ -32,18 +32,22 @@
 
         $scope.pager = {
             fetch: function () {
+                $scope.condition.start = this.start;
+                $scope.condition.limit = this.limit;
                 return CommonUtils.promise(function (defer) {
                     var promise = RoomStarService.pageQuery($scope.condition, function (data) {
                         $scope.beans = data.data || {};
                         defer.resolve(data.data);
-                    });
+                });
                     CommonUtils.loading(promise);
                 });
-            },
+            }
+            ,
             finishInit: function () {
                 this.query();
             }
-        };
+        }
+        ;
 
         //查询数据
         $scope.query = function () {

@@ -31,6 +31,8 @@
 
         $scope.pager = {
             fetch: function () {
+                $scope.condition.start = this.start;
+                $scope.condition.limit = this.limit;
                 return CommonUtils.promise(function (defer) {
                     var promise = RoomService.pageQuery($scope.condition, function (data) {
                         $scope.beans = data.data || {};
