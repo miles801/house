@@ -4,6 +4,7 @@ import com.michael.docs.annotations.ApiField;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * 房屋视图
@@ -111,7 +112,7 @@ public class RoomView {
     @Column
     private String creatorName;
     @Column
-    private String createdDatetime;
+    private Date createdDatetime;
 
     // ===============  数据字典   ===================
 
@@ -127,6 +128,14 @@ public class RoomView {
     @Transient
     @ApiField("朝向名称")
     private String orientName;
+
+    public Date getCreatedDatetime() {
+        return createdDatetime;
+    }
+
+    public void setCreatedDatetime(Date createdDatetime) {
+        this.createdDatetime = createdDatetime;
+    }
 
     public String getCreatorId() {
         return creatorId;
@@ -144,13 +153,6 @@ public class RoomView {
         this.creatorName = creatorName;
     }
 
-    public String getCreatedDatetime() {
-        return createdDatetime;
-    }
-
-    public void setCreatedDatetime(String createdDatetime) {
-        this.createdDatetime = createdDatetime;
-    }
 
     public String getCusName() {
         return cusName;

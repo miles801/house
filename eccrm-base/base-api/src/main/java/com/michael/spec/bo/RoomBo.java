@@ -6,6 +6,7 @@ import com.ycrl.core.hibernate.criteria.Condition;
 import com.ycrl.core.hibernate.criteria.LikeModel;
 import com.ycrl.core.hibernate.criteria.MatchModel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -77,6 +78,17 @@ public class RoomBo implements BO {
     private List<String> statusInclude;
     @Condition(matchMode = MatchModel.NOT_IN, target = "status")
     private List<String> statusExclude;
+
+    // 创建时间
+    @Condition(matchMode = MatchModel.GE, target = "createdDatetime")
+    private Date createdDatetime1;
+    @Condition(matchMode = MatchModel.LT, target = "createdDatetime")
+    private Date createdDatetime2;
+
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String creatorName;
+
+
 
     public List<String> getStatusInclude() {
         return statusInclude;
@@ -253,5 +265,29 @@ public class RoomBo implements BO {
 
     public void setRoomKey(String roomKey) {
         this.roomKey = roomKey;
+    }
+
+    public Date getCreatedDatetime1() {
+        return createdDatetime1;
+    }
+
+    public void setCreatedDatetime1(Date createdDatetime1) {
+        this.createdDatetime1 = createdDatetime1;
+    }
+
+    public Date getCreatedDatetime2() {
+        return createdDatetime2;
+    }
+
+    public void setCreatedDatetime2(Date createdDatetime2) {
+        this.createdDatetime2 = createdDatetime2;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 }

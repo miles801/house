@@ -17,7 +17,7 @@
     </script>
 </head>
 <body>
-<div class="main condition-row-2" ng-app="house.room.apply" ng-controller="Ctrl">
+<div class="main condition-row-3" ng-app="house.room.apply" ng-controller="Ctrl">
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -55,6 +55,12 @@
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
+                                    <label>门牌号:</label>
+                                </div>
+                                <input type="text" class="w150" ng-model="condition.code"/>
+                            </div>
+                            <div class="item w240">
+                                <div class="form-label w80">
                                     <label>房屋现状:</label>
                                 </div>
                                 <select ng-model="condition.houseUseType" class="w150"
@@ -74,6 +80,51 @@
                                 <select ng-model="condition.orient" class="w150"
                                         ng-options="foo.value as foo.name for foo in orient"></select>
                             </div>
+                            <div class="item w240">
+                                <div class="form-label w80">
+                                    <label>房屋编号:</label>
+                                </div>
+                                <input type="text" class="w150" ng-model="condition.roomKey"/>
+                            </div>
+                            <div class="item w240">
+                                <div class="form-label w80">
+                                    <label>录入人:</label>
+                                </div>
+                                <input type="text" class="w150" ng-model="condition.creatorName"/>
+                            </div>
+                            <div class="item w300">
+                                <div class="form-label w80">
+                                    <label>录入时间:</label>
+                                </div>
+                                <input type="text" class="w100" ng-model="condition.createdDatetime1" eccrm-my97="{}"
+                                       readonly placeholder="点击选择"/>
+                                <input type="text" class="w100" ng-model="condition.createdDatetime2" eccrm-my97="{}"
+                                       style="margin-left:8px" readonly placeholder="点击选择"/>
+                            </div>
+                            <div class="item w360">
+                                <div class="form-label w80">
+                                    <label>排序方式:</label>
+                                </div>
+                                <label class="w80">
+                                    <input type="radio" name="orderBy"
+                                           ng-model="condition.orderBy" value="code"
+                                           ng-change="query();"/>门牌号</label>
+                                <label class="w80"><input type="radio" name="orderBy"
+                                                          ng-model="condition.orderBy" value="createdDatetime"
+                                                          ng-change="query();"/>录入时间</label>
+                                <label class="w80"><input type="radio" name="orderBy"
+                                                          ng-model="condition.orderBy" value="roomKey"
+                                                          ng-change="query();"/>房屋编号</label>
+
+                            </div>
+                            <div class="item w300">
+                                <div class="form-label w80">
+                                    <label>倒序:</label>
+                                </div>
+                                <input type="checkbox" style="width: 14px;" ng-model="condition.reverse" value="true"
+                                       ng-change="query();"/>
+                            </div>
+
                             <div class="item w240">
                                 <div class="form-label w80">
                                     <label>户型:</label>
