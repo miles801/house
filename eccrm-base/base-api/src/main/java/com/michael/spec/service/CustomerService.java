@@ -85,4 +85,11 @@ public interface CustomerService {
      * @param customerIds 客户ID列表
      */
     void batchDeny(String[] customerIds);
+
+    /**
+     * 导入客户数据
+     *
+     * @param attachmentIds 附件列表
+     */
+    void importData(String[] attachmentIds);
 }

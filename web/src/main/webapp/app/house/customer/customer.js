@@ -24,6 +24,9 @@
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
 
+            // 导入数据
+            importData: {method: 'POST', params: {method: 'import', attachmentIds: '@attachmentIds'}, isArray: false},
+
             // 批量新增
             batchAdd: {method: 'POST', params: {method: 'batchAdd', ids: '@ids'}, isArray: false},
             // 批量修改

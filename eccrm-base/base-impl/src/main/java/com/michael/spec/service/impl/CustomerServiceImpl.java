@@ -1,26 +1,45 @@
 package com.michael.spec.service.impl;
 
 import com.michael.base.common.BaseParameter;
+import com.michael.poi.adapter.AnnotationCfgAdapter;
+import com.michael.poi.core.Context;
+import com.michael.poi.core.Handler;
+import com.michael.poi.core.ImportEngine;
+import com.michael.poi.core.RuntimeContext;
+import com.michael.poi.imp.cfg.Configuration;
 import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.domain.Customer;
+import com.michael.spec.domain.CustomerDTO;
 import com.michael.spec.domain.Room;
 import com.michael.spec.service.CustomerService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.CustomerVo;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.number.IntegerUtils;
 import com.ycrl.utils.string.StringUtils;
+import eccrm.base.attachment.AttachmentProvider;
+import eccrm.base.attachment.utils.AttachmentHolder;
+import eccrm.base.attachment.vo.AttachmentVo;
+import eccrm.base.parameter.dao.BusinessParamItemDao;
 import eccrm.base.parameter.service.ParameterContainer;
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Michael
@@ -163,6 +182,72 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         Assert.notNull(customer, "房产添加失败!客户不存在!");
         customer.setRoomCounts(IntegerUtils.add(customer.getRoomCounts(), 1));
         return customer.getRoomCounts();
+    }
+
+
+    @Override
+    public void importData(String[] attachmentIds) {
+        Logger logger = Logger.getLogger(CustomerServiceImpl.class);
+        Assert.notEmpty(attachmentIds, "数据文件不能为空，请重试!");
+
+        for (String id : attachmentIds) {
+            AttachmentVo vo = AttachmentProvider.getInfo(id);
+            Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
+            File file = AttachmentHolder.newInstance().getTempFile(id);
+            logger.info("准备导入数据：" + file.getAbsolutePath());
+            logger.info("初始化导入引擎....");
+            long start = System.currentTimeMillis();
+
+            // 初始化引擎
+            Configuration configuration = new AnnotationCfgAdapter(CustomerDTO.class).parse();
+            configuration.setStartRow(2);
+            String newFilePath = file.getAbsolutePath() + vo.getFileName().substring(vo.getFileName().lastIndexOf(".")); //获取路径
+            try {
+                FileUtils.copyFile(file, new File(newFilePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            final Map<String, String> params = new HashMap<String, String>();
+            final BusinessParamItemDao bpiDao = SystemContainer.getInstance().getBean(BusinessParamItemDao.class);
+            configuration.setPath(newFilePath);
+            configuration.setHandler(new Handler<CustomerDTO>() {
+                @Override
+                public void execute(CustomerDTO dto) {
+                    Context context = RuntimeContext.get();
+                    Customer customer = new Customer();
+                    BeanUtils.copyProperties(dto, customer);
+                    // 设置参数
+                    String sex = dto.getSex();
+                    if (StringUtils.isNotEmpty(sex)) {
+                        String sexValue = params.get(sex);
+                        if (StringUtils.isEmpty(sexValue)) {
+                            sexValue = bpiDao.queryName(BaseParameter.SEX, sex);
+                        }
+                        customer.setSex(sexValue);
+                    }
+                    String marriage = dto.getMarriage();
+                    if (StringUtils.isNotEmpty(marriage)) {
+                        String marriageValue = params.get(marriage);
+                        if (StringUtils.isEmpty(marriageValue)) {
+                            marriageValue = bpiDao.queryName(BaseParameter.MARRIAGE, marriage);
+                        }
+                        customer.setMarriage(marriageValue);
+                    }
+
+                    try {
+                        save(customer);
+                    } catch (Exception e) {
+                        Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex(), e.getMessage()));
+                    }
+                }
+            });
+            logger.info("开始导入数据....");
+            ImportEngine engine = new ImportEngine(configuration);
+            engine.execute();
+            logger.info(String.format("导入数据成功,用时(%d)s....", (System.currentTimeMillis() - start) / 1000));
+            new File(newFilePath).delete();
+        }
     }
 
     @Override
