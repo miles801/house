@@ -50,6 +50,7 @@
         });
         // 保存
         $scope.save = function () {
+            $scope.beans.description = $scope.descs.join('@@@');
             var promise;
             if (isChange) {
                 var o = {
@@ -91,13 +92,17 @@
             CommonUtils.loading(promise, '保存中...');
         };
 
+        $scope.descs = [];
         $scope.addMyDesc = function () {
-            $scope.beans.description = ($scope.beans.description || '') + moment().format('YYYY-MM-DD HH:mm:ss') + ' \t' + CommonUtils.loginContext().employeeName + ' \t ' + $scope.myDesc;
+            // $scope.beans.description = ($scope.beans.description || '') + moment().format('YYYY-MM-DD HH:mm:ss') + ' \t' + CommonUtils.loginContext().employeeName + ' \t ' + $scope.myDesc;
+            $scope.descs.push(moment().format('YYYY-MM-DD HH:mm:ss') + ' \t(' + CommonUtils.loginContext().employeeName + ') \t ' + $scope.myDesc);
             $scope.newDesc = false;
+            $scope.myDesc = null;
         };
 
         // 更新
         $scope.update = function () {
+            $scope.beans.description = $scope.descs.join('@@@');
             $scope.beans.roomId = roomId || '';
             var promise = CustomerService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
@@ -118,6 +123,9 @@
         $scope.load = function (id) {
             var promise = CustomerService.get({id: id}, function (data) {
                 $scope.beans = data.data || {};
+                if ($scope.beans.description) {
+                    $scope.descs = $scope.beans.description.split('@@@') || [];
+                }
             });
             CommonUtils.loading(promise, 'Loading...');
         };

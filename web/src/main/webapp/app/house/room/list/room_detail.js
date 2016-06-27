@@ -97,6 +97,9 @@
         $scope.loadCustomer = function () {
             var promise = RoomService.customer({roomId: id}, function (data) {
                 $scope.customer = data.data || {};
+                if ($scope.customer.description) {
+                    $scope.customerDescs = $scope.customer.description.split('@@@') || [];
+                }
             });
             CommonUtils.loading(promise);
         };

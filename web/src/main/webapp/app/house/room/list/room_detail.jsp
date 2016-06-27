@@ -210,7 +210,9 @@
                                 </div>
                                 <div class="item " style="width: 100%;">
                                     <div class="form-label w120"><label>备注:</label></div>
-                                    <span class="w720">{{customer.description}}</span>
+                                    <div class="w720" style="padding-top: 5px;">
+                                        <p ng-repeat="foo in customerDescs" ng-cloak>{{foo}}</p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row text-center" style="clear:both;margin: 10px 0;" ng-if="customer.id">

@@ -191,39 +191,11 @@
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label>描述1:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.c1" maxlength="100"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>描述2:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.c2" maxlength="100"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>描述3:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.c3" maxlength="100"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>描述4:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.c4" maxlength="100"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>描述5:</label>
-                        </div>
-                        <input class="col-10-half" type="text" ng-model="beans.c5" maxlength="100"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
                             <label>备注:</label>
                         </div>
-                        <textarea class="col-10-half" ng-model="beans.description" rows="6" readonly></textarea>
+                        <div class="col-10-half">
+                            <p ng-repeat="foo in descs" ng-cloak>{{foo}}</p>
+                        </div>
                     </div>
                     <c:if test="${pageType eq 'add' || pageType eq 'modify'}">
                         <div class="row" ng-show="!newDesc">
