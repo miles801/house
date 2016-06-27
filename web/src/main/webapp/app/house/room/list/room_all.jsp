@@ -131,7 +131,9 @@
                                 <td colspan="13" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
-                                <td bo-text="foo.roomKey"></td>
+                                <td>
+                                    <a class="cp" ng-click="detail(foo.id)" bo-text="foo.roomKey"></a>
+                                </td>
                                 <td bo-text="foo.buildingName"></td>
                                 <td bo-text="foo.blockCode"></td>
                                 <td bo-text="foo.unitCode"></td>
