@@ -30,26 +30,36 @@ public class Customer extends CommonDomain {
     @Column(length = 40, nullable = false)
     private String code;
 
+    @ApiField("姓名")
     @Column(length = 40)
     private String name;
 
+    @ApiField("性别")
     @Column(length = 40)
     private String sex;
+    @ApiField("身份证号码")
     @Column(length = 20)
     private String idCard;
     @NotNull(message = "客户主电话号码不能为空!")
+    @ApiField("电话1")
     @Column(length = 20, nullable = false)
     private String phone1;
+    @ApiField("电话2")
     @Column(length = 20)
     private String phone2;
+    @ApiField("电话3")
     @Column(length = 20)
     private String phone3;
+    @ApiField("邮箱")
     @Column(length = 100)
     private String email;
+    @ApiField("微信")
     @Column(length = 40)
     private String wechat;
+    @ApiField("年龄段")
     @Column(length = 40)
     private String age;
+    @ApiField("职位")
     @Column(length = 40)
     private String duty;
     @ApiField("工作单位")
@@ -66,12 +76,16 @@ public class Customer extends CommonDomain {
     @ApiField("婚姻状况")
     @Column(length = 40)
     private String marriage;
+    @ApiField("车位1")
     @Column(length = 40)
     private String carSite1;
+    @ApiField("车位2")
     @Column(length = 40)
     private String carSite2;
+    @ApiField("车牌号")
     @Column(length = 40)
     private String carNo;
+    @ApiField("车型")
     @Column(length = 40)
     private String carType;
     @ApiField("家庭人口")

@@ -151,6 +151,7 @@
                 url: 'house/customer/modify?id=' + customerId + '&roomId=' + id,
                 onUpdate: function () {
                     $scope.loadCustomer();
+                    $scope.loadNews(); // 刷新最新动态
                 }
             })
         };

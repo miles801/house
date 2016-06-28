@@ -1,5 +1,6 @@
 package com.michael.spec.service.impl;
 
+import com.michael.docs.annotations.ApiField;
 import com.michael.pinyin.SimplePinYin;
 import com.michael.pinyin.StandardStrategy;
 import com.michael.poi.adapter.AnnotationCfgAdapter;
@@ -36,10 +37,12 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -134,17 +137,23 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
         CustomerService customerService = beanContainer.getBean(CustomerService.class);
         String customerId = customer.getId();
+        RoomNews news = new RoomNews();
         if (StringUtils.isEmpty(customerId)) {
             customerId = beanContainer.getBean(CustomerService.class).save(customer);
         } else {
-            customerService.update(customer);
+            Customer originCus = customerDao.findById(customerId);
+            Assert.notNull(originCus, "数据错误!客户不存在!" + customerId);
+            // 比较两个对象并返回不一样的内容
+            String content = compare(customer, originCus);
+            news.setContent(content);
+            BeanUtils.copyProperties(customer, originCus);
+            customer.setId(null);
         }
         Room room = roomDao.findRoomById(id);
         Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
 
         // 设置变更信息（添加到最新动态）
         String originCustomerId = room.getCustomerId();
-        RoomNews news = new RoomNews();
         news.setRoomId(id);
         if (StringUtils.isEmpty(originCustomerId)) {
             news.setContent(String.format("添加业主：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
@@ -160,12 +169,43 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             roomBusiness.setNewCustomerId(customerId);
             beanContainer.getBean(RoomBusinessService.class).save(roomBusiness);
         } else {
-            news.setContent("修改业主信息");
+
         }
 
         roomNewsService.save(news);
 
         room.setCustomerId(customerId);
+    }
+
+    private String compare(final Customer customer, final Customer originCus) {
+        final StringBuilder builder = new StringBuilder("变更业主信息：");
+        ReflectionUtils.doWithFields(Customer.class, new ReflectionUtils.FieldCallback() {
+            @Override
+            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+                field.setAccessible(true);
+                Object newValue = field.get(customer);
+                Object oldValue = field.get(originCus);
+                field.setAccessible(false);
+                if (newValue == oldValue) {
+                    return;
+                }
+                ApiField nameAnno = field.getAnnotation(ApiField.class);
+                if (nameAnno == null) {
+                    return;
+                }
+                String name = nameAnno.value();
+                if (newValue == null) {
+                    builder.append("<p>" + name + "：" + oldValue.toString() + " --> </p>");
+                }
+                if (oldValue == null) {
+                    builder.append("<p>" + name + "：" + " --> " + newValue.toString() + "</p>");
+                }
+                if (newValue != null && oldValue != null && !newValue.equals(oldValue)) {
+                    builder.append("<p>" + name + "：" + oldValue.toString() + " --> " + newValue.toString() + "</p>");
+                }
+            }
+        });
+        return builder.toString();
     }
 
 
