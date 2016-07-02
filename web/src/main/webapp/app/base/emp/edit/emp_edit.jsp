@@ -112,24 +112,6 @@
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label>入职时间:</label>
-                        </div>
-                        <div class="col-2-half">
-                            <input class="col-12" type="text" ng-model="beans.joinDate" readonly eccrm-my97="{}"/>
-                            <span class="add-on"><i class="icons icon cp clock" ng-click="beans.joinDate=null"
-                                                    title="清除"></i></span>
-                        </div>
-                        <div class="form-label col-1-half">
-                            <label>离职时间:</label>
-                        </div>
-                        <div class="col-2-half">
-                            <input class="col-12" type="text" ng-model="beans.leaveDate" readonly eccrm-my97="{}"/>
-                            <span class="add-on"><i class="icons icon cp clock" ng-click="beans.leaveDate=null"
-                                                    title="清除"></i></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
                             <label>手机号码:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.mobile" maxlength="20" validate
@@ -147,17 +129,12 @@
                         <input class="col-2-half" type="text" ng-model="beans.email" maxlength="100" validate
                                validate-email/>
                         <div class="form-label col-1-half">
-                            <label>考勤编号:</label>
-                        </div>
-                        <input class="col-2-half" type="text" ng-model="beans.attendanceNo" maxlength="20"
-                               placeholder="考勤机中的用户ID"/>
-                    </div>
-                    <div class="row">
-                        <div class="form-label col-1-half">
                             <label>职务:</label>
                         </div>
                         <select ng-model="beans.duty" class="col-2-half"
                                 ng-options="foo.value as foo.name for foo in duty"></select>
+                    </div>
+                    <div class="row">
                         <div class="form-label col-1-half">
                             <label>账号状态:</label>
                         </div>

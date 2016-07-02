@@ -1,11 +1,13 @@
 package com.michael.base.emp.domain;
 
 import com.michael.docs.annotations.ApiField;
+import com.ycrl.base.common.CommonDomain;
 import eccrm.base.attachment.AttachmentSymbol;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 员工
@@ -14,7 +16,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "s_user")
-public class Emp implements AttachmentSymbol {
+public class Emp extends CommonDomain implements AttachmentSymbol {
 
     public static String SALARY_CONF = "SALARY_CONF"; //岗位等级
 
@@ -30,12 +32,6 @@ public class Emp implements AttachmentSymbol {
      * 离职
      */
     public static final Integer STATUS_LEAVE = 2;
-
-    @Id
-    @GenericGenerator(name = "idGenerator", strategy = "identity")
-    @GeneratedValue(generator = "idGenerator")
-    @Column(name = "id", unique = true, nullable = false)
-    private String id;
 
 
     @ApiField(value = "姓名", required = true)
@@ -63,34 +59,16 @@ public class Emp implements AttachmentSymbol {
     @Column(length = 40)
     private String sex;
 
-    // 开始工作时间
-    @ApiField(value = "开始工作时间（工龄）")
-//    @Column
-    @Transient
-    private Date workDate;
-
-    @ApiField(value = "入职时间（司龄）")
-//    @Column
-    @Transient
-    private Date joinDate;
-
-    @ApiField(value = "离职时间")
-//    @Column
-    @Transient
-    private Date leaveDate;
-
     @ApiField(value = "电话号码")
     @Column(length = 20)
     private String phone;
 
     @ApiField(value = "手机号码")
-//    @Column(length = 20)
-    @Transient
+    @Column(length = 20)
     private String mobile;
 
     @ApiField(value = "邮箱")
-//    @Column(length = 100)
-    @Transient
+    @Column(length = 100)
     private String email;
 
     @ApiField(value = "头像地址")
@@ -105,7 +83,7 @@ public class Emp implements AttachmentSymbol {
     @Column(length = 40, name = "org_id")
     private String orgId;
     @ApiField(value = "所属组织机构名称")
-//    @Column(length = 40)
+    @Column(length = 40)
     @Transient
     private String orgName;
 
@@ -113,32 +91,9 @@ public class Emp implements AttachmentSymbol {
     @Column(length = 40, name = "position_level")
     private String duty;
 
-    @ApiField(value = "考勤编号", desc = "用于与考勤机中的用户ID对接")
-    @Column(length = 40, name = "att_number")
-    private String attendanceNo;
-
-    @ApiField(value = "商务级别", desc = "用于与CRM对接使用")
-    @Column(length = 32)
-    private String level;
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-
-    public String getAttendanceNo() {
-        return attendanceNo;
-    }
-
-    public void setAttendanceNo(String attendanceNo) {
-        this.attendanceNo = attendanceNo;
-    }
 
     public String businessId() {
-        return id;
+        return getId();
     }
 
     public String getMobile() {
@@ -197,31 +152,6 @@ public class Emp implements AttachmentSymbol {
         this.password = password;
     }
 
-    public Date getWorkDate() {
-        return workDate;
-    }
-
-    public void setWorkDate(Date workDate) {
-        this.workDate = workDate;
-    }
-
-    public Date getJoinDate() {
-        return joinDate;
-    }
-
-    public void setJoinDate(Date joinDate) {
-        this.joinDate = joinDate;
-    }
-
-    public Date getLeaveDate() {
-        return leaveDate;
-    }
-
-    public void setLeaveDate(Date leaveDate) {
-        this.leaveDate = leaveDate;
-    }
-
-
     public String getOrgId() {
         return orgId;
     }
@@ -278,11 +208,4 @@ public class Emp implements AttachmentSymbol {
         this.locked = locked;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

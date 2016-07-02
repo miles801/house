@@ -17,6 +17,7 @@ import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.md5.MD5Utils;
 import com.ycrl.utils.string.StringUtils;
+import com.ycrl.utils.uuid.UUIDGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -36,6 +37,7 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
 
     @Override
     public String save(Emp emp) {
+        emp.setId(UUIDGenerator.generate());
         // 设置初始化数据
         emp.setLocked(0);
         emp.setPassword(MD5Utils.encode("111111"));
@@ -61,12 +63,6 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
         boolean hasLoginName = empDao.hasLoginName(emp.getLoginName(), emp.getId());
         Assert.isTrue(!hasLoginName, "操作失败!登录用户名已经存在!");
 
-        // 检查考勤编号
-        if (StringUtils.isNotEmpty(emp.getAttendanceNo())) {
-            boolean hasAttNo = empDao.hasAttNo(emp.getAttendanceNo(), emp.getId());
-            Assert.isTrue(!hasAttNo, "操作失败!考勤编号已经存在!");
-        }
-
     }
 
     @Override
@@ -76,11 +72,6 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
         validate(emp);
 
         emp.setPinyin(new SimplePinYin().toPinYin(emp.getName(), new StandardStrategy()));
-
-        // 如果有离职时间，则状态变更为离职
-        if (emp.getLeaveDate() != null) {
-            emp.setLocked(Emp.STATUS_LEAVE);
-        }
 
         // 机构变更的问题 获取原来的机构，改变新的
         empDao.update(emp);
