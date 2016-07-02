@@ -123,6 +123,24 @@ public class ResourceDaoImpl extends HibernateDaoHelper implements ResourceDao {
         return criteria.list();
     }
 
+    @Override
+    public List<String> permissionResourceCode(String empId, ResourceBo bo) {
+        Assert.hasText(empId, "资源查询失败!员工ID不能为空!");
+        Criteria criteria = createCriteria(Resource.class)
+                .setProjection(Projections.property("code"));
+        CriteriaUtils.addCondition(criteria, bo);
+        // 关联了 岗位员工表、岗位资源表、资源表
+        DetachedCriteria pr = DetachedCriteria.forClass(PositionResource.class)
+                .setProjection(Projections.property("resourceId"))
+                .add(Property.forName("positionId").in(
+                        DetachedCriteria.forClass(PositionEmp.class)
+                                .setProjection(Projections.property("positionId"))
+                                .add(Restrictions.eq("empId", empId)))
+                );
+        criteria.add(Property.forName("id").in(pr));
+        return criteria.list();
+    }
+
     private void initCriteria(Criteria criteria, ResourceBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);

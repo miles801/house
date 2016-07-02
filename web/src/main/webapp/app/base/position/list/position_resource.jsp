@@ -108,20 +108,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="dn" style="width:350px;height:600px;margin-left:20px;">
+                <div style="width:350px;height:600px;margin-left:20px;">
                     <div class="block">
                         <div class="block-header">
                             <div class="header-text">
                                 <span class="glyphicons list"></span> <span>操作权限</span>
                             </div>
                             <div class="header-button">
-                                <a ng-click="saveMenu()" class="btn btn-blue-dark">保存</a>
+                                <a ng-click="saveElement()" class="btn btn-blue-dark">保存</a>
                             </div>
                         </div>
                         <div class="block-content pr">
                             <div class="tree-button">
-                                <a ng-click="checkAll(module.data);" class="btn btn-blue-dark">全选</a>
-                                <a ng-click="clearAll(module.data)" class="btn btn-blue-dark">清空</a>
+                                <a ng-click="checkAllElement();" class="btn btn-blue-dark">全选</a>
+                                <a ng-click="clearAllElement()" class="btn btn-blue-dark">清空</a>
                             </div>
                             <div class="tree-container">
                                 <div class="tree">

@@ -23,6 +23,18 @@ public class PositionResource extends CommonDomain {
     @Column(nullable = false, length = 40)
     private String resourceId;
 
+    // 资源类型，同Resource的类型一致
+    @Column(length = 40)
+    private String resourceType;
+
+    public String getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(String resourceType) {
+        this.resourceType = resourceType;
+    }
+
     public String getPositionId() {
         return positionId;
     }

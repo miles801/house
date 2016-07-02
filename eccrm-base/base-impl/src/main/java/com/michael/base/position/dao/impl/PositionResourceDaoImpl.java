@@ -66,10 +66,12 @@ public class PositionResourceDaoImpl extends HibernateDaoHelper implements Posit
     }
 
     @Override
-    public void deleteByPosition(String positionId) {
+    public void deleteByPosition(String positionId, String resourceType) {
         Assert.hasText(positionId, "删除失败!岗位ID不能为空!");
-        getSession().createQuery("delete from " + PositionResource.class.getName() + " pr where pr.positionId=?")
+        Assert.hasText(positionId, "删除失败!资源类型不能为空!");
+        getSession().createQuery("delete from " + PositionResource.class.getName() + " pr where pr.positionId=? and pr.resourceType=?")
                 .setParameter(0, positionId)
+                .setParameter(1, resourceType)
                 .executeUpdate();
     }
 

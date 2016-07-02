@@ -47,8 +47,12 @@
             // 查询指定岗位的所有资源的ID
             queryByPosition: {method: 'GET', params: {method: 'position', positionId: '@positionId'}, isArray: false},
 
-            // 授权，需要positionId和resourceIds两个属性
-            grant: {method: 'POST', params: {method: 'grant'}, isArray: false}
+            // 菜单授权，需要positionId和resourceIds两个属性
+            grantMenu: {method: 'POST', params: {method: 'grantMenu'}, isArray: false},
+            // 资源授权，需要positionId和resourceIds两个属性
+            grantElement: {method: 'POST', params: {method: 'grantElement'}, isArray: false},
+            // 数据授权，需要positionId和resourceIds两个属性
+            grantData: {method: 'POST', params: {method: 'grantData'}, isArray: false}
 
         })
     });

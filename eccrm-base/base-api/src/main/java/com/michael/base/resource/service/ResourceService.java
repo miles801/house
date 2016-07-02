@@ -87,4 +87,11 @@ public interface ResourceService {
      * 查询我的菜单
      */
     List<ResourceVo> myMenu();
+
+    /**
+     * 加载个人所有的操作资源编号集合
+     *
+     * @return 操作资源编号的集合
+     */
+    List<String> queryElementResourceCode();
 }

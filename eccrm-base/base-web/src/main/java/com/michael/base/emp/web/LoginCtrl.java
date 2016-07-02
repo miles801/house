@@ -2,6 +2,10 @@ package com.michael.base.emp.web;
 
 import com.michael.base.emp.service.EmpService;
 import com.michael.base.emp.vo.EmpVo;
+import com.michael.base.resource.service.ResourceService;
+import com.ycrl.core.SystemContainer;
+import com.ycrl.core.context.Login;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.web.BaseController;
 import com.ycrl.utils.gson.GsonUtils;
 import com.ycrl.utils.string.StringUtils;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author miles
@@ -29,7 +34,7 @@ import java.util.Date;
  */
 @Controller
 @Scope("prototype")
-public class LoginCtrl extends BaseController{
+public class LoginCtrl extends BaseController {
     private Logger logger = Logger.getLogger(LoginCtrl.class);
     @Resource
     private EmpService empService;
@@ -55,6 +60,18 @@ public class LoginCtrl extends BaseController{
         session.setAttribute(LoginInfo.LOGIN_DATETIME, new Date().getTime());
         session.setAttribute(LoginInfo.ORG, vo.getOrgId());
         session.setAttribute(LoginInfo.ORG_NAME, vo.getOrgName());
+
+        // 加载个人的所有的操作资源编号
+        Login login = new Login();
+        login.setEmpId(vo.getId());
+        SecurityContext.set(login);
+        List<String> resourceCodes = SystemContainer.getInstance().getBean(ResourceService.class)
+                .queryElementResourceCode();
+        if (resourceCodes != null) {
+            for (String code : resourceCodes) {
+                session.setAttribute(code, true);
+            }
+        }
 
         //写入Cookie
         try {

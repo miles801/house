@@ -195,6 +195,15 @@ public class ResourceServiceImpl implements ResourceService, BeanWrapCallback<Re
     }
 
     @Override
+    public List<String> queryElementResourceCode() {
+        ResourceBo bo = new ResourceBo();
+        bo.setDeleted(false);
+        bo.setType(Resource.TYPE_ELEMENT);
+        List<String> data = resourceDao.permissionResourceCode(SecurityContext.getEmpId(), bo);
+        return data;
+    }
+
+    @Override
     public void doCallback(Resource resource, ResourceVo vo) {
     }
 }

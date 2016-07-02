@@ -31,11 +31,11 @@ public class PositionResourceServiceImpl implements PositionResourceService, Bea
     }
 
     @Override
-    public void grant(String positionId, List<String> resourceIds) {
+    public void grantMenu(String positionId, List<String> resourceIds) {
         Assert.hasText(positionId, "授权失败!岗位ID不能为空!");
 
         // 删除之前岗位的所有权限
-        positionResourceDao.deleteByPosition(positionId);
+        positionResourceDao.deleteByPosition(positionId, com.michael.base.resource.domain.Resource.TYPE_MENU);
 
         // 保存新的权限
         if (resourceIds != null) {
@@ -43,15 +43,48 @@ public class PositionResourceServiceImpl implements PositionResourceService, Bea
                 PositionResource pr = new PositionResource();
                 pr.setPositionId(positionId);
                 pr.setResourceId(resourceId);
+                pr.setResourceType(com.michael.base.resource.domain.Resource.TYPE_MENU);
                 positionResourceDao.save(pr);
             }
         }
     }
 
     @Override
-    public void update(PositionResource positionResource) {
-        ValidatorUtils.validate(positionResource);
-        positionResourceDao.update(positionResource);
+    public void grantElement(String positionId, List<String> resourceIds) {
+        Assert.hasText(positionId, "授权失败!岗位ID不能为空!");
+
+        // 删除之前岗位的所有权限
+        positionResourceDao.deleteByPosition(positionId, com.michael.base.resource.domain.Resource.TYPE_ELEMENT);
+
+        // 保存新的权限
+        if (resourceIds != null) {
+            for (String resourceId : resourceIds) {
+                PositionResource pr = new PositionResource();
+                pr.setPositionId(positionId);
+                pr.setResourceId(resourceId);
+                pr.setResourceType(com.michael.base.resource.domain.Resource.TYPE_ELEMENT);
+                positionResourceDao.save(pr);
+            }
+        }
+    }
+
+    @Override
+    public void grantData(String positionId, List<String> resourceIds) {
+        Assert.hasText(positionId, "授权失败!岗位ID不能为空!");
+
+        // 删除之前岗位的所有权限
+        positionResourceDao.deleteByPosition(positionId, com.michael.base.resource.domain.Resource.TYPE_DATA);
+
+        // 保存新的权限
+        if (resourceIds != null) {
+            for (String resourceId : resourceIds) {
+                PositionResource pr = new PositionResource();
+                pr.setPositionId(positionId);
+                pr.setResourceId(resourceId);
+                pr.setResourceType(com.michael.base.resource.domain.Resource.TYPE_DATA);
+                positionResourceDao.save(pr);
+            }
+        }
     }
 
     @Override

@@ -192,11 +192,31 @@ public class ResourceCtrl extends BaseController {
 
     @ApiOperate(value = "给指定岗位授权")
     @ResponseBody
-    @RequestMapping(value = "/grant", method = RequestMethod.POST)
+    @RequestMapping(value = "/grantMenu", method = RequestMethod.POST)
     public void grant(HttpServletRequest request, HttpServletResponse response) {
         PositionResourceTemp temp = GsonUtils.wrapDataToEntity(request, PositionResourceTemp.class);
         Assert.notNull(temp, "授权失败!没有获得授权信息!");
-        positionResourceService.grant(temp.getPositionId(), temp.getResourceIds());
+        positionResourceService.grantMenu(temp.getPositionId(), temp.getResourceIds());
+        GsonUtils.printSuccess(response);
+    }
+
+    @ApiOperate(value = "给指定岗位授权")
+    @ResponseBody
+    @RequestMapping(value = "/grantElement", method = RequestMethod.POST)
+    public void grantElement(HttpServletRequest request, HttpServletResponse response) {
+        PositionResourceTemp temp = GsonUtils.wrapDataToEntity(request, PositionResourceTemp.class);
+        Assert.notNull(temp, "授权失败!没有获得授权信息!");
+        positionResourceService.grantElement(temp.getPositionId(), temp.getResourceIds());
+        GsonUtils.printSuccess(response);
+    }
+
+    @ApiOperate(value = "给指定岗位授权")
+    @ResponseBody
+    @RequestMapping(value = "/grantData", method = RequestMethod.POST)
+    public void grantData(HttpServletRequest request, HttpServletResponse response) {
+        PositionResourceTemp temp = GsonUtils.wrapDataToEntity(request, PositionResourceTemp.class);
+        Assert.notNull(temp, "授权失败!没有获得授权信息!");
+        positionResourceService.grantData(temp.getPositionId(), temp.getResourceIds());
         GsonUtils.printSuccess(response);
     }
 

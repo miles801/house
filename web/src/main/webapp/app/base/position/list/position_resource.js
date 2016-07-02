@@ -35,6 +35,7 @@
         }
 
         var menuTree = null;
+        var elementTree = null;
         // 初始化菜单资源
         var initMenuTree = function () {
             ResourceService.queryValidMenu(function (data) {
@@ -59,7 +60,7 @@
             angular.forEach(nodes, function (o) {
                 ids.push(o.id);
             });
-            var promise = ResourceService.grant({positionId: $scope.position.id, resourceIds: ids}, function () {
+            var promise = ResourceService.grantMenu({positionId: $scope.position.id, resourceIds: ids}, function () {
                 AlertFactory.success('授权成功!重新登录后生效!');
             });
             CommonUtils.loading(promise);
@@ -78,6 +79,26 @@
                 elementTree = $.fn.zTree.init($('#elementTree'), getZTreeSettings(), data.data);
             });
         };
+        $scope.checkAllElement = function () {
+            elementTree.checkAllNodes(true);
+        };
+
+        $scope.clearAllElement = function () {
+            elementTree.checkAllNodes(false);
+        };
+
+        // 保存菜单权限
+        $scope.saveElement = function () {
+            var nodes = elementTree.getCheckedNodes(true);
+            var ids = [];
+            angular.forEach(nodes, function (o) {
+                ids.push(o.id);
+            });
+            var promise = ResourceService.grantElement({positionId: $scope.position.id, resourceIds: ids}, function () {
+                AlertFactory.success('授权成功!重新登录后生效!');
+            });
+            CommonUtils.loading(promise);
+        };
 
         $scope.query = function () {
             // 查询指定岗位的资源ID
@@ -85,12 +106,20 @@
             var promise = ResourceService.queryByPosition({positionId: $scope.position.id}, function (data) {
                 // 遍历菜单树进行回显
                 var ids = data.data || [];
+                // 菜单树
                 menuTree.getNodesByFilter(function (o) {
                     if ($.inArray(o.id, ids) != -1) {
                         o.checked = true;
                     }
                 }, false);
                 menuTree.refresh();
+                // 资源树
+                elementTree.getNodesByFilter(function (o) {
+                    if ($.inArray(o.id, ids) != -1) {
+                        o.checked = true;
+                    }
+                }, false);
+                elementTree.refresh();
             });
             CommonUtils.loading(promise);
         };
@@ -100,7 +129,7 @@
         initMenuTree();
         // fixme 数据权限和操作权限还未完成
         // initDataTree();
-        // initElementTree();
+        initElementTree();
 
     });
 })(window, angular, jQuery);

@@ -53,13 +53,6 @@ public class PositionResourceCtrl extends BaseController {
         return "base/positionResource/edit/positionResource_edit";
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ResponseBody
-    public void update(HttpServletRequest request, HttpServletResponse response) {
-        PositionResource positionResource = GsonUtils.wrapDataToEntity(request, PositionResource.class);
-        positionResourceService.update(positionResource);
-        GsonUtils.printSuccess(response);
-    }
 
     @RequestMapping(value = {"/detail"}, params = {"id"}, method = RequestMethod.GET)
     public String toDetail(@RequestParam String id, HttpServletRequest request) {

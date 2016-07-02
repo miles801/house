@@ -18,18 +18,31 @@ public interface PositionResourceService {
     String save(PositionResource positionResource);
 
     /**
-     * 给指定的岗位授权（全量）
-     * 会先删除该岗位下的所有资源，然后重建
+     * 给指定的岗位授权
+     * 会先删除该岗位下的所有菜单资源，然后重建
      *
      * @param positionId  岗位ID
      * @param resourceIds 资源ID
      */
-    void grant(String positionId, List<String> resourceIds);
+    void grantMenu(String positionId, List<String> resourceIds);
 
     /**
-     * 更新
+     * 给指定的岗位授权
+     * 会先删除该岗位下的所有操作资源，然后重建
+     *
+     * @param positionId  岗位ID
+     * @param resourceIds 资源ID
      */
-    void update(PositionResource positionResource);
+    void grantElement(String positionId, List<String> resourceIds);
+
+    /**
+     * 给指定的岗位授权
+     * 会先删除该岗位下的所有数据资源，然后重建
+     *
+     * @param positionId  岗位ID
+     * @param resourceIds 资源ID
+     */
+    void grantData(String positionId, List<String> resourceIds);
 
     /**
      * 分页查询

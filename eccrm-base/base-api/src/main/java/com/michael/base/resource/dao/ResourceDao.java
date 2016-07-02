@@ -68,4 +68,13 @@ public interface ResourceDao {
      * @param bo    资源的高级条件
      */
     List<Resource> permissionResource(String empId, ResourceBo bo);
+
+    /**
+     * 查询所有个人具有的资源的编号集合
+     *
+     * @param empId 员工ID
+     * @param bo    其他条件
+     * @return 编号集合
+     */
+    List<String> permissionResourceCode(String empId, ResourceBo bo);
 }

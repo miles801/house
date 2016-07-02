@@ -39,7 +39,7 @@ public interface PositionResourceDao {
      *
      * @param positionId 岗位ID
      */
-    void deleteByPosition(String positionId);
+    void deleteByPosition(String positionId, String resourceType);
 
 
     /**
