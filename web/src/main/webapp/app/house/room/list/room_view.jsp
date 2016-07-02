@@ -150,10 +150,13 @@
                     <span>房间管理</span>
                 </div>
                 <div class="header-button">
-                    <a type="button" class="btn btn-green btn-min" ng-click="exportData();" ng-disabled="!beans.total">
-                        <span class="glyphicons search"></span>
-                        导出数据
-                    </a>
+                    <c:if test='${sessionScope.get("ROOM_DATA_EXPORT") eq true}'>
+                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
+                           ng-disabled="!beans.total">
+                            <span class="glyphicons search"></span>
+                            导出数据
+                        </a>
+                    </c:if>
                 </div>
             </div>
             <div class="block-content">

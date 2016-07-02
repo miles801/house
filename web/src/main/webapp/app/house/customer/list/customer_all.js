@@ -75,6 +75,17 @@
 
         // 删除或批量删除
         $scope.remove = function (id) {
+            if (!id) {
+                var ids = [];
+                angular.forEach($scope.items || [], function (o) {
+                    ids.push(o.id);
+                });
+                id = ids.join(',');
+            }
+            if (!id) {
+                AlertFactory.error('没有获取到需要删除的数据!');
+                return;
+            }
             ModalFactory.confirm({
                 scope: $scope,
                 content: '<span class="text-danger">数据一旦删除将不可恢复，请确认!</span>',

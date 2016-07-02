@@ -122,10 +122,18 @@
                         <a type="button" class="btn btn-green btn-min" ng-click="add();">
                             <span class="glyphicons plus"></span> 新建
                         </a>
+                    <c:if test='${sessionScope.get("CUSTOMER_DATA_EXPORT") eq true}'>
                         <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
                            ng-disabled="!beans.total">
                             <span class="glyphicons plus"></span> 导出数据
                         </a>
+                    </c:if>
+                    <c:if test='${sessionScope.get("CUSTOMER_DELETE") eq true}'>
+                        <a type="button" class="btn btn-green btn-min" ng-click="remove();"
+                           ng-disabled="!anyone">
+                            <span class="glyphicons plus"></span> 删除客户
+                        </a>
+                    </c:if>
                 </span>
             </div>
             <div class="block-content">
@@ -134,6 +142,10 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td>客户编号</td>
                                 <td>姓名</td>
                                 <td>性别</td>
@@ -150,9 +162,10 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="12" class="text-center">没有查询到数据！</td>
+                                <td colspan="13" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.code"></a>
                                 </td>

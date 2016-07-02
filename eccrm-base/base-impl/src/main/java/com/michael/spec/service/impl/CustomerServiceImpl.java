@@ -102,6 +102,11 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     public void deleteByIds(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
+            // 判断该客户是否具有房产
+            List<String> rooms = roomDao.findCodeByCustomer(id);
+            Assert.isTrue(rooms == null || rooms.isEmpty(), "删除客户失败!该客户具有房产信息，请先变更房产的客户再行删除!");
+
+            // 删除客户信息
             customerDao.deleteById(id);
         }
     }
