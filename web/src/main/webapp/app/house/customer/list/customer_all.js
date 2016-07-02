@@ -92,9 +92,9 @@
         return function () {
             var v = '';
             angular.forEach(arguments, function (o) {
-                v += o ? o : '';
+                v += o ? ("; " + o) : '';
             });
-            return v;
+            return v.replace(/^, /, '');
         }
     });
 })(window, angular, jQuery);
