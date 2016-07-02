@@ -16,6 +16,7 @@ import com.ycrl.core.web.BaseController;
 import com.ycrl.utils.gson.DateStringConverter;
 import com.ycrl.utils.gson.GsonUtils;
 import com.ycrl.utils.string.StringUtils;
+import eccrm.utils.ArrayUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -173,6 +174,14 @@ public class CustomerCtrl extends BaseController {
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
                 .create();
         CustomerBo bo = GsonUtils.wrapDataToEntity(request, CustomerBo.class);
+        String statusInclude = request.getParameter("statusIncludes");
+        if (StringUtils.isNotEmpty(statusInclude)) {
+            List<String> status = ArrayUtils.arrayToList(statusInclude.split(","));
+            if (bo == null) {
+                bo = new CustomerBo();
+            }
+            bo.setStatusInclude(status);
+        }
         List<CustomerVo> data = customerService.pageQuery(bo).getData();
         if (data == null) {
             data = new ArrayList<CustomerVo>();

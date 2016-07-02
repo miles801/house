@@ -243,7 +243,8 @@ public class GsonUtils {
             ServletInputStream inputStream = request.getInputStream();
             if (inputStream != null) {
                 data = IOUtils.toString(inputStream, "utf-8");
-            } else {
+            }
+            if (inputStream == null || StringUtils.isEmpty(data)) {
                 Enumeration<String> enumeration = request.getParameterNames();
                 JsonObject jsonObject = new JsonObject();
                 while (enumeration.hasMoreElements()) {

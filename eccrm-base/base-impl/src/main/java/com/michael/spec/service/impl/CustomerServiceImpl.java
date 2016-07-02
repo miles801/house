@@ -15,7 +15,6 @@ import com.michael.spec.domain.Room;
 import com.michael.spec.service.CustomerService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.CustomerVo;
-import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
@@ -25,7 +24,6 @@ import com.ycrl.utils.string.StringUtils;
 import eccrm.base.attachment.AttachmentProvider;
 import eccrm.base.attachment.utils.AttachmentHolder;
 import eccrm.base.attachment.vo.AttachmentVo;
-import eccrm.base.parameter.dao.BusinessParamItemDao;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -190,6 +188,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         Logger logger = Logger.getLogger(CustomerServiceImpl.class);
         Assert.notEmpty(attachmentIds, "数据文件不能为空，请重试!");
 
+        final ParameterContainer parameterContainer = ParameterContainer.getInstance();
         for (String id : attachmentIds) {
             AttachmentVo vo = AttachmentProvider.getInfo(id);
             Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
@@ -209,7 +208,6 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             }
 
             final Map<String, String> params = new HashMap<String, String>();
-            final BusinessParamItemDao bpiDao = SystemContainer.getInstance().getBean(BusinessParamItemDao.class);
             configuration.setPath(newFilePath);
             configuration.setHandler(new Handler<CustomerDTO>() {
                 @Override
@@ -220,23 +218,25 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                     // 设置参数
                     String sex = dto.getSex();
                     if (StringUtils.isNotEmpty(sex)) {
-                        String sexValue = params.get(sex);
-                        if (StringUtils.isEmpty(sexValue)) {
-                            sexValue = bpiDao.queryName(BaseParameter.SEX, sex);
-                            params.put(sex, sexValue);
-                        }
-                        customer.setSex(sexValue);
+                        customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, sex));
                     }
                     String marriage = dto.getMarriage();
                     if (StringUtils.isNotEmpty(marriage)) {
-                        String marriageValue = params.get(marriage);
-                        if (StringUtils.isEmpty(marriageValue)) {
-                            marriageValue = bpiDao.queryName(BaseParameter.MARRIAGE, marriage);
-                            params.put(marriage, marriageValue);
-                        }
-                        customer.setMarriage(marriageValue);
+                        customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, marriage));
                     }
-
+                    String education = dto.getEducation();
+                    if (StringUtils.isNotEmpty(education)) {
+                        customer.setEducation(parameterContainer.getBusinessValue(BaseParameter.EDU, education));
+                    }
+                    String age = dto.getAge();
+                    if (StringUtils.isNotEmpty(age)) {
+                        customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, age));
+                    }
+                    String money = dto.getMoney();
+                    if (StringUtils.isNotEmpty(money)) {
+                        customer.setMoney(parameterContainer.getBusinessValue(Customer.MONEY_STAGE, money));
+                    }
+                    customer.setStatus(Room.STATUS_APPLY_ADD);
                     try {
                         save(customer);
                     } catch (Exception e) {

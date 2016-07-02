@@ -81,8 +81,10 @@
                 AlertFactory.error('未获取到可以导出的数据!请先查询出数据!');
                 return;
             }
-            window.location.href = CommonUtils.contextPathURL('/house/customer/export' +
-                ' ?param=' + $.param($scope.condition));
+            var o = angular.extend({}, $scope.condition);
+            o.start = null;
+            o.limit = null;
+            window.location.href = CommonUtils.contextPathURL('/house/customer/export?' + $.param(o));
         };
     });
 

@@ -1,5 +1,6 @@
 package com.michael.spec.service.impl;
 
+import com.michael.base.common.BaseParameter;
 import com.michael.docs.annotations.ApiField;
 import com.michael.pinyin.SimplePinYin;
 import com.michael.pinyin.StandardStrategy;
@@ -27,7 +28,6 @@ import eccrm.base.attachment.AttachmentProvider;
 import eccrm.base.attachment.utils.AttachmentHolder;
 import eccrm.base.attachment.vo.AttachmentVo;
 import eccrm.base.parameter.dao.BusinessParamItemDao;
-import eccrm.base.parameter.dao.SysParamItemDao;
 import eccrm.base.parameter.service.ParameterContainer;
 import eccrm.utils.BeanCopyUtils;
 import org.apache.commons.io.FileUtils;
@@ -349,6 +349,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             // 获取session
             SessionFactory sessionFactory = (SessionFactory) beanContainer.getBean("sessionFactory");
             final Session session = sessionFactory.getCurrentSession();
+            final ParameterContainer parameterContainer = ParameterContainer.getInstance();
             configuration.setPath(newFilePath);
             configuration.setHandler(new Handler<RoomDTO>() {
                 @Override
@@ -411,19 +412,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                             userTypeValue = bpiDao.queryName(HouseParams.HOUSE_USE_TYPE, useType);
                             params.put(useType, userTypeValue);
                         }
+                        room.setOrient(parameterContainer.getBusinessValue(HouseParams.ORIENT, dto.getOrient()));
+                        room.setHouseProperty(parameterContainer.getBusinessValue(HouseParams.HOUSE_PROPERTY, dto.getHouseProperty()));
+                        room.setDescription(dto.getDescription());
                         room.setHouseUseType(userTypeValue);
                     }
                     // 设置参数-状态
-                    room.setStatus(Room.STATUS_ACTIVE);
-                    String status = dto.getStatus();
-                    if (StringUtils.isNotEmpty(status)) {
-                        String statusValue = params.get(status);
-                        if (StringUtils.isEmpty(statusValue)) {
-                            statusValue = beanContainer.getBean(SysParamItemDao.class).queryName(HouseParams.HOUSE_STATUS, status);
-                            params.put(status, statusValue);
-                        }
-                        room.setStatus(statusValue);
-                    }
+                    room.setStatus(Room.STATUS_APPLY_ADD);
+
 
                     // 设置业主
                     String cusName = dto.getCusName();
@@ -437,7 +433,42 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                         if (StringUtils.isEmpty(cusId)) {
                             Customer customer = new Customer();
                             customer.setName(cusName);
+                            customer.setIdCard(dto.getCusIDCard());
+                            String sex = dto.getCusSex();
+                            if (StringUtils.isNotEmpty(sex)) {
+                                customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, sex));
+                            }
+                            String age = dto.getCusAge();
+                            if (StringUtils.isNotEmpty(age)) {
+                                customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, age));
+                            }
+
+                            String cusMarriage = dto.getCusMarriage();
+                            if (StringUtils.isNotEmpty(cusMarriage)) {
+                                customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, cusMarriage));
+                            }
+                            customer.setFamilyCounts(dto.getCusFamilyCount());
                             customer.setPhone1(cusPhone);
+                            customer.setPhone2(dto.getCusPhone2());
+                            customer.setPhone3(dto.getCusPhone3());
+                            customer.setEmail(dto.getCusEmail());
+                            customer.setWechat(dto.getCusWechat());
+                            customer.setDuty(dto.getCusDuty());
+                            customer.setCompany(dto.getCusCompany());
+                            String eduction = dto.getCusEducation();
+                            if (StringUtils.isNotEmpty(eduction)) {
+                                customer.setEducation(parameterContainer.getBusinessValue(BaseParameter.EDU, eduction));
+                            }
+                            String money = dto.getCusMoney();
+                            if (StringUtils.isNotEmpty(money)) {
+                                customer.setMoney(parameterContainer.getBusinessValue(Customer.MONEY_STAGE, money));
+                            }
+                            customer.setCarSite1(dto.getCusCarSite1());
+                            customer.setCarSite2(dto.getCusCarSite2());
+                            customer.setCarNo(dto.getCusCarNo());
+                            customer.setCarType(dto.getCusCarType());
+                            customer.setDescription(dto.getCusDescription());
+
                             cusId = beanContainer.getBean(CustomerService.class).save(customer);
                         }
                         room.setCustomerId(cusId);

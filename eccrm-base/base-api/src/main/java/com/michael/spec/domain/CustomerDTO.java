@@ -1,5 +1,6 @@
 package com.michael.spec.domain;
 
+import com.michael.docs.annotations.ApiField;
 import com.michael.poi.annotation.Col;
 import com.michael.poi.annotation.ImportConfig;
 import com.michael.poi.core.DTO;
@@ -18,23 +19,50 @@ public class CustomerDTO implements DTO {
     private String idCard;
     @Col(index = 2)
     private String sex;
+    @ApiField("年龄段")
     @Col(index = 3)
-    private String marriage;
+    private String age;
+    @ApiField("婚姻状况")
     @Col(index = 4)
-    private Integer familyCounts;
+    private String marriage;
     @Col(index = 5)
-    private String phone1;
+    private Integer familyCounts;
     @Col(index = 6)
-    private String phone2;
+    private String phone1;
     @Col(index = 7)
-    private String phone3;
+    private String phone2;
     @Col(index = 8)
-    private String email;
+    private String phone3;
     @Col(index = 9)
-    private String wechat;
+    private String email;
     @Col(index = 10)
-    private String company;
+    private String wechat;
+
+    @ApiField("职业")
     @Col(index = 11)
+    private String duty;
+    @ApiField("工作单位")
+    @Col(index = 12)
+    private String company;
+    @ApiField("学历")
+    @Col(index = 13)
+    private String education;
+    @ApiField("资产规模")
+    @Col(index = 14)
+    private String money;
+    @ApiField("车位1")
+    @Col(index = 15)
+    private String carSite1;
+    @ApiField("车位2")
+    @Col(index = 16)
+    private String carSite2;
+    @ApiField("车牌号")
+    @Col(index = 17)
+    private String carNo;
+    @ApiField("车型")
+    @Col(index = 18)
+    private String carType;
+    @Col(index = 19)
     private String description;
 
     public String getName() {
@@ -131,5 +159,69 @@ public class CustomerDTO implements DTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
+    }
+
+    public String getCarSite1() {
+        return carSite1;
+    }
+
+    public void setCarSite1(String carSite1) {
+        this.carSite1 = carSite1;
+    }
+
+    public String getCarSite2() {
+        return carSite2;
+    }
+
+    public void setCarSite2(String carSite2) {
+        this.carSite2 = carSite2;
+    }
+
+    public String getCarNo() {
+        return carNo;
+    }
+
+    public void setCarNo(String carNo) {
+        this.carNo = carNo;
+    }
+
+    public String getCarType() {
+        return carType;
+    }
+
+    public void setCarType(String carType) {
+        this.carType = carType;
     }
 }

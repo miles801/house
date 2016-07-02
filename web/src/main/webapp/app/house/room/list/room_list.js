@@ -38,7 +38,7 @@
             });
             CommonUtils.loading(promise);
         };
-        $scope.units = [{code: '请选择楼栋'}];
+        $scope.units = [{code: '请选择'}];
         // 获取单元列表
         $scope.loadUnit = function () {
             var promise = UnitService.query({blockId: $scope.condition.blockId}, function (data) {

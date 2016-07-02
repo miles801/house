@@ -62,7 +62,7 @@
             <div class="block-header">
                 <div class="header-text">
                     <span class="glyphicons list"></span>
-                    <span ng-cloak>单元管理 -- {{blockCode}}</span>
+                    <span ng-cloak>单元管理</span>
                 </div>
             </div>
             <div class="block-content">
