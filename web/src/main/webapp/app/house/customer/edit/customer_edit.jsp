@@ -130,13 +130,11 @@
                         <div class="form-label col-1-half">
                             <label>邮箱:</label>
                         </div>
-                        <input class="col-10-half" type="text" ng-model="beans.email" maxlength="100"/>
-                    </div>
-                    <div class="row">
+                        <input class="col-2-half" type="text" ng-model="beans.email" maxlength="100"/>
                         <div class="form-label col-1-half">
                             <label>公司名称:</label>
                         </div>
-                        <input class="col-10-half" type="text" ng-model="beans.company" maxlength="100"/>
+                        <input class="col-2-half" type="text" ng-model="beans.company" maxlength="100"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
