@@ -1,5 +1,5 @@
 /**
- * 业主管理列表
+ * 客户管理列表
  * Created by Michael on 2016-06-19 15:16:56.
  */
 (function (window, angular, $) {
@@ -39,7 +39,7 @@
         // 查看明细
         $scope.view = function (id) {
             CommonUtils.addTab({
-                title: '查看业主管理',
+                title: '查看客户管理',
                 url: '/house/customer/detail?id=' + id
             });
         };

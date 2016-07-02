@@ -1,5 +1,5 @@
 /**
- * 业主管理编辑
+ * 客户管理编辑
  */
 (function (window, angular, $) {
     var app = angular.module('house.customer.edit', [
@@ -15,7 +15,7 @@
         var id = $('#id').val();
         var roomId = $('#roomId').val();
 
-        // 是否为变更业主
+        // 是否为变更客户
         var isChange = !!(pageType == 'add' && id && roomId);
         var customerId = id;
         $scope.back = CommonUtils.back;

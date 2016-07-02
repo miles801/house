@@ -1,5 +1,5 @@
 /**
- * 业主管理编辑
+ * 客户管理编辑
  */
 (function (window, angular, $) {
     var app = angular.module('house.room.edit', [

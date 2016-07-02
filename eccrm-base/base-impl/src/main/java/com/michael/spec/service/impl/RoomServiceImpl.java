@@ -156,14 +156,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         String originCustomerId = room.getCustomerId();
         news.setRoomId(id);
         if (StringUtils.isEmpty(originCustomerId)) {
-            news.setContent(String.format("添加业主：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
+            news.setContent(String.format("添加客户：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
         } else if (!StringUtils.equals(originCustomerId, customerId)) {
             Customer originCustomer = customerDao.findById(originCustomerId);
-            news.setContent(String.format("变更业主：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", originCustomer != null ? originCustomer.getName() : "", customer.getName()));
+            news.setContent(String.format("变更客户：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", originCustomer != null ? originCustomer.getName() : "", customer.getName()));
 
             // 保存成交记录
-            Assert.notNull(roomBusiness, "变更业主时成交记录不能为空!");
-            Assert.notNull(roomBusiness.getPrice(), "变更业主时，成交价格不能为空!");
+            Assert.notNull(roomBusiness, "变更客户时成交记录不能为空!");
+            Assert.notNull(roomBusiness.getPrice(), "变更客户时，成交价格不能为空!");
             roomBusiness.setRoomId(id);
             roomBusiness.setOriginCustomerId(originCustomerId);
             roomBusiness.setNewCustomerId(customerId);
@@ -178,7 +178,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     }
 
     private String compare(final Customer customer, final Customer originCus) {
-        final StringBuilder builder = new StringBuilder("变更业主信息：");
+        final StringBuilder builder = new StringBuilder("变更客户信息：");
         ReflectionUtils.doWithFields(Customer.class, new ReflectionUtils.FieldCallback() {
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
@@ -421,7 +421,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     room.setStatus(Room.STATUS_APPLY_ADD);
 
 
-                    // 设置业主
+                    // 设置客户
                     String cusName = dto.getCusName();
                     String cusPhone = dto.getCusPhone();
                     if (StringUtils.isNotEmpty(cusName)) {

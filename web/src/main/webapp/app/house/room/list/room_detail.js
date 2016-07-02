@@ -1,5 +1,5 @@
 /**
- * 业主管理编辑
+ * 客户管理编辑
  */
 (function (window, angular, $) {
     var app = angular.module('house.room.detail', [
@@ -93,7 +93,7 @@
             CommonUtils.loading(promise);
 
         };
-        // 查看业主信息
+        // 查看客户信息
         $scope.loadCustomer = function () {
             var promise = RoomService.customer({roomId: id}, function (data) {
                 $scope.customer = data.data || {};
@@ -130,24 +130,24 @@
             $scope.pager.query();
         };
 
-        // 变更业主信息
+        // 变更客户信息
         $scope.changeCustomer = function (customerId) {
             if (!customerId) {
-                AlertFactory.error('该房屋暂时没有业主!无法变更!');
+                AlertFactory.error('该房屋暂时没有客户!无法变更!');
                 return;
             }
             CommonUtils.addTab({
-                title: '变更业主',
+                title: '变更客户',
                 url: 'house/customer/add?id=' + customerId + '&roomId=' + id,
                 onUpdate: function () {
                     window.location.reload();
                 }
             })
         };
-        // 修改业主信息
+        // 修改客户信息
         $scope.modifyCustomer = function (customerId) {
             CommonUtils.addTab({
-                title: '修改业主信息',
+                title: '修改客户信息',
                 url: 'house/customer/modify?id=' + customerId + '&roomId=' + id,
                 onUpdate: function () {
                     $scope.loadCustomer();

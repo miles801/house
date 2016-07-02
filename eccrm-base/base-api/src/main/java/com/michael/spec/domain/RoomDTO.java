@@ -64,22 +64,22 @@ public class RoomDTO implements DTO {
     @Col(index = 13)
     private String description;
 
-    @ApiField("业主姓名")
+    @ApiField("客户姓名")
     @Col(index = 14)
     private String cusName;
 
-    @ApiField("业主身份证号码")
+    @ApiField("客户身份证号码")
     @Col(index = 15)
     private String cusIDCard;
 
-    @ApiField("业主性别")
+    @ApiField("客户性别")
     @Col(index = 16)
     private String cusSex;
-    @ApiField("业主年龄段")
+    @ApiField("客户年龄段")
     @Col(index = 17)
     private String cusAge;
 
-    @ApiField("业主婚姻状况")
+    @ApiField("客户婚姻状况")
     @Col(index = 18)
     private String cusMarriage;
     @ApiField("家庭人口数")

@@ -1,5 +1,5 @@
 /**
- * 业主管理
+ * 客户管理
  * Created by Michael on 2016-06-19 15:16:56.
  */
 (function (angular) {

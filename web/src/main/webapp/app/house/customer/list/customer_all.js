@@ -1,5 +1,5 @@
 /**
- * 业主管理列表
+ * 客户管理列表
  * Created by Michael on 2016-06-19 15:16:56.
  */
 (function (window, angular, $) {
@@ -52,7 +52,7 @@
         // 新增
         $scope.add = function () {
             CommonUtils.addTab({
-                title: '新增业主管理',
+                title: '新增客户管理',
                 url: '/house/customer/add',
                 onUpdate: $scope.query
             });
@@ -61,7 +61,7 @@
         // 更新
         $scope.modify = function (id) {
             CommonUtils.addTab({
-                title: '更新业主管理',
+                title: '更新客户管理',
                 url: '/house/customer/modify?id=' + id,
                 onUpdate: $scope.query
             });
@@ -70,7 +70,7 @@
         // 查看明细
         $scope.view = function (id) {
             CommonUtils.addTab({
-                title: '查看业主管理',
+                title: '查看客户管理',
                 url: '/house/customer/detail?id=' + id
             });
         };

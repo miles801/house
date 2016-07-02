@@ -129,10 +129,10 @@
                             </div>
                         </div>
                     </div>
-                    <%-- 业主信息 --%>
+                    <%-- 客户信息 --%>
                     <div class="panel panel-tab" style="margin: 15px 0;position: relative;">
                         <ul class="nav nav-tabs" style="margin: 5px 0 0 0;width:100%;">
-                            <li class="active"><i>业主信息</i></li>
+                            <li class="active"><i>客户信息</i></li>
                         </ul>
                         <div class="tab-content" style="height: 100%;width:100%;padding-top: 0!important;">
                             <div class="float items" ng-cloak>
@@ -217,10 +217,10 @@
                             </div>
                             <div class="row text-center" style="clear:both;margin: 10px 0;" ng-if="customer.id">
                                 <a type="button" class="btn btn-blue" ng-click="changeCustomer(customer.id);">
-                                    变更业主
+                                    变更客户
                                 </a>
                                 <a type="button" class="btn btn-blue" ng-click="modifyCustomer(customer.id);">
-                                    业主信息修改
+                                    客户信息修改
                                 </a>
                                 <a type="button" class="btn btn-blue" ng-click="applyInvalid(customer.id);"> 申请无效 </a>
                             </div>

@@ -5,7 +5,7 @@
 %>
 <html lang="en">
 <head>
-    <title>业主管理</title>
+    <title>客户管理</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css">
@@ -66,7 +66,7 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
-                                <td>业主编号</td>
+                                <td>客户编号</td>
                                 <td>姓名</td>
                                 <td>年龄段</td>
                                 <td>手机</td>

@@ -88,7 +88,7 @@ public class RoomView {
     @Column(length = 40, nullable = false)
     private String status;
 
-    @ApiField("业主ID")
+    @ApiField("客户ID")
     @Column
     private String customerId;
 

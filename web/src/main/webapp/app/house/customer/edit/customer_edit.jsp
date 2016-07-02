@@ -7,7 +7,7 @@
 <html lang="en">
 
 <head>
-    <title>编辑业主管理</title>
+    <title>编辑客户管理</title>
     <meta content="text/html" charset="utf-8">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css">
@@ -82,7 +82,7 @@
                     </c:if>
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label>业主编号:</label>
+                            <label>客户编号:</label>
                         </div>
                         <c:if test="${roomId ne null && pageType eq 'add'}">
                             <div class="col-2-half">
@@ -101,7 +101,7 @@
                         </c:if>
 
                         <div class="form-label col-1-half">
-                            <label>业主姓名:</label>
+                            <label>客户姓名:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.name" maxlength="20"/>
                         <div class="form-label col-1-half">
