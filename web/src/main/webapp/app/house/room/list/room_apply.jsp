@@ -149,6 +149,16 @@
                     <span class="glyphicons list"></span>
                     <span>房间管理</span>
                 </div>
+                <div class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="pass();" ng-cloak
+                       ng-disabled="!anyone">
+                        <span class="glyphicons plus"></span> 批量通过
+                    </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="deny();" ng-cloak
+                       ng-disabled="!anyone">
+                        <span class="glyphicons plus"></span> 批量驳回
+                    </a>
+                </div>
             </div>
             <div class="block-content">
                 <div class="content-wrap">
@@ -156,6 +166,10 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td>房屋编号</td>
                                 <td>楼盘</td>
                                 <td>栋座</td>
@@ -168,15 +182,18 @@
                                 <td>客户姓名</td>
                                 <td>手机</td>
                                 <td>微信</td>
+                                <td>录入人</td>
+                                <td>录入时间</td>
                                 <td>状态</td>
                                 <td>跟进录入</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.total">
-                                <td colspan="14" class="text-center">无房屋信息!</td>
+                                <td colspan="17" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td>
                                     <a class="cp" ng-click="detail(foo.id)" bo-text="foo.roomKey"></a>
                                 </td>
@@ -191,6 +208,8 @@
                                 <td bo-text="foo.cusName"></td>
                                 <td bo-text="foo.cusPhone"></td>
                                 <td bo-text="foo.cusWechat"></td>
+                                <td bo-text="foo.modifierName||foo.creatorName"></td>
+                                <td bo-text="(foo.modifiedDatetime||foo.createdDatetime)|eccrmDatetime"></td>
                                 <td bo-text="foo.statusName"></td>
                                 <td>
                                     <a class="btn-op blue" ng-click="pass(foo.id);">通过</a>

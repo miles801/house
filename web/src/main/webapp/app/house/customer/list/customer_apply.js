@@ -38,6 +38,14 @@
             $scope.education = data;
             $scope.education.unshift({name: '请选择...'});
         });
+
+        $scope.status = [
+            {name: '请选择...'},
+            {name: '新增申请', value: 'APPLY_ADD'},
+            {name: '修改申请', value: 'APPLY_MODIFY'},
+            {name: '无效申请', value: 'APPLY_INVALID'}
+        ];
+
         //查询数据
         $scope.query = function () {
             $scope.pager.query();
@@ -68,7 +76,7 @@
                 url: 'house/room/view?code=' + key
             })
         };
-        
+
         // 查看明细
         $scope.view = function (id) {
             CommonUtils.addTab({

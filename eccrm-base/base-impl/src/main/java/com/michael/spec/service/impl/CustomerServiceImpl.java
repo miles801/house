@@ -63,7 +63,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         customer.setCode(decimalFormat.format(newNo));
 
         // 设置状态
-        customer.setStatus(Room.STATUS_INACTIVE);
+        customer.setStatus(Room.STATUS_APPLY_ADD);
         ValidatorUtils.validate(customer);
         String id = customerDao.save(customer);
         return id;
@@ -146,7 +146,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         for (String id : ids) {
             Customer customer = customerDao.findById(id);
             // 只有“未录入”可以申请为新增
-            if (customer != null && Room.STATUS_INACTIVE.equals(customer.getStatus())) {
+            if (customer != null && (Room.STATUS_INACTIVE.equals(customer.getStatus()) || Room.STATUS_INVALID.equals(customer.getStatus()))) {
                 customer.setStatus(Room.STATUS_APPLY_ADD);
             }
         }
@@ -174,7 +174,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             }
             String status = customer.getStatus();
             if (Room.STATUS_APPLY_ADD.equals(status)) {
-                customer.setStatus(Room.STATUS_INACTIVE);
+                customer.setStatus(Room.STATUS_INVALID);
             } else if (Room.STATUS_APPLY_MODIFY.equals(status) || Room.STATUS_APPLY_INVALID.equals(status)) {
                 customer.setStatus(Room.STATUS_ACTIVE);
             }

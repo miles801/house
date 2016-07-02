@@ -11,7 +11,8 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
         $scope.condition = {
             orderBy: 'roomKey',
-            statusInclude: ['INACTIVE', 'ACTIVE']
+            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID', 'INVALID', 'ACTIVE'],
+            reverse: true
         };
 
         // 房屋现状
@@ -64,7 +65,7 @@
         $scope.detail = function (id) {
             CommonUtils.addTab({
                 title: '房屋明细',
-                url: '/app/house/room/list/room_detail.jsp?id=' + id
+                url: 'house/room/list/room_detail.jsp?id=' + id
             });
 
         };
@@ -87,6 +88,24 @@
                 content: '是否确定将选中的房屋申请为“正常”客户?',
                 callback: function () {
                     var promise = RoomService.batchAdd({ids: id}, function () {
+                        AlertFactory.success('操作成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
+        $scope.applyInvalid = function (id) {
+            if (!id) {
+                id = $scope.items.map(function (o) {
+                    return o.id;
+                }).join(',');
+            }
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '是否确定将选中的房屋申请为“无效”房屋?',
+                callback: function () {
+                    var promise = RoomService.applyInvalid({ids: id}, function () {
                         AlertFactory.success('操作成功!');
                         $scope.query();
                     });

@@ -208,7 +208,8 @@
                                     <a class="btn-op blue" ng-click="update(foo.id);">房屋录入</a>
                                     <a class="btn-op yellow" ng-click="addCustomer(foo.id,foo.customerId);"
                                        ng-if="!foo.customerId">客户录入</a>
-                                    <a class="btn-op red" ng-click="applyAdd(foo.id);" ng-if="foo.status=='INACTIVE'">新增申请</a>
+                                    <a class="btn-op yellow" ng-click="applyAdd(foo.id);" ng-if="foo.status=='INVALID'">新增申请</a>
+                                    <a class="btn-op red" ng-click="applyInvalid(foo.id);" ng-if="foo.status=='ACTIVE'">无效申请</a>
                                 </td>
                             </tr>
                             </tbody>

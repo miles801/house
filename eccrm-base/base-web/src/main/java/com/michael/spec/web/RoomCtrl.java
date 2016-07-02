@@ -67,7 +67,7 @@ public class RoomCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
-        return "house/house/room/list/room_edit";
+        return "house/room/list/room_edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -159,6 +159,14 @@ public class RoomCtrl extends BaseController {
     @RequestMapping(value = "/batchAdd", params = {"ids"}, method = RequestMethod.POST)
     public void batchAdd(@RequestParam String ids, HttpServletResponse response) {
         roomService.batchAdd(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 批量申请无效
+    @ResponseBody
+    @RequestMapping(value = "/applyInvalid", params = {"ids"}, method = RequestMethod.POST)
+    public void batchInvalid(@RequestParam String ids, HttpServletResponse response) {
+        roomService.applyInvalid(ids.split(","));
         GsonUtils.printSuccess(response);
     }
 

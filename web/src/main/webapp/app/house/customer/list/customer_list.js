@@ -10,7 +10,7 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
         $scope.condition = {
-            statusInclude: ['INACTIVE', 'ACTIVE'],
+            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID', 'INVALID', 'ACTIVE'],
             orderBy: 'code',
             reverse: true
         };
@@ -150,10 +150,16 @@
         };
 
         // 更新
-        $scope.modify = function (id) {
+        $scope.modify = function (bean) {
+            var status = bean.status;
+            if (!(status == 'ACTIVE' || status == 'APPLY_ADD' || status == 'INVALID')) {
+                AlertFactory.error('只允许修改状态为“正常”、“新增申请”、“无效”的客户!');
+                return;
+            }
+
             CommonUtils.addTab({
                 title: '更新客户管理',
-                url: '/house/customer/modify?id=' + id,
+                url: '/house/customer/modify?id=' + bean.id,
                 onUpdate: $scope.query
             });
         };

@@ -20,10 +20,12 @@
             $scope.useType.unshift({name: '全部...'});
         });
         // 状态
-        RoomParam.status(function (data) {
-            $scope.status = data || [];
-            $scope.status.unshift({name: '全部...'});
-        });
+        $scope.status = [
+            {name: '请选择...'},
+            {name: '新增申请', value: 'APPLY_ADD'},
+            {name: '修改申请', value: 'APPLY_MODIFY'},
+            {name: '无效申请', value: 'APPLY_INVALID'}
+        ];
         // 朝向
         RoomParam.orient(function (data) {
             $scope.orient = data || [];

@@ -99,6 +99,13 @@
                             <select class="w150" ng-model="condition.education"
                                     ng-options="foo.value as foo.name for foo in education"></select>
                         </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>状态:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.status"
+                                    ng-options="foo.value as foo.name for foo in status"></select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,6 +119,14 @@
                     <span>待审核客户列表</span>
                 </div>
                 <span class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="pass();" ng-cloak
+                       ng-disabled="!anyone">
+                            <span class="glyphicons plus"></span> 批量通过
+                        </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="deny();" ng-cloak
+                       ng-disabled="!anyone">
+                            <span class="glyphicons plus"></span> 批量不通过
+                        </a>
                 </span>
             </div>
             <div class="block-content">
@@ -120,6 +135,10 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td>客户编号</td>
                                 <td>姓名</td>
                                 <td>性别</td>
@@ -129,15 +148,18 @@
                                 <td>婚姻状况</td>
                                 <td>学历</td>
                                 <td>名下房产</td>
+                                <td>录入人</td>
+                                <td>录入时间</td>
                                 <td>状态</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="14" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.code"></a>
                                 </td>
@@ -152,6 +174,8 @@
                                     <a ng-click="viewRoom(key)" ng-repeat="key in foo.roomKeys.split(',')"
                                        style="margin-left:8px;cursor: pointer;">{{key}}</a>
                                 </td>
+                                <td bo-text="foo.modifierName||foo.creatorName"></td>
+                                <td bo-text="(foo.modifiedDatetime||foo.createdDatetime)|eccrmDatetime"></td>
                                 <td bo-text="foo.statusName"></td>
                                 <td>
                                     <a class="btn-op blue" ng-click="pass(foo.id);">通过</a>

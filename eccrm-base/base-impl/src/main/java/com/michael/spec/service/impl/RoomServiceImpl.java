@@ -237,7 +237,12 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public void applyInvalid(String[] ids) {
         Assert.notEmpty(ids, "申请失败!房屋ID不能为空!");
-        roomDao.batchSetStatus(ids, Room.STATUS_APPLY_INVALID);
+        for (String id : ids) {
+            Room room = roomDao.findRoomById(id);
+            if (room != null && Room.STATUS_ACTIVE.equals(room.getStatus())) {
+                room.setStatus(Room.STATUS_APPLY_INVALID);
+            }
+        }
     }
 
     @Override
@@ -246,8 +251,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     }
 
     @Override
-    public void batchDeny(String[] ids) {
-        roomDao.batchSetStatus(ids, Room.STATUS_INACTIVE);
+    public void
+    batchDeny(String[] ids) {
+        roomDao.batchSetStatus(ids, Room.STATUS_INVALID);
     }
 
     @Override

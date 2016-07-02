@@ -25,10 +25,10 @@
                     <span class="glyphicons search"></span>
                 </span>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="query();">
-                                <span class="glyphicons search"></span>
-                                查询
-                        </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="query();">
+                            <span class="glyphicons search"></span>
+                            查询
+                    </a>
                 </span>
             </div>
             <div class="block-content">
@@ -119,9 +119,9 @@
                     <span>客户列表</span>
                 </div>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="add();">
-                            <span class="glyphicons plus"></span> 新建
-                        </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="add();">
+                        <span class="glyphicons plus"></span> 新建
+                    </a>
                     <c:if test='${sessionScope.get("CUSTOMER_DATA_EXPORT") eq true}'>
                         <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
                            ng-disabled="!beans.total">
@@ -183,11 +183,12 @@
                                 <td bo-text="foo.educationName"></td>
                                 <td bo-text="foo.statusName"></td>
                                 <td class="text-left">
-                                    <a class="btn-op blue" ng-click="modify(foo.id);">修改</a>
-                                    <a class="btn-op yellow" ng-click="applyInvalid(foo.id);"
+                                    <a class="btn-op blue" ng-click="modify(foo);"
+                                       ng-if="foo.status=='ACTIVE'||foo.status=='INVALID'||foo.status=='APPLY_ADD'">修改</a>
+                                    <a class="btn-op red" ng-click="applyInvalid(foo.id);"
                                        ng-if="foo.status=='ACTIVE'">无效申请</a>
                                     <a class="btn-op yellow" ng-click="applyAdd(foo.id);"
-                                       ng-if="foo.status=='INACTIVE'">新增申请</a>
+                                       ng-if="foo.status=='INVALID'">新增申请</a>
                                 </td>
                             </tr>
                             </tbody>
