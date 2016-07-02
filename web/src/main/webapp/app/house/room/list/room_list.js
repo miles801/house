@@ -53,6 +53,14 @@
         };
 
 
+        // 批量导入
+        $scope.importData = function () {
+            CommonUtils.addTab({
+                title: '批量导入房屋',
+                url: 'app/house/room/list/room_import.jsp'
+            })
+        };
+
         $scope.blockChange = function () {
             $scope.loadUnit();
             // 获取当前的楼栋编号
@@ -153,8 +161,8 @@
         $scope.reload = function () {
             window.location.reload();
         };
-        
-        
+
+
         $scope.loadBlock();
     });
 })(window, angular, jQuery);

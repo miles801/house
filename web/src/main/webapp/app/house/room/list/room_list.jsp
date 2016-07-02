@@ -59,6 +59,11 @@
                             <select ng-model="condition.unitId" class="col-2-half"
                                     ng-options="o.id as o.code+' -- '+o.doorCode for o in units"
                                     ng-change="unitChange();"></select>
+                            <div class="form-label col-1-half">
+                                <label>楼层:</label>
+                            </div>
+                            <input type="text" ng-model="condition.floor" class="col-2-half" placeholder="请输入数字"
+                                   maxlength="3"/>
                         </div>
                     </div>
                 </div>
@@ -71,6 +76,11 @@
                 <div class="header-text">
                     <span class="glyphicons list"></span>
                     <span>房间管理</span>
+                </div>
+                <div class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="importData();">
+                        批量导入
+                    </a>
                 </div>
             </div>
             <div class="block-content">
