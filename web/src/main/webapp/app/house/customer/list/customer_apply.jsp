@@ -128,13 +128,14 @@
                                 <td>微信</td>
                                 <td>婚姻状况</td>
                                 <td>学历</td>
+                                <td>名下房产</td>
                                 <td>状态</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="10" class="text-center">没有查询到数据！</td>
+                                <td colspan="11" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td title="点击查询明细！" style="cursor: pointer;">
@@ -147,6 +148,10 @@
                                 <td bo-text="foo.wechat"></td>
                                 <td bo-text="foo.marriageName"></td>
                                 <td bo-text="foo.educationName"></td>
+                                <td style="white-space: normal">
+                                    <a ng-click="viewRoom(key)" ng-repeat="key in foo.roomKeys.split(',')"
+                                       style="margin-left:8px;cursor: pointer;">{{key}}</a>
+                                </td>
                                 <td bo-text="foo.statusName"></td>
                                 <td>
                                     <a class="btn-op blue" ng-click="pass(foo.id);">通过</a>

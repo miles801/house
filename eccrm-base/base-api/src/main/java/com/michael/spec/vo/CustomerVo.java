@@ -13,6 +13,16 @@ public class CustomerVo extends Customer {
     private String moneyName;
     private String marriageName;
     private String statusName;
+    // 客户名下房产编号
+    private String roomKeys;
+
+    public String getRoomKeys() {
+        return roomKeys;
+    }
+
+    public void setRoomKeys(String roomKeys) {
+        this.roomKeys = roomKeys;
+    }
 
     public String getStatusName() {
         return statusName;

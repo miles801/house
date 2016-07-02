@@ -9,6 +9,7 @@ import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.Configuration;
 import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.dao.CustomerDao;
+import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.CustomerDTO;
 import com.michael.spec.domain.Room;
@@ -46,6 +47,9 @@ import java.util.Map;
 public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Customer, CustomerVo> {
     @Resource
     private CustomerDao customerDao;
+
+    @Resource
+    private RoomDao roomDao;
 
     @Override
     public String save(Customer customer) {
@@ -261,5 +265,16 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         vo.setEducationName(container.getBusinessName(BaseParameter.EDU, customer.getEducation()));
         vo.setMarriageName(container.getBusinessName(BaseParameter.MARRIAGE, customer.getMarriage()));
         vo.setStatusName(container.getSystemName(HouseParams.HOUSE_STATUS, customer.getStatus()));
+
+        // 名下房产
+        List<String> roomKeys = roomDao.findCodeByCustomer(customer.getId());
+        if (roomKeys != null && !roomKeys.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            for (String s : roomKeys) {
+                builder.append(",").append(s);
+            }
+            vo.setRoomCounts(roomKeys.size());
+            vo.setRoomKeys(builder.substring(1));
+        }
     }
 }

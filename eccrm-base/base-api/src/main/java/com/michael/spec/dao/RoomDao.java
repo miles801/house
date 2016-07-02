@@ -60,4 +60,20 @@ public interface RoomDao {
      * @param status 状态值
      */
     void batchSetStatus(String[] ids, String status);
+
+    /**
+     * 查询指定客户名下的所有房产的编号
+     *
+     * @param customerId 客户ID
+     * @return 房屋标号
+     */
+    List<String> findCodeByCustomer(String customerId);
+
+    /**
+     * 根据房屋编号查询房屋信息
+     *
+     * @param code 房屋编号
+     * @return 房屋
+     */
+    Room findByCode(String code);
 }

@@ -7,6 +7,7 @@ import com.michael.spec.domain.RoomBusiness;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.vo.BuildingVo;
 import com.michael.spec.vo.CustomerVo;
+import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.pager.PageVo;
 
 import java.util.List;
@@ -110,4 +111,12 @@ public interface RoomService {
      * @param attachmentIds 附件ID列表
      */
     void importData(String[] attachmentIds);
+
+    /**
+     * 根据房屋编号查询房屋信息
+     *
+     * @param code 房屋编号
+     * @return 房屋
+     */
+    RoomVo findByCode(String code);
 }

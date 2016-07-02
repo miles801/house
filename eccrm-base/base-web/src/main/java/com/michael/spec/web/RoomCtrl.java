@@ -11,6 +11,7 @@ import com.michael.spec.domain.RoomView;
 import com.michael.spec.service.RoomService;
 import com.michael.spec.vo.BuildingVo;
 import com.michael.spec.vo.CustomerVo;
+import com.michael.spec.vo.RoomVo;
 import com.ycrl.base.common.JspAccessType;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.core.web.BaseController;
@@ -45,13 +46,13 @@ public class RoomCtrl extends BaseController {
 
     @RequestMapping(value = {""}, method = RequestMethod.GET)
     public String toList() {
-        return "base/room/list/room_list";
+        return "house/room/list/room_list";
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAdd(HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.ADD);
-        return "base/room/edit/room_edit";
+        return "house/room/list/room_edit";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
@@ -66,7 +67,7 @@ public class RoomCtrl extends BaseController {
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);
         request.setAttribute("id", id);
-        return "house/room/list/room_edit";
+        return "house/house/room/list/room_edit";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
@@ -81,7 +82,17 @@ public class RoomCtrl extends BaseController {
     public String toDetail(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);
         request.setAttribute("id", id);
-        return "base/room/edit/room_edit";
+        return "house/room/list/room_edit";
+    }
+
+    @RequestMapping(value = {"/view"}, params = {"code"}, method = RequestMethod.GET)
+    public String toView(@RequestParam String code, HttpServletRequest request) {
+        request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);
+        RoomVo vo = roomService.findByCode(code);
+        if (vo != null) {
+            request.setAttribute("id", vo.getId());
+        }
+        return "house/room/list/room_detail";
     }
 
     @ResponseBody

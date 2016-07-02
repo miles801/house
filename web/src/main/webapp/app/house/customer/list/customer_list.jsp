@@ -161,7 +161,10 @@
                                 <td bo-text="foo.ageName"></td>
                                 <td bo-text="foo.phone1|contact:foo.phone2:foo.phone3"></td>
                                 <td bo-text="foo.wechat"></td>
-                                <td bo-test="foo.roomCounts"></td>
+                                <td style="white-space: normal">
+                                    <a ng-click="viewRoom(key)" ng-repeat="key in foo.roomKeys.split(',')"
+                                       style="margin-left:8px;cursor: pointer;">{{key}}</a>
+                                </td>
                                 <td bo-text="foo.createdDatetime|eccrmDatetime"></td>
                                 <td bo-text="foo.marriageName"></td>
                                 <td bo-text="foo.educationName"></td>

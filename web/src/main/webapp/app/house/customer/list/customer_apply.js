@@ -61,6 +61,14 @@
             }
         };
 
+        // 查看房屋详情
+        $scope.viewRoom = function (key) {
+            CommonUtils.addTab({
+                title: '房屋明细-' + key,
+                url: 'house/room/view?code=' + key
+            })
+        };
+        
         // 查看明细
         $scope.view = function (id) {
             CommonUtils.addTab({

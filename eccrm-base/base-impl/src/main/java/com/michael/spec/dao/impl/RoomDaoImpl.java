@@ -100,6 +100,26 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
         return (RoomView) getSession().get(RoomView.class, id);
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<String> findCodeByCustomer(String customerId) {
+        Assert.hasText(customerId, "查询失败!客户ID不能为空!");
+        return createCriteria(Room.class)
+                .setProjection(Projections.property("roomKey"))
+                .add(Restrictions.eq("customerId", customerId))
+                .list();
+    }
+
+    @Override
+    public Room findByCode(String code) {
+        Assert.hasText(code, "查询失败!房屋编号不能为空!");
+        return (Room) createCriteria(Room.class)
+                .add(Restrictions.eq("roomKey", code))
+                .setFirstResult(0)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
     private void initCriteria(Criteria criteria, RoomBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);

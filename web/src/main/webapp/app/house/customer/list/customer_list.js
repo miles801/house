@@ -69,6 +69,14 @@
             }
         };
 
+        // 查看房屋详情
+        $scope.viewRoom = function (key) {
+            CommonUtils.addTab({
+                title: '房屋明细-' + key,
+                url: 'house/room/view?code=' + key
+            })
+        };
+
         // 删除或批量删除
         $scope.remove = function (id) {
             ModalFactory.confirm({

@@ -41,7 +41,7 @@
             <div class="content-wrap">
                 <form name="form" class="form-horizontal" role="form">
                     <div style="display: none;">
-                        <input type="hidden" id="id" value="${param.id}"/>
+                        <input type="hidden" id="id" value="${param.id eq null?id:param.id}"/>
                     </div>
                     <div class="row" ng-cloak>
                         <div class="form-label col-1-half">

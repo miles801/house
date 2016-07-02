@@ -20,6 +20,7 @@ import com.michael.spec.vo.BuildingVo;
 import com.michael.spec.vo.CustomerVo;
 import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.SystemContainer;
+import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
@@ -318,6 +319,12 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
         roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
         roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
+    }
+
+    @Override
+    public RoomVo findByCode(String code) {
+        return BeanWrapBuilder.newInstance()
+                .wrap(roomDao.findByCode(code), RoomVo.class);
     }
 
     @Override

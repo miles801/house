@@ -41,10 +41,18 @@
             $scope.status = data;
             $scope.status.unshift({name: '请选择...'});
         });
-        
+
         //查询数据
         $scope.query = function () {
             $scope.pager.query();
+        };
+
+        // 查看房屋详情
+        $scope.viewRoom = function (key) {
+            CommonUtils.addTab({
+                title: '房屋明细-' + key,
+                url: 'house/room/view?code=' + key
+            })
         };
 
         $scope.pager = {
