@@ -10,8 +10,41 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
         $scope.condition = {
-            statusInclude: ['INACTIVE', 'ACTIVE']
+            statusInclude: ['INACTIVE', 'ACTIVE'],
+            orderBy: 'code',
+            reverse: true
         };
+
+        // 性别
+        CustomerParam.sex(function (data) {
+            $scope.sex = data;
+            $scope.sex.unshift({name: '请选择...'});
+        });
+        // 资产规模
+        CustomerParam.money(function (data) {
+            $scope.money = data;
+            $scope.money.unshift({name: '请选择...'});
+        });
+        // 年龄段
+        CustomerParam.age(function (data) {
+            $scope.age = data;
+            $scope.age.unshift({name: '请选择...'});
+        });
+        // 婚姻
+        CustomerParam.marriage(function (data) {
+            $scope.marriage = data;
+            $scope.marriage.unshift({name: '请选择...'});
+        });
+        // 学历
+        CustomerParam.education(function (data) {
+            $scope.education = data;
+            $scope.education.unshift({name: '请选择...'});
+        });
+        // 状态
+        CustomerParam.status(function (data) {
+            $scope.status = data;
+            $scope.status.unshift({name: '请选择...'});
+        });
 
         //查询数据
         $scope.query = function () {
@@ -128,13 +161,4 @@
         };
     });
 
-    app.filter('contact', function () {
-        return function () {
-            var v = '';
-            angular.forEach(arguments, function (o) {
-                v += o ? ("; " + o) : '';
-            });
-            return v.replace(/^, /, '');
-        }
-    });
 })(window, angular, jQuery);

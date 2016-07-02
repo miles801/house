@@ -25,6 +25,11 @@
             $scope.age = data;
             $scope.age.unshift({name: '请选择...'});
         });
+        // 性别
+        CustomerParam.sex(function (data) {
+            $scope.sex = data;
+            $scope.sex.unshift({name: '请选择...'});
+        });
         if (isChange) {
             id = null;  // 将ID置为空
             // 交易类型

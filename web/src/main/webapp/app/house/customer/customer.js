@@ -39,13 +39,29 @@
             // 分页查询
             pageQuery: {
                 method: 'POST',
-                params: {method: 'pageQuery', limit: '@limit', start: '@start'},
+                params: {
+                    method: 'pageQuery',
+                    limit: '@limit',
+                    start: '@start',
+                    orderBy: '@orderBy',
+                    reverse: '@reverse'
+                },
                 isArray: false
             },
 
             // 根据id字符串（使用逗号分隔多个值）
             deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}
         })
+    });
+
+    app.filter('contact', function () {
+        return function () {
+            var v = '';
+            angular.forEach(arguments, function (o) {
+                v += o ? ("; " + o) : '';
+            });
+            return v.replace(/^;\s?/, '');
+        }
     });
 
     app.service('CustomerParam', function (ParameterLoader) {
@@ -87,6 +103,12 @@
              */
             businessType: function (callback) {
                 ParameterLoader.loadBusinessParam('ROOM_BUSINESS_TYPE', callback);
+            },
+            /**
+             * 状态
+             */
+            status: function (callback) {
+                ParameterLoader.loadSysParam('HOUSE_STATUS', callback);
             }
         };
     });

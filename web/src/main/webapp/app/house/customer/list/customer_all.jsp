@@ -17,7 +17,7 @@
     </script>
 </head>
 <body>
-<div class="main condition-row-1" ng-app="house.customer.list" ng-controller="Ctrl">
+<div class="main condition-row-2" ng-app="house.customer.list" ng-controller="Ctrl">
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -33,15 +33,79 @@
             </div>
             <div class="block-content">
                 <div class="content-wrap">
-                    <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>姓名:</label>
+                    <div class="row float">
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>编号:</label>
+                            </div>
+                            <input class="w150" type="text" ng-model="condition.code"/>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="condition.name"/>
-                        <div class="form-label col-1-half">
-                            <label>电话:</label>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>姓名:</label>
+                            </div>
+                            <input class="w150" type="text" ng-model="condition.name"/>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="condition.phone"/>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>手机:</label>
+                            </div>
+                            <input class="w150" type="text" ng-model="condition.phone"/>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>微信:</label>
+                            </div>
+                            <input class="w150" type="text" ng-model="condition.wechat"/>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>职业:</label>
+                            </div>
+                            <input class="w150" type="text" ng-model="condition.duty"/>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>性别:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.sex"
+                                    ng-options="foo.value as foo.name for foo in sex"></select>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>婚姻状况:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.marriage"
+                                    ng-options="foo.value as foo.name for foo in marriage"></select>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>资产规模:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.money"
+                                    ng-options="foo.value as foo.name for foo in money"></select>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>年龄段:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.age"
+                                    ng-options="foo.value as foo.name for foo in age"></select>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>学历:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.education"
+                                    ng-options="foo.value as foo.name for foo in education"></select>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>状态:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.status"
+                                    ng-options="foo.value as foo.name for foo in status"></select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,24 +132,30 @@
                             <tr>
                                 <td>客户编号</td>
                                 <td>姓名</td>
+                                <td>性别</td>
                                 <td>年龄段</td>
                                 <td>手机</td>
                                 <td>微信</td>
+                                <td>婚姻状况</td>
+                                <td>学历</td>
                                 <td>状态</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="6" class="text-center">没有查询到数据！</td>
+                                <td colspan="9" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.code"></a>
                                 </td>
                                 <td bo-text="foo.name"></td>
+                                <td bo-text="foo.sexName"></td>
                                 <td bo-text="foo.ageName"></td>
                                 <td bo-text="foo.phone1|contact:foo.phone2:foo.phone3"></td>
                                 <td bo-text="foo.wechat"></td>
+                                <td bo-text="foo.marriageName"></td>
+                                <td bo-text="foo.educationName"></td>
                                 <td bo-text="foo.statusName"></td>
                             </tr>
                             </tbody>

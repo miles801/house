@@ -103,7 +103,9 @@
                         <div class="form-label col-1-half">
                             <label>客户姓名:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.name" maxlength="20"/>
+                        <input class="col-2-half" type="text" ng-model="beans.name" maxlength="20"
+                               placeholder="如果没有可以写“匿名”"
+                               validate validate-required/>
                         <div class="form-label col-1-half">
                             <label>身份证号:</label>
                         </div>
@@ -111,17 +113,17 @@
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label validate-error="form.phone1">电话（主）:</label>
+                            <label validate-error="form.phone1">手机（主）:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.phone1" maxlength="20" name="phone1"
-                               validate validate-required validate-int/>
+                               validate validate-required validate-int placeholder="11位数字"/>
                         <div class="form-label col-1-half">
-                            <label>电话2:</label>
+                            <label>手机2:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.phone2" maxlength="20"
                                validate validate-int/>
                         <div class="form-label col-1-half">
-                            <label>电话3:</label>
+                            <label>手机3:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.phone3" maxlength="20"
                                validate validate-int/>
@@ -130,11 +132,18 @@
                         <div class="form-label col-1-half">
                             <label>邮箱:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.email" maxlength="100"/>
+                        <input class="col-2-half" type="text" ng-model="beans.email" maxlength="100"
+                               placeholder="xx@qq.com"/>
                         <div class="form-label col-1-half">
-                            <label>公司名称:</label>
+                            <label>性别:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.company" maxlength="100"/>
+                        <select ng-model="beans.sex" class="col-2-half"
+                                ng-options="foo.value as foo.name for foo in sex">
+                        </select>
+                        <div class="form-label col-1-half">
+                            <label>职业:</label>
+                        </div>
+                        <input class="col-2-half" type="text" ng-model="beans.duty" maxlength="100"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
@@ -175,11 +184,21 @@
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label>车位1:</label>
+                            <label>工作单位:</label>
+                        </div>
+                        <input class="col-2-half" type="text" ng-model="beans.company" maxlength="100"/>
+                        <div class="form-label col-1-half">
+                            <label>车型号:</label>
+                        </div>
+                        <input class="col-2-half" type="text" ng-model="beans.carType" maxlength="100"/>
+                    </div>
+                    <div class="row">
+                        <div class="form-label col-1-half">
+                            <label>车位号1:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.carSite1" maxlength="40"/>
                         <div class="form-label col-1-half">
-                            <label>车位2:</label>
+                            <label>车位号2:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.carSite2" maxlength="40"/>
                         <div class="form-label col-1-half">

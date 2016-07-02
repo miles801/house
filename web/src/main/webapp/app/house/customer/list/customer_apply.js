@@ -13,6 +13,31 @@
             statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID']
         };
 
+        // 性别
+        CustomerParam.sex(function (data) {
+            $scope.sex = data;
+            $scope.sex.unshift({name: '请选择...'});
+        });
+        // 资产规模
+        CustomerParam.money(function (data) {
+            $scope.money = data;
+            $scope.money.unshift({name: '请选择...'});
+        });
+        // 年龄段
+        CustomerParam.age(function (data) {
+            $scope.age = data;
+            $scope.age.unshift({name: '请选择...'});
+        });
+        // 婚姻
+        CustomerParam.marriage(function (data) {
+            $scope.marriage = data;
+            $scope.marriage.unshift({name: '请选择...'});
+        });
+        // 学历
+        CustomerParam.education(function (data) {
+            $scope.education = data;
+            $scope.education.unshift({name: '请选择...'});
+        });
         //查询数据
         $scope.query = function () {
             $scope.pager.query();
@@ -84,17 +109,6 @@
                 }
             });
         };
-    });
-
-
-    app.filter('contact', function () {
-        return function () {
-            var v = '';
-            angular.forEach(arguments, function (o) {
-                v += o ? o : '';
-            });
-            return v;
-        }
     });
 
 })(window, angular, jQuery);

@@ -41,6 +41,12 @@ public class CustomerBo implements BO {
     private String education;
     @Condition
     private String money;
+    @Condition
+    private String marriage;
+    @Condition
+    private String sex;
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String duty;
 
     @Condition
     private String status;
@@ -48,6 +54,30 @@ public class CustomerBo implements BO {
     private List<String> statusInclude;
     @Condition(matchMode = MatchModel.NOT_IN, target = "status")
     private List<String> statusExclude;
+
+    public String getMarriage() {
+        return marriage;
+    }
+
+    public void setMarriage(String marriage) {
+        this.marriage = marriage;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
 
     public String getStatus() {
         return status;
