@@ -58,17 +58,6 @@
                         <input type="hidden" id="pageType" value="${pageType}"/>
                         <input type="hidden" id="id" value="${id}"/>
                     </div>
-                    <div id="picture" style="position: absolute;width: 200px;height: 100px;left: 70%;">
-                        <%-- 头像 --%>
-                        <div eccrm-upload="uploadOptions" ng-show="pageType!=='detail'">
-                        </div>
-                        <div style="position:absolute;top:5px;left: 45px;width: 180px;height: 80px;">
-                            <div id="imageId" class="col" ng-show="beans.icon"
-                                 style="border: 1px dashed #DAF3F5;padding: 5px 10px;"></div>
-                            <i class="icons icon fork cp col" ng-show="beans.icon" ng-click="removePicture()"
-                               ng-cloak ng-show="pageType!=='detail' && beans.icon" style="margin-left: 8px;"></i>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="form-label col-1-half">
                             <label>姓名:</label>
