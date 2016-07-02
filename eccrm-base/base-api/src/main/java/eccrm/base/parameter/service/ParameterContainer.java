@@ -246,6 +246,28 @@ public class ParameterContainer {
     }
 
     /**
+     * <p>查询业务参数的值</p>
+     * <p>如果容器中不存在指定类型编号的数据，则查询，并将结果缓存到容器中后返回</p>
+     *
+     * @param type 业务参数类型的编号，如果为空，则返回null
+     * @param name 业务参数选项的值，如果为空，则返回null
+     * @return 业务参数类型的名称
+     */
+    public String getBusinessValue(String type, String name) {
+        if (org.apache.commons.lang3.StringUtils.isAnyEmpty(type, name)) {
+            return null;
+        }
+        // 从容器中获取指定编号缓存的数据，如果没有则重新加载
+        List<BusinessParamItemVo> vos = getBusinessItems(type);
+        for (BusinessParamItemVo vo : vos) {
+            if (vo.getValue().equals(name)) {
+                return vo.getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
      * <p>查询业务参数的名称</p>
      * <p>如果容器中不存在指定类型编号的数据，则直接返回null</p>
      *
