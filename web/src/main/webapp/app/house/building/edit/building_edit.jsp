@@ -110,7 +110,7 @@
                         <div class="form-label col-1-half">
                             <label>物业费:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.propertyPrice"/>
+                        <input class="col-2-half" type="text" ng-model="beans.propertyPrice" placeholder="元/平方米"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">

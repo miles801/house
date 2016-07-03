@@ -106,11 +106,17 @@
             CommonUtils.addTab({
                 title: '楼栋信息',
                 url: 'app/house/block/list/block_list.jsp?id=' + id + '&pageType=' + pageType,
+                onClose: function () {
+                    $(window.parent.document.body).find('ul.nav-tabs>li>span:gt(0)').trigger('click');
+                },
                 active: false
             });
             CommonUtils.addTab({
                 title: '单元信息',
                 url: 'app/house/unit/list/unit_list.jsp?id=' + id + '&pageType=' + pageType,
+                onClose: function () {
+                    $(window.parent.document.body).find('ul.nav-tabs>li>span:gt(1)').trigger('click');
+                },
                 active: false
             });
             // 楼栋信息

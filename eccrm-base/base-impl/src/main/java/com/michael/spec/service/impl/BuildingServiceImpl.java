@@ -1,14 +1,15 @@
 package com.michael.spec.service.impl;
 
+import com.michael.spec.bo.BlockBo;
 import com.michael.spec.bo.BuildingBo;
 import com.michael.spec.bo.RoomBo;
+import com.michael.spec.dao.BlockDao;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Building;
 import com.michael.spec.service.BuildingService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.BuildingVo;
-import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -31,6 +32,12 @@ import java.util.List;
 public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Building, BuildingVo> {
     @Resource
     private BuildingDao buildingDao;
+
+    @Resource
+    private BlockDao blockDao;
+
+    @Resource
+    private RoomDao roomDao;
 
     @Override
     public String save(Building building) {
@@ -82,6 +89,16 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
     public void deleteByIds(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
+            // 校验关联
+            BlockBo blockBo = new BlockBo();
+            blockBo.setBuildingId(id);
+            Long blockTotal = blockDao.getTotal(blockBo);
+            Assert.isTrue(blockTotal == null || blockTotal == 0, "楼盘删除失败!楼盘下已经具有楼栋信息!");
+
+            RoomBo bo = new RoomBo();
+            bo.setBuildingId(id);
+            Long total = roomDao.getTotal(bo);
+            Assert.isTrue(total == null || total == 0, "楼盘删除失败!楼盘下已经具有房屋信息!");
             buildingDao.deleteById(id);
         }
     }
@@ -100,7 +117,6 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
         // 距离地铁
         vo.setSubwayName(container.getBusinessName(HouseParams.SUBWAY, building.getSubway()));
 
-        RoomDao roomDao = SystemContainer.getInstance().getBean(RoomDao.class);
         // 录入户数
         RoomBo bo = new RoomBo();
         bo.setBuildingId(building.getId());
