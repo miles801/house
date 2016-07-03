@@ -11,9 +11,16 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
         $scope.condition = {
             orderBy: 'roomKey',
-            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID', 'INVALID', 'ACTIVE'],
-            reverse: true
+            statusInclude: ['APPLY_MODIFY', 'APPLY_INVALID', 'ACTIVE'],
+            reverse: true,
+            buildingId: $('#buildingId').val() || null
         };
+
+        var condition = $scope.condition;
+        if (!condition.buildingId) {
+            condition.statusInclude.push('APPLY_ADD');
+            condition.statusInclude.push('INVALID');
+        }
 
         // 房屋现状
         RoomParam.useType(function (data) {

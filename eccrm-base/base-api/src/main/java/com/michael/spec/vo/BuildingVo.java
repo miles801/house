@@ -13,6 +13,28 @@ public class BuildingVo extends Building {
     private String usagesName;
     private String subwayName;
 
+    // 所有房屋
+    private Long allRooms;
+
+    // 有效房屋
+    private Long validRooms;
+
+    public Long getAllRooms() {
+        return allRooms;
+    }
+
+    public void setAllRooms(Long allRooms) {
+        this.allRooms = allRooms;
+    }
+
+    public Long getValidRooms() {
+        return validRooms;
+    }
+
+    public void setValidRooms(Long validRooms) {
+        this.validRooms = validRooms;
+    }
+
     public String getTypeName() {
         return typeName;
     }

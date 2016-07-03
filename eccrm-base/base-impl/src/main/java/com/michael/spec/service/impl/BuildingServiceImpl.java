@@ -1,11 +1,14 @@
 package com.michael.spec.service.impl;
 
 import com.michael.spec.bo.BuildingBo;
+import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.BuildingDao;
+import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Building;
 import com.michael.spec.service.BuildingService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.BuildingVo;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -94,5 +99,16 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
         vo.setWarmTypeName(container.getBusinessName(HouseParams.WARM_TYPE, building.getWarmType()));
         // 距离地铁
         vo.setSubwayName(container.getBusinessName(HouseParams.SUBWAY, building.getSubway()));
+
+        RoomDao roomDao = SystemContainer.getInstance().getBean(RoomDao.class);
+        // 录入户数
+        RoomBo bo = new RoomBo();
+        bo.setBuildingId(building.getId());
+        vo.setAllRooms(roomDao.getTotal(bo));
+        // 有效户数
+        List<String> status = new ArrayList<String>();
+        Collections.addAll(status, "ACTIVE", "APPLY_MODIFY", "APPLY_INVALID");
+        bo.setStatusInclude(status);
+        vo.setValidRooms(roomDao.getTotal(bo));
     }
 }

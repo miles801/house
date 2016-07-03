@@ -92,34 +92,37 @@
                                          anyone-selected="anyone"></div>
                                 </td>
                                 <td>楼盘名称</td>
-                                <td>均价(万/m2)</td>
+                                <td>均价(元/m2)</td>
                                 <td>建筑类型</td>
                                 <td>学区</td>
                                 <td>总户数</td>
                                 <td>录入户数</td>
                                 <td>有效户数</td>
                                 <td>负责人</td>
-                                <td>状态</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="10" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.name"></a>
                                 </td>
-                                <td bo-text="foo.price"></td>
+                                <td bo-text="foo.avgPrice"></td>
                                 <td bo-text="foo.typeName"></td>
                                 <td bo-text="foo.school"></td>
                                 <td bo-text="foo.houseCounts"></td>
-                                <td bo-text="foo.houseCounts1"></td>
-                                <td bo-text="foo.houseCounts2"></td>
+                                <td>
+                                    <a class="cp" ng-click="viewRoom(foo.id,foo.name)" bo-text="foo.allRooms"></a>
+                                </td>
+                                <td>
+                                    <a class="cp" ng-click="viewValidRoom(foo.id,foo.name)"
+                                       bo-text="foo.validRooms"></a>
+                                </td>
                                 <td bo-text="foo.masterName"></td>
-                                <td bo-text="foo.statusName"></td>
                                 <td>
                                     <a class="btn-op blue" ng-click="modify(foo.id);">编辑</a>
                                     <a class="btn-op red" ng-click="remove(foo.id);">删除</a>

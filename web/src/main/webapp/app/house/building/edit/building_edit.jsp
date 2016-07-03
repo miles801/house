@@ -72,6 +72,11 @@
                         </div>
                         <input class="col-6-half" type="text" ng-model="beans.address" validate validate-required
                                name="address"/>
+                        <div class="form-label col-1-half">
+                            <label>均价:</label>
+                        </div>
+                        <input class="col-2-half" type="number" ng-model="beans.avgPrice" validate validate-float
+                               placeholder="元/m2"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">

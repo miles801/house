@@ -18,6 +18,9 @@
 </head>
 <body>
 <div class="main condition-row-3" ng-app="house.room.view" ng-controller="Ctrl">
+    <div class="dn">
+        <input type="hidden" id="buildingId" value="${param.buildingId}"/>
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">

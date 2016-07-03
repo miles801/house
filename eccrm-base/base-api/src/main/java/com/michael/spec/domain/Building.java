@@ -82,6 +82,10 @@ public class Building extends CommonDomain {
     // 过户指导价格
     @Column
     private Float price;
+
+    // 均价
+    @Column
+    private Float avgPrice;
     // 容积率
     @Column
     private Float containPercent;
@@ -107,6 +111,14 @@ public class Building extends CommonDomain {
     private String col4;
     @Column(length = 100)
     private String col5;
+
+    public Float getAvgPrice() {
+        return avgPrice;
+    }
+
+    public void setAvgPrice(Float avgPrice) {
+        this.avgPrice = avgPrice;
+    }
 
     public String getMasterId() {
         return masterId;

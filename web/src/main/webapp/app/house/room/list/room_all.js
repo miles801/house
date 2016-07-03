@@ -11,6 +11,7 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
         $scope.condition = {
             orderBy: 'roomKey',
+            buildingId: $('#buildingId').val() || null
         };
 
         // 房屋现状

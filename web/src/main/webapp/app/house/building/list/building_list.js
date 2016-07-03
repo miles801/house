@@ -59,6 +59,7 @@
             CommonUtils.addTab({
                 title: '新增楼盘管理',
                 url: '/house/building/add',
+                onClose: $scope.closeTab,
                 onUpdate: $scope.query
             });
         };
@@ -68,6 +69,7 @@
             $scope.closeTab();
             CommonUtils.addTab({
                 title: '更新楼盘管理',
+                onClose: $scope.closeTab,
                 url: '/house/building/modify?id=' + id,
                 onUpdate: $scope.query
             });
@@ -77,8 +79,27 @@
         $scope.view = function (id) {
             $scope.closeTab();
             CommonUtils.addTab({
-                title: '查看楼盘管理',
+                title: '房屋列表',
+                onClose: $scope.closeTab,
                 url: '/house/building/detail?id=' + id
+            });
+        };
+        // 查看楼盘户数
+        $scope.viewRoom = function (id, name) {
+            $scope.closeTab();
+            CommonUtils.addTab({
+                title: '房屋列表--' + name,
+                onClose: $scope.closeTab,
+                url: 'app/house/room/list/room_all.jsp?buildingId=' + id
+            });
+        };
+        // 查看楼盘有效户数
+        $scope.viewValidRoom = function (id, name) {
+            $scope.closeTab();
+            CommonUtils.addTab({
+                title: '房屋列表--' + name,
+                onClose: $scope.closeTab,
+                url: 'app/house/room/list/room_view.jsp?buildingId=' + id
             });
         };
 
