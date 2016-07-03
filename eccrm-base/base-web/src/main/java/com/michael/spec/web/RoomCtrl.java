@@ -229,6 +229,7 @@ public class RoomCtrl extends BaseController {
     @RequestMapping(value = "/template", method = RequestMethod.GET)
     public void downloadTemplate(HttpServletResponse response) {
         InputStream input = RoomCtrl.class.getClassLoader().getResourceAsStream("import_room.xlsx");
+        Assert.notNull(input, "模板下载失败!房屋数据导入模板不存在!");
         response.setContentType("application/vnd.ms-excel");
         String disposition = null;//
         try {

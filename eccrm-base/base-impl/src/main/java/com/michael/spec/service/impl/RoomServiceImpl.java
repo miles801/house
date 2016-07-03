@@ -66,7 +66,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public String save(Room room) {
         // 生成房屋编号
-        room.setStatus(Room.STATUS_INACTIVE);
+        room.setStatus(Room.STATUS_APPLY_ADD);
         String key = roomDao.maxKey(room.getBuildingId());
         if (key == null) {
             String buildingId = room.getBuildingId();
