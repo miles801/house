@@ -91,26 +91,30 @@
                                     <tr ng-repeat="foo in beans" ng-cloak>
                                         <td title="点击查询明细！" style="cursor: pointer;">
                                             <input type="text" name="code" ng-model="foo.code" validate
-                                                   validate-required/>
+                                                   validate-required ng-change="check(foo);"/>
                                         </td>
                                         <td>
-                                            <input type="text" ng-model="foo.doorCode" validate validate-required/>
+                                            <input type="text" ng-model="foo.doorCode" validate validate-required
+                                                   ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.square" validate validate-required
-                                                   validate-float/>
+                                                   validate-float ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.type" validate validate-required
-                                                   validate-options="typeValid"/>
+                                                   validate-options="typeValid" ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <select ng-model="foo.orient"
-                                                    ng-options="o.value as o.name for o in orients"></select>
+                                                    ng-options="o.value as o.name for o in orients"
+                                                    ng-change="check(foo);"></select>
                                         </td>
                                         <td>
-                                            <a class="btn-op blue" ng-disabled="!(form.$valid && form.$dirty)"
-                                               ng-click="save(foo,form);">保存</a>
+                                            <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="save(foo);"
+                                               ng-if="!foo.id">保存</a>
+                                            <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"
+                                               ng-if="foo.id">更新</a>
                                             <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
                                             <a class="btn-op green" ng-click="add(foo);">新建</a>
                                         </td>

@@ -107,21 +107,30 @@
         };
 
         // 更新
-        $scope.save = function (bean, form) {
-            var promise;
-            if (!bean.id) {
-                promise = UnitService.save(bean, function (data) {
-                    bean.id = data.data;
-                    form.$setDirty(false);
-                    AlertFactory.success('保存成功!');
-                });
-            } else {
-                promise = UnitService.update(bean, function () {
-                    AlertFactory.success('更新成功!');
-                    form.$setDirty(false);
-                });
-            }
+        $scope.save = function (bean) {
+            var promise = UnitService.save(bean, function (data) {
+                bean.id = data.data;
+                bean.$valid = false;
+                AlertFactory.success('保存成功!');
+            });
             CommonUtils.loading(promise);
+        };
+
+        $scope.update = function (bean) {
+            var promise = UnitService.update(bean, function () {
+                AlertFactory.success('更新成功!');
+                bean.$valid = false;
+            });
+            CommonUtils.loading(promise);
+        };
+
+        $scope.check = function (bean) {
+            bean.$valid = false;
+            var flag = true;
+            if (!bean.code || !bean.doorCode || !bean.square || !bean.orient || !bean.type) {
+                flag = false;
+            }
+            bean.$valid = flag;
         };
 
         $scope.loadBlock();

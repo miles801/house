@@ -114,37 +114,42 @@
                                         <td bo-text="foo.unitCode"></td>
                                         <td>
                                             <input type="text" ng-model="foo.floor" validate validate-required
-                                                   validate-int/>
+                                                   validate-int ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <input type="text" name="code" ng-model="foo.code" validate
-                                                   validate-required/>
+                                                   validate-required ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.square" validate validate-required
-                                                   validate-float/>
+                                                   validate-float ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.type1" style="width: 50px;" validate
                                                    validate-required validate-int
-                                                   placeholder="室"/>
+                                                   placeholder="室" ng-change="check(foo);"/>
                                             <input type="text" ng-model="foo.type2" style="width: 50px;" validate
-                                                   validate-required validate-int
+                                                   validate-required validate-int ng-change="check(foo);"
                                                    placeholder="厅"/>
                                             <input type="text" ng-model="foo.type3" style="width: 50px;" validate
-                                                   validate-required validate-int
+                                                   validate-required validate-int ng-change="check(foo);"
                                                    placeholder="厨"/>
                                             <input type="text" ng-model="foo.type4" style="width: 50px;" validate
-                                                   validate-required validate-int
+                                                   validate-required validate-int ng-change="check(foo);"
                                                    placeholder="卫"/>
                                         </td>
                                         <td>
                                             <select ng-model="foo.orient"
-                                                    ng-options="o.value as o.name for o in orients"></select>
+                                                    ng-options="o.value as o.name for o in orients"
+                                                    ng-change="check(foo);"></select>
                                         </td>
                                         <td>
-                                            <a class="btn-op blue" ng-disabled="!(form.$valid)"
-                                               ng-click="save(foo,form);">保存</a>
+                                            <a class="btn-op blue" ng-disabled="foo.$invalid" ng-click="save(foo);"
+                                               ng-cloak
+                                               ng-if="!foo.id">保存</a>
+                                            <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"
+                                               ng-cloak
+                                               ng-if="foo.id">更新</a>
                                             <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
                                             <a class="btn-op green" ng-click="add(foo);">新建</a>
                                         </td>

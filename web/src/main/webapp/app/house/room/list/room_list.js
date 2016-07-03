@@ -43,9 +43,6 @@
         $scope.loadUnit = function () {
             var promise = UnitService.query({blockId: $scope.condition.blockId}, function (data) {
                 data = data.data || [];
-                if (data < 1) {
-                    AlertFactory.error('未获取到单元信息!请先维护单元信息，然后重新加载本页面!');
-                }
                 data.unshift($scope.units[0]);
                 $scope.units = data;
             });
@@ -138,25 +135,33 @@
             }
         };
 
-        // 更新
-        $scope.save = function (bean, form) {
-            var promise;
-            if (!bean.id) {
-                promise = RoomService.save(bean, function (data) {
-                    bean.id = data.data;
-                    form.$setDirty(false);
-                    AlertFactory.success('保存成功!');
-                });
-            } else {
-                promise = RoomService.update(bean, function () {
-                    AlertFactory.success('更新成功!');
-                    form.$setDirty(false);
-                });
-            }
+        // 保存
+        $scope.save = function (bean) {
+            var promise = RoomService.save(bean, function (data) {
+                bean.id = data.data;
+                AlertFactory.success('保存成功!');
+                bean.$valid = false;
+            });
             CommonUtils.loading(promise);
         };
 
+        // 更新
+        $scope.update = function (bean) {
+            var promise = RoomService.update(bean, function () {
+                AlertFactory.success('更新成功!');
+                bean.$valid = false;
+            });
+            CommonUtils.loading(promise);
+        };
 
+        $scope.check = function (bean) {
+            bean.$valid = false;
+            var flag = true;
+            if (!bean.floor || !bean.code || !bean.square || !bean.orient || !bean.type1 || !bean.type2 || !bean.type3 || !bean.type4) {
+                flag = false;
+            }
+            bean.$valid = flag;
+        };
         // 重新加载该页面
         $scope.reload = function () {
             window.location.reload();

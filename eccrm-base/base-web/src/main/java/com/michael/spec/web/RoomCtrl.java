@@ -59,8 +59,8 @@ public class RoomCtrl extends BaseController {
     @ResponseBody
     public void save(HttpServletRequest request, HttpServletResponse response) {
         Room room = GsonUtils.wrapDataToEntity(request, Room.class);
-        roomService.save(room);
-        GsonUtils.printSuccess(response);
+        String id = roomService.save(room);
+        GsonUtils.printData(response, id);
     }
 
     @RequestMapping(value = "/modify", params = {"id"}, method = RequestMethod.GET)

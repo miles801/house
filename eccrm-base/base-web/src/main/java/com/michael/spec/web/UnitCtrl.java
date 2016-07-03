@@ -43,8 +43,8 @@ public class UnitCtrl extends BaseController {
     @ResponseBody
     public void save(HttpServletRequest request, HttpServletResponse response) {
         Unit unit = GsonUtils.wrapDataToEntity(request, Unit.class);
-        unitService.save(unit);
-        GsonUtils.printSuccess(response);
+        String id = unitService.save(unit);
+        GsonUtils.printData(response, id);
     }
 
     @RequestMapping(value = "/modify", params = {"id"}, method = RequestMethod.GET)
