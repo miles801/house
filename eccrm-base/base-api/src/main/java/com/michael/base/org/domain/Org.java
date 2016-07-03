@@ -55,23 +55,23 @@ public class Org {
     private Boolean isHide;
 
     // 最小用户数
-    @Column(name = "min_emp")
-    private Integer minEmp;
+//    @Column(name = "min_emp")
+//    private Integer minEmp;
     // 最大用户数
-    @Column(name = "max_emp")
-    private Integer maxEmp;
+//    @Column(name = "max_emp")
+//    private Integer maxEmp;
 
     // 职位
     @Column
     private String duty;
 
     // 当前机构下的员工数
-    @Column
-    private Integer empCounts;
+//    @Column
+//    private Integer empCounts;
 
     // 当前机构及子机构下的员工数量
-    @Column
-    private Integer totalEmpCounts;
+//    @Column
+//    private Integer totalEmpCounts;
 
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
@@ -86,14 +86,6 @@ public class Org {
 
     public void setDuty(String duty) {
         this.duty = duty;
-    }
-
-    public Integer getEmpCounts() {
-        return empCounts;
-    }
-
-    public void setEmpCounts(Integer empCounts) {
-        this.empCounts = empCounts;
     }
 
     public String getName() {
@@ -144,14 +136,6 @@ public class Org {
         this.parentName = parentName;
     }
 
-    public Integer getTotalEmpCounts() {
-        return totalEmpCounts;
-    }
-
-    public void setTotalEmpCounts(Integer totalEmpCounts) {
-        this.totalEmpCounts = totalEmpCounts;
-    }
-
     public String getPath() {
         return path;
     }
@@ -191,22 +175,6 @@ public class Org {
 
     public void setLevel(Integer level) {
         this.level = level;
-    }
-
-    public Integer getMinEmp() {
-        return minEmp;
-    }
-
-    public void setMinEmp(Integer minEmp) {
-        this.minEmp = minEmp;
-    }
-
-    public Integer getMaxEmp() {
-        return maxEmp;
-    }
-
-    public void setMaxEmp(Integer maxEmp) {
-        this.maxEmp = maxEmp;
     }
 
     public String getId() {

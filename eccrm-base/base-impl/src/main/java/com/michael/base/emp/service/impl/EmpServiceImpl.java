@@ -1,15 +1,14 @@
 package com.michael.base.emp.service.impl;
 
+import com.michael.base.common.BaseParameter;
 import com.michael.base.emp.bo.EmpBo;
 import com.michael.base.emp.dao.EmpDao;
 import com.michael.base.emp.domain.Emp;
 import com.michael.base.emp.service.EmpService;
 import com.michael.base.emp.vo.EmpVo;
-import com.michael.base.org.dao.OrgDao;
 import com.michael.base.position.dao.PositionEmpDao;
 import com.michael.pinyin.SimplePinYin;
 import com.michael.pinyin.StandardStrategy;
-import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -18,6 +17,7 @@ import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.md5.MD5Utils;
 import com.ycrl.utils.string.StringUtils;
 import com.ycrl.utils.uuid.UUIDGenerator;
+import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -204,10 +204,8 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
             vo.setLockedName("异常");
         }
 
-        // 设置机构的名称
-        OrgDao orgDao = SystemContainer.getInstance().getBean(OrgDao.class);
-        if (StringUtils.isNotEmpty(emp.getOrgId())) {
-            vo.setOrgName(orgDao.findName(emp.getOrgId()));
-        }
+        ParameterContainer container = ParameterContainer.getInstance();
+        vo.setSexName(container.getBusinessName(BaseParameter.SEX, emp.getSex()));
+        vo.setDutyName(container.getBusinessName(BaseParameter.DUTY, emp.getDuty()));
     }
 }

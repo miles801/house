@@ -12,7 +12,6 @@ import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
-import com.ycrl.utils.number.IntegerUtils;
 import com.ycrl.utils.string.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -149,10 +148,13 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
     public Integer addEmp(String positionId, int counts) {
         Assert.hasText(positionId, "添加员工失败!岗位ID不能为空!");
         Position position = positionDao.findById(positionId);
-        Assert.notNull(position, "添加员工失败!组织机构不存在，请刷新后重试!");
-        Assert.isTrue(IntegerUtils.add(position.getEmpCounts(), counts) <= IntegerUtils.add(position.getMaxEmp(), 0), "添加员工失败!超出该组织机构允许的最大员工数量!");
-        position.setEmpCounts(IntegerUtils.add(position.getEmpCounts(), counts));
-        return position.getEmpCounts();
+        Assert.notNull(position, "添加员工失败!岗位不存在，请刷新后重试!");
+//        if (position.getMaxEmp() != null) {
+//            Assert.isTrue(IntegerUtils.add(position.getEmpCounts(), counts) <= IntegerUtils.add(position.getMaxEmp(), 0), "添加员工失败!超出该岗位允许的最大员工数量!");
+//        }
+//        position.setEmpCounts(IntegerUtils.add(position.getEmpCounts(), counts));
+//        return position.getEmpCounts();
+        return 0;
     }
 
     @Override

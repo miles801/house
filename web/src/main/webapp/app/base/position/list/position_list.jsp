@@ -82,28 +82,7 @@
                                        validate validate-int validate-max-length="4"/>
                             </div>
 
-                            <div class="row">
-                                <div class="form-label col-2">
-                                    <label>最小用户数:</label>
-                                </div>
-                                <input class="col-4" type="number" ng-model="beans.minEmp" validate validate-int
-                                       validate-max-length="4" maxlength="4"/>
-                                <div class="form-label col-1-half">
-                                    <label>最大用户数:</label>
-                                </div>
-                                <input class="col-4" type="number" ng-model="beans.maxEmp" validate validate-int
-                                       validate-max-length="4" maxlength="4"/>
-                            </div>
-                            <div class="row">
-                                <div class="form-label col-2">
-                                    <label>当前用户数:</label>
-                                </div>
-                                <span class="col-4" ng-cloak>{{beans.empCounts||0}}</span>
-                                <div class="form-label col-1-half">
-                                    <label>状态:</label>
-                                </div>
-                                <span class="col-4" ng-cloak>{{beans.isHide?'禁用':'启用'}}</span>
-                            </div>
+
                             <div class="row">
                                 <div class="form-label col-2">
                                     <label>备注:</label>
@@ -111,6 +90,12 @@
                             <textarea class="col-9-half" rows="6"
                                       validate validate-max-length="1000" ng-model="beans.description"></textarea>
 
+                            </div>
+                            <div class="row">
+                                <div class="form-label col-2">
+                                    <label>状态:</label>
+                                </div>
+                                <span class="col-4" ng-cloak>{{beans.isHide?'禁用':'启用'}}</span>
                             </div>
                             <div class="row button-row">
                                 <a type="button" class="btn btn-green btn-min" ng-if="beans && !beans.id"

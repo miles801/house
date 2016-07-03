@@ -18,7 +18,6 @@ import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
-import com.ycrl.utils.number.IntegerUtils;
 import com.ycrl.utils.string.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -79,8 +78,8 @@ public class OrgServiceImpl implements OrgService, BeanWrapCallback<Org, OrgVo> 
 
     private void init(Org org) {
 
-        org.setEmpCounts(0);
-        org.setTotalEmpCounts(0);
+//        org.setEmpCounts(0);
+//        org.setTotalEmpCounts(0);
         // 设置层级
         setLevel(org);
 
@@ -204,9 +203,9 @@ public class OrgServiceImpl implements OrgService, BeanWrapCallback<Org, OrgVo> 
         Assert.isTrue(empCounts != null, "添加员工失败!员工数量不能为空");
         Org org = orgDao.findById(orgId);
         Assert.notNull(org, "添加员工失败!组织机构不存在，请刷新后重试!");
-        Assert.isTrue(IntegerUtils.add(org.getEmpCounts(), empCounts) <= IntegerUtils.add(org.getMaxEmp(), 0), "添加员工失败!超出该组织机构允许的最大员工数量!");
-        org.setEmpCounts(IntegerUtils.add(org.getEmpCounts(), empCounts));
-        org.setTotalEmpCounts(IntegerUtils.add(org.getTotalEmpCounts(), empCounts));
+//        Assert.isTrue(IntegerUtils.add(org.getEmpCounts(), empCounts) <= IntegerUtils.add(org.getMaxEmp(), 0), "添加员工失败!超出该组织机构允许的最大员工数量!");
+//        org.setEmpCounts(IntegerUtils.add(org.getEmpCounts(), empCounts));
+//        org.setTotalEmpCounts(IntegerUtils.add(org.getTotalEmpCounts(), empCounts));
 
         // 更新所有上级的员工数量
         String[] parentIds = org.getPath().split("/");
@@ -217,10 +216,11 @@ public class OrgServiceImpl implements OrgService, BeanWrapCallback<Org, OrgVo> 
             }
             Org parent = orgDao.findById(parentId);
             Assert.notNull(parent, "数据错误![" + org.getName() + "]的父级不存在!请与管理员联系!~");
-            parent.setTotalEmpCounts(IntegerUtils.add(parent.getTotalEmpCounts(), empCounts));
+//            parent.setTotalEmpCounts(IntegerUtils.add(parent.getTotalEmpCounts(), empCounts));
         }
 
-        return org.getEmpCounts();
+//        return org.getEmpCounts();
+        return 0;
     }
 
     @Override

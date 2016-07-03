@@ -38,13 +38,13 @@ public class Position extends CommonDomain {
     @Column
     private Integer minEmp;
 
-    @ApiField(value = "该岗位允许的最大员工数")
-    @Column
-    private Integer maxEmp;
+//    @ApiField(value = "该岗位允许的最大员工数")
+//    @Column
+//    private Integer maxEmp;
 
-    @ApiField(value = "该岗位当前员工数")
-    @Column
-    private Integer empCounts;
+//    @ApiField(value = "该岗位当前员工数")
+//    @Column
+//    private Integer empCounts;
 
     @ApiField(value = "是否为父节点/是否有子节点")
     @Column
@@ -124,19 +124,4 @@ public class Position extends CommonDomain {
         this.minEmp = minEmp;
     }
 
-    public Integer getMaxEmp() {
-        return maxEmp;
-    }
-
-    public void setMaxEmp(Integer maxEmp) {
-        this.maxEmp = maxEmp;
-    }
-
-    public Integer getEmpCounts() {
-        return empCounts;
-    }
-
-    public void setEmpCounts(Integer empCounts) {
-        this.empCounts = empCounts;
-    }
 }

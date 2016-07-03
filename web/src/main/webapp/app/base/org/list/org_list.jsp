@@ -95,7 +95,7 @@
                                        validate validate-int validate-max-length="4"/>
                             </div>
 
-                            <div class="row">
+                            <div class="row dn">
                                 <div class="form-label col-2">
                                     <label>最小用户数:</label>
                                 </div>
@@ -107,7 +107,7 @@
                                 <input class="col-4" type="number" ng-model="beans.maxEmp" validate validate-int
                                        validate-max-length="4" maxlength="4"/>
                             </div>
-                            <div class="row">
+                            <div class="row dn">
                                 <div class="form-label col-2">
                                     <label>总用户数:</label>
                                 </div>

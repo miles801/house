@@ -131,16 +131,4 @@
 </div>
 </body>
 <script src="<%=contextPath%>/app/main/js/main.js" type="text/javascript"></script>
-<script>
-    var socket = null;
-    (function () {
-        socket = new WebSocket("ws://localhost:<%=request.getLocalPort()+contextPath %>/messages");
-        // 发送消息
-        <%--socket.send("${sessionScope.employeeName}(${sessionScope.employeeId})," + Math.random());--%>
-
-        // 接收消息
-        socket.onmessage = function (o) {
-        }
-    })();
-</script>
 </html>

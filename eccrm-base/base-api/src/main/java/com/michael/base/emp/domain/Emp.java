@@ -7,7 +7,6 @@ import eccrm.base.attachment.AttachmentSymbol;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 /**
  * 员工
@@ -84,7 +83,6 @@ public class Emp extends CommonDomain implements AttachmentSymbol {
     private String orgId;
     @ApiField(value = "所属组织机构名称")
     @Column(length = 40)
-    @Transient
     private String orgName;
 
     @ApiField(value = "岗位", desc = "来自业务参数:BP_DUTY")
