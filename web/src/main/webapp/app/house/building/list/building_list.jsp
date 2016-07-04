@@ -9,15 +9,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css">
+    <link rel="stylesheet" type="text/css" href="<%=contextPath%>/vendor/zTree/css/ztree.css">
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/jquery-all.js"></script>
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-all.js"></script>
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-strap-all.js"></script>
+    <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-ztree-all.js"></script>
     <script>
         window.angular.contextPathURL = '<%=contextPath%>';
     </script>
 </head>
 <body>
 <div class="main condition-row-1" ng-app="house.building.list" ng-controller="Ctrl">
+    <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+        <div class="dn">
+            <input type="hidden" id="isManager" value="true"/>
+        </div>
+    </c:if>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -100,12 +107,13 @@
                                 <td>录入户数</td>
                                 <td>有效户数</td>
                                 <td>负责人</td>
+                                <td>维护人</td>
                                 <td>操作</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="12" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
@@ -125,9 +133,21 @@
                                        bo-text="foo.validRooms"></a>
                                 </td>
                                 <td bo-text="foo.masterName"></td>
+                                <td bo-text="foo.maintainName"></td>
                                 <td style="text-align: left">
-                                    <a class="btn-op blue" ng-click="modify(foo.id);">编辑</a>
-                                    <a class="btn-op red" ng-click="remove(foo.id);" ng-if="!foo.allRooms">删除</a>
+                                    <c:if test='${sessionScope.get("OP_BUILDING_MODIFY") eq true}'>
+                                        <a class="btn-op blue" ng-click="modify(foo.id);">编辑</a>
+                                    </c:if>
+                                    <c:if test='${sessionScope.get("OP_BUILDING_MASTER") eq true}'>
+                                        <a class="btn-op yellow" ng-click="modifyMaster(foo.id);" title="变更负责人">负责人</a>
+                                    </c:if>
+                                    <c:if test='${sessionScope.get("OP_BUILDING_MAINTAIN") eq true}'>
+                                        <a class="btn-op yellow" ng-click="modifyMaintain(foo.id);"
+                                           title="更新楼盘的维护人列表">维护人</a>
+                                    </c:if>
+                                    <c:if test='${sessionScope.get("OP_BUILDING_DELETE") eq true}'>
+                                        <a class="btn-op red" ng-click="remove(foo.id);" ng-if="!foo.allRooms">删除</a>
+                                    </c:if>
                                 </td>
                             </tr>
                             </tbody>
@@ -140,6 +160,7 @@
     <div class="list-pagination" eccrm-page="pager"></div>
 </div>
 </body>
+<script type="text/javascript" src="<%=contextPath%>/app/employee/employee-modal.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/building/building.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/building/list/building_list.js"></script>
 </html>

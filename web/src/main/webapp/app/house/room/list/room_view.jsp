@@ -20,6 +20,9 @@
 <div class="main condition-row-3" ng-app="house.room.view" ng-controller="Ctrl">
     <div class="dn">
         <input type="hidden" id="buildingId" value="${param.buildingId}"/>
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+            <input type="hidden" id="isManager" value="true"/>
+        </c:if>
     </div>
     <div class="list-condition">
         <div class="block">

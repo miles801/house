@@ -1,5 +1,7 @@
 package com.michael.spec.service.impl;
 
+import com.michael.base.emp.dao.EmpDao;
+import com.michael.base.emp.domain.Emp;
 import com.michael.spec.bo.BlockBo;
 import com.michael.spec.bo.BuildingBo;
 import com.michael.spec.bo.RoomBo;
@@ -38,6 +40,9 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
 
     @Resource
     private RoomDao roomDao;
+
+    @Resource
+    private EmpDao empDao;
 
     @Override
     public String save(Building building) {
@@ -100,6 +105,70 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
             Long total = roomDao.getTotal(bo);
             Assert.isTrue(total == null || total == 0, "楼盘删除失败!楼盘下已经具有房屋信息!");
             buildingDao.deleteById(id);
+        }
+    }
+
+    @Override
+    public void addMaintain(String id, String... empIds) {
+        Assert.hasText(id, "操作失败!楼盘ID不能为空!");
+        Assert.notEmpty(empIds, "添加维护人失败!维护人ID不能为空!");
+        Building building = buildingDao.findById(id);
+        Assert.notNull(building, "操作失败!楼盘不存在！请刷新后重试!");
+        for (String empId : empIds) {
+            String maintainId = building.getMaintainId();
+            if (StringUtils.isEmpty(maintainId)) {
+                Emp emp = empDao.findById(empId);
+                Assert.notNull(emp, "添加维护人失败!员工不存在!");
+                building.setMaintainId(empId + ";");
+                building.setMaintainName(emp.getName() + ";");
+            } else if (!maintainId.contains(id + ";")) {
+                Emp emp = empDao.findById(empId);
+                Assert.notNull(emp, "添加维护人失败!员工不存在!");
+                building.setMaintainId(maintainId + empId + ";");
+                building.setMaintainName(building.getMaintainName() + emp.getName() + ";");
+            }
+        }
+    }
+
+    @Override
+    public void removeMaintain(String id, String empId) {
+        Assert.hasText(id, "操作失败!楼盘ID不能为空!");
+        Assert.hasText(empId, "删除维护人失败!维护人ID不能为空!");
+        Building building = buildingDao.findById(id);
+        Assert.notNull(building, "操作失败!楼盘不存在！请刷新后重试!");
+        String maintainId = building.getMaintainId();
+        if (StringUtils.isNotEmpty(maintainId)) {
+            String[] idArr = maintainId.split(";");
+            String[] nameArr = building.getMaintainName().split(";");
+            StringBuilder idBuilder = new StringBuilder();
+            StringBuilder nameBuilder = new StringBuilder();
+            for (int i = 0; i < idArr.length; i++) {
+                if (idArr[i].equals(empId)) {
+                    continue;
+                }
+                idBuilder.append(idArr[i] + ";");
+                nameBuilder.append(nameArr[i] + ";");
+            }
+            String newMaintainId = idBuilder.toString();
+            String newMaintainName = nameBuilder.toString();
+            building.setMaintainName(newMaintainName);
+            building.setMaintainId(newMaintainId);
+        }
+    }
+
+    @Override
+    public void updateMaster(String id, String empId) {
+        Assert.hasText(id, "操作失败!楼盘ID不能为空!");
+        Building building = buildingDao.findById(id);
+        Assert.notNull(building, "操作失败!楼盘不存在！请刷新后重试!");
+        if (StringUtils.isEmpty(empId)) {
+            building.setMasterId(null);
+            building.setMaintainName(null);
+        } else {
+            Emp emp = empDao.findById(empId);
+            Assert.notNull(emp, "更新楼盘负责人失败!员工不存在!");
+            building.setMasterId(empId);
+            building.setMasterName(emp.getName());
         }
     }
 

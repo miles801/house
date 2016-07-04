@@ -11,7 +11,8 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
         $scope.condition = {
             orderBy: 'roomKey',
-            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID']
+            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID'],
+            manager: true
         };
 
         // 房屋现状

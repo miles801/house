@@ -21,8 +21,8 @@
     }]);
 
     // 提供员工选择相关的弹出层
-    app.service('EmployeeModal', ['$modal', 'CommonUtils', 'EmpService', 'AlertFactory',
-        function ($modal, CommonUtils, EmpService, AlertFactory) {
+    app.service('EmployeeModal', ['$modal', 'CommonUtils', 'EmpService', 'AlertFactory', 'ModalFactory',
+        function ($modal, CommonUtils, EmpService, AlertFactory, ModalFactory) {
             return {
                 /**
                  * 选择一个员工
@@ -111,6 +111,8 @@
                                     defer.resolve(data.total);
                                 }, $scope);
                             });
+                        }, finishInit: function () {
+                            this.query();
                         }
                     };
 
@@ -118,6 +120,10 @@
                     $scope.clear = function () {
                         $scope.condition = {};
                         $scope.orgName = null;
+                    };
+
+                    $scope.remove = function (index) {
+                        $scope.items.splice(index, 1);
                     };
 
                     // 查询
@@ -131,7 +137,24 @@
                             callback.call($scope, $scope.items);
                             modal.hide();
                         }
-                    }
+                    };
+
+                    ModalFactory.afterShown(modal, function () {
+                        $('input').bind('keydown', function (e) {
+                            var code = e.which || e.keyCode;
+                            if (code == 13) {
+                                $scope.query();
+                                e.preventDefault();
+                                return;
+                            }
+                        });
+
+                        $scope.$on('destroy', function () {
+                            alert('移除');
+                            $('input').unbind('keydown');
+                        });
+                    });
+
                 }
             }
         }]);

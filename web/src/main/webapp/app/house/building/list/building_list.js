@@ -5,10 +5,14 @@
     var app = angular.module('house.building.list', [
         'eccrm.angular',
         'eccrm.angularstrap',
+        'eccrm.base.employee.modal',    // 员工
         'house.building'
     ]);
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, BuildingService, BuildingParam) {
-        $scope.condition = {};
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, BuildingService, BuildingParam,
+                                     EmployeeModal, BuildingModal) {
+        $scope.condition = {
+            manager: $('#isManager').val()
+        };
 
         // 学区
         $scope.types = [{name: '全部'}];
@@ -108,6 +112,27 @@
             $(window.parent.document.body).find('ul.nav-tabs>li>span.icons.fork').trigger('click');
         };
 
+        // 更新负责人
+        $scope.modifyMaster = function (id) {
+            EmployeeModal.pickEmployee({}, function (emp) {
+                ModalFactory.confirm({
+                    scope: $scope,
+                    content: '变更楼盘负责人，请确认该操作！',
+                    callback: function () {
+                        var promise = BuildingService.updateMaster({id: id, empId: emp.id}, function () {
+                            AlertFactory.success('楼盘负责人变更成功!');
+                            $scope.pager.load();
+                        });
+                        CommonUtils.loading(promise);
+                    }
+                });
+            });
+        };
+
+        // 更新维护人
+        $scope.modifyMaintain = function (id) {
+            BuildingModal.maintain({id: id}, $scope.pager.load);
+        };
 
         $scope.closeTab();
     });

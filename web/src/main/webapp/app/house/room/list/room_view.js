@@ -13,7 +13,8 @@
             orderBy: 'roomKey',
             statusInclude: ['APPLY_MODIFY', 'APPLY_INVALID', 'ACTIVE'],
             reverse: true,
-            buildingId: $('#buildingId').val() || null
+            buildingId: $('#buildingId').val() || null,
+            manager: $('#isManager').val()
         };
 
         var condition = $scope.condition;

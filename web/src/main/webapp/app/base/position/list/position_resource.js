@@ -115,9 +115,7 @@
                 menuTree.refresh();
                 // 资源树
                 elementTree.getNodesByFilter(function (o) {
-                    if ($.inArray(o.id, ids) != -1) {
-                        o.checked = true;
-                    }
+                    o.checked = $.inArray(o.id, ids) != -1;
                 }, false);
                 elementTree.refresh();
             });
@@ -127,7 +125,7 @@
         initTree();
 
         initMenuTree();
-        // fixme 数据权限和操作权限还未完成
+        // fixme 数据权限还未完成
         // initDataTree();
         initElementTree();
 

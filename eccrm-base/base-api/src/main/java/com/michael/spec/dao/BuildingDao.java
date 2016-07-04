@@ -2,6 +2,7 @@ package com.michael.spec.dao;
 
 import com.michael.spec.bo.BuildingBo;
 import com.michael.spec.domain.Building;
+import org.hibernate.criterion.DetachedCriteria;
 
 import java.util.List;
 
@@ -13,6 +14,14 @@ public interface BuildingDao {
     String save(Building building);
 
     void update(Building building);
+
+    /**
+     * 获得个人楼盘ID列表的离线查询对象
+     *
+     * @param empId 员工ID
+     * @return 离线查询对象（只包含楼盘ID）
+     */
+    DetachedCriteria getPersonalBuilding(String empId);
 
     /**
      * 高级查询接口

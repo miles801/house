@@ -1,17 +1,22 @@
 package com.michael.spec.dao.impl;
 
 import com.michael.spec.bo.RoomBo;
+import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Room;
 import com.michael.spec.domain.RoomView;
 import com.ycrl.core.HibernateDaoHelper;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
+import com.ycrl.utils.string.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -20,6 +25,9 @@ import java.util.List;
  */
 @Repository("roomDao")
 public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
+
+    @Resource
+    private BuildingDao buildingDao;
 
     @Override
     public String save(Room room) {
@@ -122,7 +130,11 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
 
     private void initCriteria(Criteria criteria, RoomBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
+        boolean isNotManager = !(bo != null && bo.getManager() != null && bo.getManager());
         CriteriaUtils.addCondition(criteria, bo);
+        if (isNotManager && StringUtils.isEmpty(bo.getBuildingId())) {
+            criteria.add(Property.forName("buildingId").in(buildingDao.getPersonalBuilding(SecurityContext.getEmpId())));
+        }
     }
 
 }

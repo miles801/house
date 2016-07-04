@@ -88,7 +88,15 @@ public class RoomBo implements BO {
     @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
     private String creatorName;
 
+    private Boolean manager;
 
+    public Boolean getManager() {
+        return manager;
+    }
+
+    public void setManager(Boolean manager) {
+        this.manager = manager;
+    }
 
     public List<String> getStatusInclude() {
         return statusInclude;

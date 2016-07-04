@@ -15,6 +15,31 @@ public interface BuildingService {
      */
     String save(Building building);
 
+
+    /**
+     * 添加维护人
+     *
+     * @param id     楼盘ID
+     * @param empIds 负责人ID列表
+     */
+    void addMaintain(String id, String... empIds);
+
+    /**
+     * 删除维护人
+     *
+     * @param id    楼盘ID
+     * @param empId 负责人ID
+     */
+    void removeMaintain(String id, String empId);
+
+    /**
+     * 变更负责人
+     *
+     * @param id    楼盘ID
+     * @param empId 员工ID
+     */
+    void updateMaster(String id, String empId);
+
     /**
      * 更新
      */

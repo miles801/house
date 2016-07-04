@@ -1,5 +1,6 @@
 package com.michael.spec.domain;
 
+import com.michael.docs.annotations.ApiField;
 import com.ycrl.base.common.CommonDomain;
 
 import javax.persistence.Column;
@@ -98,6 +99,13 @@ public class Building extends CommonDomain {
     private String masterId;
     @Column(nullable = false, length = 40)
     private String masterName;
+
+    @ApiField("维护人")
+    @Column(length = 1000)
+    private String maintainId;
+    @Column(length = 500)
+    private String maintainName;
+
     // 学区
     @Column(length = 100)
     private String school;
@@ -366,5 +374,21 @@ public class Building extends CommonDomain {
 
     public void setCol5(String col5) {
         this.col5 = col5;
+    }
+
+    public String getMaintainId() {
+        return maintainId;
+    }
+
+    public void setMaintainId(String maintainId) {
+        this.maintainId = maintainId;
+    }
+
+    public String getMaintainName() {
+        return maintainName;
+    }
+
+    public void setMaintainName(String maintainName) {
+        this.maintainName = maintainName;
     }
 }

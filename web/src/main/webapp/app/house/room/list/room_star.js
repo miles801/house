@@ -11,7 +11,8 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomStarService) {
         $scope.condition = {
-            orderBy: 'roomKey'
+            orderBy: 'roomKey',
+            manager: true
         };
 
         // 房屋现状
@@ -38,7 +39,7 @@
                     var promise = RoomStarService.pageQuery($scope.condition, function (data) {
                         $scope.beans = data.data || {};
                         defer.resolve(data.data);
-                });
+                    });
                     CommonUtils.loading(promise);
                 });
             }

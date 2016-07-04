@@ -91,4 +91,29 @@ public class BuildingCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    // -----------------------  以下是楼盘维护人相关接口 ---------------------------------------
+
+    // 设置楼盘负责人
+    @ResponseBody
+    @RequestMapping(value = "/master", params = {"id", "empId"}, method = RequestMethod.POST)
+    public void updateMaster(@RequestParam String id, @RequestParam String empId, HttpServletResponse response) {
+        buildingService.updateMaster(id, empId);
+        GsonUtils.printSuccess(response);
+    }
+
+    // 添加楼盘维护人员
+    @ResponseBody
+    @RequestMapping(value = "/maintian-add", params = {"id", "empIds"}, method = RequestMethod.POST)
+    public void addMaintain(@RequestParam String id, @RequestParam String empIds, HttpServletResponse response) {
+        buildingService.addMaintain(id, empIds.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
+    // 移除楼盘维护人员
+    @ResponseBody
+    @RequestMapping(value = "/maintian-delete", params = {"id", "empId"}, method = RequestMethod.POST)
+    public void removeMaintain(@RequestParam String id, @RequestParam String empId, HttpServletResponse response) {
+        buildingService.removeMaintain(id, empId);
+        GsonUtils.printSuccess(response);
+    }
 }

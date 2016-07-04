@@ -4,9 +4,13 @@ import com.michael.spec.bo.BuildingBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.domain.Building;
 import com.ycrl.core.HibernateDaoHelper;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import com.ycrl.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -36,6 +40,19 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
         Criteria criteria = createCriteria(Building.class);
         initCriteria(criteria, bo);
         return criteria.list();
+    }
+
+    @Override
+    public DetachedCriteria getPersonalBuilding(String empId) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(Building.class)
+                .setProjection(Projections.property("id"));
+        criteria.add(
+                Restrictions.disjunction()
+                        .add(Restrictions.eq("masterId", empId))
+                        .add(Restrictions.like("maintainId", empId + ";", MatchMode.ANYWHERE))
+        );
+
+        return criteria;
     }
 
     @Override
@@ -80,6 +97,14 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
     private void initCriteria(Criteria criteria, BuildingBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);
+        boolean isNotManager = !(bo != null && bo.getManager() != null && bo.getManager());
+        if (isNotManager) {
+            criteria.add(
+                    Restrictions.disjunction()
+                            .add(Restrictions.eq("masterId", SecurityContext.getEmpId()))
+                            .add(Restrictions.like("maintainId", SecurityContext.getEmpId() + ";", MatchMode.ANYWHERE))
+            );
+        }
     }
 
 }
