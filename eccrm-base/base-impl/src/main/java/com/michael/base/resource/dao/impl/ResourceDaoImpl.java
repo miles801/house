@@ -120,6 +120,7 @@ public class ResourceDaoImpl extends HibernateDaoHelper implements ResourceDao {
                                 .add(Restrictions.eq("empId", empId)))
                 );
         criteria.add(Property.forName("id").in(pr));
+        criteria.addOrder(Order.asc("sequenceNo"));
         return criteria.list();
     }
 
