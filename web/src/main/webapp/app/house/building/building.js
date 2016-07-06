@@ -93,11 +93,11 @@
             /**
              * {
              *  id:楼盘ID
-             *  callback:回调函数
              * }
              * @param options
+             * @param callback 回调函数
              */
-            maintain: function (options) {
+            maintain: function (options, callback) {
                 var modal = $modal({
                     template: CommonUtils.contextPathURL('/app/house/building/list/template/building-maintain.ftl.html'),
                     backdrop: 'static'
@@ -137,7 +137,13 @@
                             var promise = BuildingService.removeMaintain({id: id, empId: empId}, function () {
                                 AlertFactory.success('移除成功!');
                                 $scope.beans.splice(index, 1);
+
+                                // 回调
+                                if (angular.isFunction(callback)) {
+                                    callback();
+                                }
                             });
+                            CommonUtils.loading(promise);
                         }
                     });
                 };
@@ -156,6 +162,11 @@
                                 var promise = BuildingService.addMaintain({id: id, empIds: ids.join(',')}, function () {
                                     AlertFactory.success('操作成功!');
                                     load();
+
+                                    // 回调
+                                    if (angular.isFunction(callback)) {
+                                        callback();
+                                    }
                                 });
                                 CommonUtils.loading(promise);
                             }
