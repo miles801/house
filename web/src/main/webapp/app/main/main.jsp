@@ -14,6 +14,7 @@
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/jquery-all.js"></script>
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-all.js"></script>
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-strap-all.js"></script>
+    <script type="text/javascript" src="<%=contextPath%>/app/base/emp/emp.js"></script>
     <script>
         window.angular.contextPathURL = "<%=contextPath%>";
     </script>

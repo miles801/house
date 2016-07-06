@@ -2,10 +2,11 @@
 
     var app = angular.module('eccrm.main', [
         'eccrm.angular',
-        'eccrm.angularstrap'
+        'eccrm.angularstrap',
+        'base.emp'  // 员工
     ]);
 
-    app.controller('MainController', function ($scope, $http, $timeout, CommonUtils, AlertFactory, AsideFactory) {
+    app.controller('MainController', function ($scope, $http, $timeout, $modal, CommonUtils, AlertFactory, EmpModal) {
         $scope.menus = []; // 菜单
 
         $scope.subMenus = [];// 子菜单
@@ -131,10 +132,11 @@
 
 
         $scope.updatePwd = function () {
-            PasswordModal.modifyPwd({
-                scope: $scope, callback: function () {
-                    AlertFactory.success(null, '密码修改成功!重新登录有生效!');
-                }
+            EmpModal.updatePwd(function () {
+                AlertFactory.success('密码更新成功!请重新登录!');
+                CommonUtils.delay(function () {
+                    window.location.href = CommonUtils.contextPathURL("/logout");
+                }, 2000);
             });
         };
 

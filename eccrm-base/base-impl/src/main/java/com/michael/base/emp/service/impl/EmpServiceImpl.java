@@ -142,8 +142,8 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
         Assert.hasText(newPwd, "更新密码失败!新密码不能为空!");
         Emp emp = empDao.findById(SecurityContext.getEmpId());
         Assert.notNull(emp, "更新密码失败!当前用户不存在!");
-        Assert.isTrue(emp.getPassword().equals(oldPwd), "更新密码失败!原密码不正确!");
-        empDao.updatePwd(SecurityContext.getEmpId(), newPwd);
+        Assert.isTrue(emp.getPassword().equals(MD5Utils.encode(oldPwd)), "更新密码失败!原密码不正确!");
+        empDao.updatePwd(SecurityContext.getEmpId(), MD5Utils.encode(newPwd));
     }
 
     @Override

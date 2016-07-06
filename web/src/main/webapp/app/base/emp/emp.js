@@ -28,6 +28,9 @@
                 isArray: false
             },
 
+            // 更新密码
+            updatePwd: {method: 'POST', params: {method: 'update-pwd'}, isArray: false},
+
             // 启用员工
             start: {method: 'POST', params: {method: 'start', ids: '@ids'}, isArray: false},
 
@@ -121,7 +124,32 @@
                 }
                 var o = angular.extend({}, options, {pageType: 'view'});
                 common(o, callback);
+            },
+            /**
+             * @param callback 成功后的回调
+             */
+            updatePwd: function (callback) {
+                var modal = $modal({
+                    template: CommonUtils.contextPathURL('/app/base/emp/tempalte/pwd-modify.html'),
+                    backdrop: 'static'
+                });
+                var $scope = modal.$scope;
+                $scope.beans = {
+                    newPwd: null,    // 新密码
+                    oldPwd: null     // 原始密码
+                };
+
+                // 执行密码更新
+                $scope.update = function () {
+                    var promise = EmpService.updatePwd($scope.beans, function () {
+                        if (angular.isFunction(callback)) {
+                            callback();
+                        }
+                        $scope.$hide();
+                    });
+                    CommonUtils.loading(promise);
+                };
             }
-        }
+        };
     });
 })(angular);
