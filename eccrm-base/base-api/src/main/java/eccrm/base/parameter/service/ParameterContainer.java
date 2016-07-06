@@ -260,7 +260,7 @@ public class ParameterContainer {
         // 从容器中获取指定编号缓存的数据，如果没有则重新加载
         List<BusinessParamItemVo> vos = getBusinessItems(type);
         for (BusinessParamItemVo vo : vos) {
-            if (vo.getValue().equals(name)) {
+            if (vo.getName().equals(name)) {
                 return vo.getValue();
             }
         }

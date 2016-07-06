@@ -61,7 +61,7 @@
                         <div class="form-label col-1-half">
                             <label>产权性质:</label>
                         </div>
-                        <span class="col-2-half">{{beans.houseProperyName}}</span>
+                        <span class="col-2-half">{{beans.housePropertyName}}</span>
                         <div class="form-label col-1-half">
                             <label>现状:</label>
                         </div>

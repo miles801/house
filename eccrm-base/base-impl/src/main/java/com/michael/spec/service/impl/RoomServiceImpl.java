@@ -417,19 +417,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     }
                     room.setUnitId(unitId);
 
-                    // 设置参数-现状
-                    String useType = dto.getHouseUseType();
-                    if (StringUtils.isNotEmpty(useType)) {
-                        String userTypeValue = params.get(useType);
-                        if (StringUtils.isEmpty(userTypeValue)) {
-                            userTypeValue = bpiDao.queryName(HouseParams.HOUSE_USE_TYPE, useType);
-                            params.put(useType, userTypeValue);
-                        }
-                        room.setOrient(parameterContainer.getBusinessValue(HouseParams.ORIENT, dto.getOrient()));
-                        room.setHouseProperty(parameterContainer.getBusinessValue(HouseParams.HOUSE_PROPERTY, dto.getHouseProperty()));
-                        room.setDescription(dto.getDescription());
-                        room.setHouseUseType(userTypeValue);
-                    }
+                    // 设置参数
+                    // 朝向
+                    room.setOrient(parameterContainer.getBusinessValue(HouseParams.ORIENT, dto.getOrient()));
+                    // 产权性质
+                    room.setHouseProperty(parameterContainer.getBusinessValue(HouseParams.HOUSE_PROPERTY, dto.getHouseProperty()));
+                    room.setDescription(dto.getDescription());
+                    // 房屋现状
+                    room.setHouseUseType(parameterContainer.getBusinessValue(HouseParams.HOUSE_USE_TYPE, dto.getHouseUseType()));
                     // 设置参数-状态
                     room.setStatus(Room.STATUS_APPLY_ADD);
 
@@ -447,19 +442,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                             Customer customer = new Customer();
                             customer.setName(cusName);
                             customer.setIdCard(dto.getCusIDCard());
-                            String sex = dto.getCusSex();
-                            if (StringUtils.isNotEmpty(sex)) {
-                                customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, sex));
-                            }
-                            String age = dto.getCusAge();
-                            if (StringUtils.isNotEmpty(age)) {
-                                customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, age));
-                            }
-
-                            String cusMarriage = dto.getCusMarriage();
-                            if (StringUtils.isNotEmpty(cusMarriage)) {
-                                customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, cusMarriage));
-                            }
+                            customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, dto.getCusSex()));
+                            customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, dto.getCusAge()));
+                            customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, dto.getCusMarriage()));
                             customer.setFamilyCounts(dto.getCusFamilyCount());
                             customer.setPhone1(cusPhone);
                             customer.setPhone2(dto.getCusPhone2());
