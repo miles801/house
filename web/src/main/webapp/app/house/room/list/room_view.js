@@ -70,10 +70,10 @@
             });
         };
 
-        $scope.detail = function (id) {
+        $scope.detail = function (code) {
             CommonUtils.addTab({
                 title: '房屋明细',
-                url: 'house/room/list/room_detail.jsp?id=' + id
+                url: '/house/room/view?code=' + code
             });
 
         };

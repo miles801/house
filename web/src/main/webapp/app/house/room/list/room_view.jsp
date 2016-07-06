@@ -193,7 +193,7 @@
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td>
-                                    <a class="cp" ng-click="detail(foo.id)" bo-text="foo.roomKey"></a>
+                                    <a class="cp" ng-click="detail(foo.roomKey)" bo-text="foo.roomKey"></a>
                                 </td>
                                 <td bo-text="foo.buildingName"></td>
                                 <td bo-text="foo.blockCode"></td>

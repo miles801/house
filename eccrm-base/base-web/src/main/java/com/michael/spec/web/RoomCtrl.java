@@ -85,6 +85,11 @@ public class RoomCtrl extends BaseController {
         return "house/room/list/room_edit";
     }
 
+    /**
+     * 通过房屋编号调整到明细页面
+     *
+     * @param code 房屋编号
+     */
     @RequestMapping(value = {"/view"}, params = {"code"}, method = RequestMethod.GET)
     public String toView(@RequestParam String code, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);
