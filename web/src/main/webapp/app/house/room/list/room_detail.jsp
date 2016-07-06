@@ -59,9 +59,9 @@
                     </div>
                     <div class="row" ng-cloak>
                         <div class="form-label col-1-half">
-                            <label>面积:</label>
+                            <label>产权性质:</label>
                         </div>
-                        <span class="col-2-half">{{beans.square}}</span>
+                        <span class="col-2-half">{{beans.houseProperyName}}</span>
                         <div class="form-label col-1-half">
                             <label>现状:</label>
                         </div>
@@ -132,7 +132,7 @@
                     <%-- 客户信息 --%>
                     <div class="panel panel-tab" style="margin: 15px 0;position: relative;">
                         <ul class="nav nav-tabs" style="margin: 5px 0 0 0;width:100%;">
-                            <li class="active"><i>客户信息</i></li>
+                            <li class="active"><i>业主信息</i></li>
                         </ul>
                         <div class="tab-content" style="height: 100%;width:100%;padding-top: 0!important;">
                             <div class="float items" ng-cloak>
@@ -217,10 +217,10 @@
                             </div>
                             <div class="row text-center" style="clear:both;margin: 10px 0;" ng-if="customer.id">
                                 <a type="button" class="btn btn-blue" ng-click="changeCustomer(customer.id);">
-                                    变更客户
+                                    变更业主
                                 </a>
                                 <a type="button" class="btn btn-blue" ng-click="modifyCustomer(customer.id);">
-                                    客户信息修改
+                                    业主信息修改
                                 </a>
                                 <a type="button" class="btn btn-blue" ng-click="applyInvalid(customer.id);"> 申请无效 </a>
                             </div>
