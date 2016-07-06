@@ -215,8 +215,8 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         Assert.notEmpty(ids, "操作失败!ID不能为空!");
         for (String id : ids) {
             Room room = roomDao.findRoomById(id);
-            // 只有“未录入”可以申请为新增
-            if (room != null && Room.STATUS_INACTIVE.equals(room.getStatus())) {
+            // 只有“无效”可以申请为新增
+            if (room != null && Room.STATUS_INVALID.equals(room.getStatus())) {
                 room.setStatus(Room.STATUS_APPLY_ADD);
             }
         }
@@ -247,13 +247,35 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Override
     public void batchPass(String[] ids) {
-        roomDao.batchSetStatus(ids, Room.STATUS_ACTIVE);
+        for (String id : ids) {
+            Room room = roomDao.findRoomById(id);
+            if (room == null) {
+                continue;
+            }
+            String status = room.getStatus();
+            if (Room.STATUS_APPLY_INVALID.equals(status)) { // 无效申请通过的话，则变为“无效“
+                room.setStatus(Room.STATUS_INVALID);
+            } else {
+                room.setStatus(Room.STATUS_ACTIVE);         // 其他申请被通过，则变为“正常”
+            }
+        }
     }
 
     @Override
     public void
     batchDeny(String[] ids) {
-        roomDao.batchSetStatus(ids, Room.STATUS_INVALID);
+        for (String id : ids) {
+            Room room = roomDao.findRoomById(id);
+            if (room == null) {
+                continue;
+            }
+            String status = room.getStatus();
+            if (Room.STATUS_APPLY_INVALID.equals(status)) { // 无效申请驳回的话，则变为“正常“
+                room.setStatus(Room.STATUS_ACTIVE);
+            } else {
+                room.setStatus(Room.STATUS_INVALID);         // 其他申请被通过，则变为“无效”
+            }
+        }
     }
 
     @Override
