@@ -18,12 +18,6 @@
                         </div>
                         <div class="item w300">
                             <div class="form-label w100">
-                                <label>工号:</label>
-                            </div>
-                            <input class="w200" type="text" ng-model="condition.code"/>
-                        </div>
-                        <div class="item w300">
-                            <div class="form-label w100">
                                 <label>组织机构:</label>
                             </div>
                             <div class="w200" style="position: relative;">
@@ -43,16 +37,14 @@
                                 <tr>
                                     <td></td>
                                     <td>姓名</td>
-                                    <td>工号</td>
                                     <td>性别</td>
                                     <td>手机</td>
-                                    <td>电话</td>
                                     <td>组织机构</td>
                                 </tr>
                                 </thead>
                                 <tbody class="table-body">
                                 <tr ng-show="!emps || !emps.data">
-                                    <td colspan="6" class="text-center">没有查询到数据！</td>
+                                    <td colspan="5" class="text-center">没有查询到数据！</td>
                                 </tr>
                                 <tr bindonce ng-repeat="foo in emps.data" ng-click="$parent.selected=foo"
                                     ng-class="{picked:$parent.selected.id===foo.id}">
@@ -60,10 +52,8 @@
                                         <input type="radio" ng-model="$parent.selected" ng-value="foo"/>
                                     </td>
                                     <td bo-text="foo.name"></td>
-                                    <td bo-text="foo.code"></td>
                                     <td bo-text="foo.sexName"></td>
                                     <td bo-text="foo.mobile"></td>
-                                    <td bo-text="foo.phone"></td>
                                     <td bo-text="foo.orgName"></td>
                                 </tr>
                                 </tbody>

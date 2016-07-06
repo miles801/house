@@ -78,13 +78,6 @@
                         <input class="col-2-half" type="text" ng-model="beans.pinyin" maxlength="20"
                                placeholder="由系统自动生成" readonly/>
                         <div class="form-label col-1-half">
-                            <label>工号:</label>
-                        </div>
-                        <input class="col-2-half" type="text" ng-model="beans.code" maxlength="20"/>
-                    </div>
-                    <div class="row">
-
-                        <div class="form-label col-1-half">
                             <label>所属机构:</label>
                         </div>
                         <div class="col-2-half">
@@ -93,23 +86,20 @@
                             <span class="add-on"><i class="icons icon cp fork" ng-click="clearOrg();"
                                                     title="清除"></i></span>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="form-label col-1-half">
                             <label>性别:</label>
                         </div>
                         <select ng-model="beans.sex" class="col-2-half"
                                 ng-options="foo.value as foo.name for foo in sex"></select>
+                        <div class="form-label col-1-half">
+                            <label>职务:</label>
+                        </div>
+                        <select ng-model="beans.duty" class="col-2-half"
+                                ng-options="foo.value as foo.name for foo in duty"></select>
                     </div>
                     <div class="row">
-                        <div class="form-label col-1-half">
-                            <label>手机号码:</label>
-                        </div>
-                        <input class="col-2-half" type="text" ng-model="beans.mobile" maxlength="20" validate
-                               validate-mobile/>
-                        <div class="form-label col-1-half">
-                            <label>电话号码:</label>
-                        </div>
-                        <input class="col-2-half" type="text" ng-model="beans.phone" maxlength="20"
-                               placeholder="010-86668888"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
@@ -118,10 +108,10 @@
                         <input class="col-2-half" type="text" ng-model="beans.email" maxlength="100" validate
                                validate-email/>
                         <div class="form-label col-1-half">
-                            <label>职务:</label>
+                            <label>电话号码:</label>
                         </div>
-                        <select ng-model="beans.duty" class="col-2-half"
-                                ng-options="foo.value as foo.name for foo in duty"></select>
+                        <input class="col-2-half" type="text" ng-model="beans.mobile" maxlength="20"
+                               validate validate-int validate-msg="手机号码格式不正确"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">

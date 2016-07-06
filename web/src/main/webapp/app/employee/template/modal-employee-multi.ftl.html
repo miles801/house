@@ -32,15 +32,9 @@
                                         </div>
                                         <div class="item w250">
                                             <div class="form-label w80">
-                                                <label>工号:</label>
-                                            </div>
-                                            <input class="w150" type="text" ng-model="condition.loginName" max="20"/>
-                                        </div>
-                                        <div class="item w250">
-                                            <div class="form-label w80">
                                                 <label>电话号:</label>
                                             </div>
-                                            <input class="w150" type="text" ng-model="condition.phone" maxlength="20"/>
+                                            <input class="w150" type="text" ng-model="condition.mobile" maxlength="20"/>
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +58,6 @@
                                                      anyone-selected="anyone"></div>
                                             </td>
                                             <td>姓名</td>
-                                            <td>工号</td>
                                             <td>性别</td>
                                             <td>电话</td>
                                             <td>组织机构</td>
@@ -72,16 +65,15 @@
                                         </thead>
                                         <tbody class="table-body">
                                         <tr ng-show="!emps || !emps.data">
-                                            <td colspan="6" class="text-center">没有查询到数据！</td>
+                                            <td colspan="5" class="text-center">没有查询到数据！</td>
                                         </tr>
                                         <tr bindonce ng-repeat="foo in emps.data">
                                             <td>
                                                 <input type="checkbox" ng-model="foo.isSelected"/>
                                             </td>
                                             <td bo-text="foo.name"></td>
-                                            <td bo-text="foo.loginName"></td>
-                                            <td bo-text="foo.sex"></td>
-                                            <td bo-text="foo.phone"></td>
+                                            <td bo-text="foo.sexName"></td>
+                                            <td bo-text="foo.mobile"></td>
                                             <td bo-text="foo.orgName"></td>
                                         </tr>
                                         </tbody>
@@ -95,7 +87,7 @@
                                         <thead class="table-header">
                                         <tr>
                                             <td>姓名</td>
-                                            <td>工号</td>
+                                            <td>电话</td>
                                             <td>操作</td>
                                         </tr>
                                         </thead>
@@ -105,7 +97,7 @@
                                         </tr>
                                         <tr bindonce ng-repeat="foo in items">
                                             <td bo-text="foo.name"></td>
-                                            <td bo-text="foo.loginName"></td>
+                                            <td bo-text="foo.mobile"></td>
                                             <td>
                                                 <a class="btn-op blue" ng-click="remove($index);">移除</a>
                                             </td>

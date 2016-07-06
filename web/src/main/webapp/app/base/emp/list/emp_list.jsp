@@ -92,7 +92,7 @@
                                     <a ng-click="view(foo.id)" bo-text="foo.name"></a>
                                 </td>
                                 <td bo-text="foo.loginName"></td>
-                                <td bo-text="foo.phone"></td>
+                                <td bo-text="foo.mobile"></td>
                                 <td bo-text="foo.sexName"></td>
                                 <td bo-text="foo.dutyName"></td>
                                 <td bo-text="foo.lockedName"></td>
