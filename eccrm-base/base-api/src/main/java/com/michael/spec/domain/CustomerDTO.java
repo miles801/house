@@ -63,7 +63,7 @@ public class CustomerDTO implements DTO {
     @Col(index = 18)
     private String carType;
     @Col(index = 19)
-    private String description;
+    private String c1;
 
     public String getName() {
         return name;
@@ -151,14 +151,6 @@ public class CustomerDTO implements DTO {
 
     public void setCompany(String company) {
         this.company = company;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getAge() {

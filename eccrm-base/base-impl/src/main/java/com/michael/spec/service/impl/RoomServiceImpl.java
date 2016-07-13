@@ -444,7 +444,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     room.setOrient(parameterContainer.getBusinessValue(HouseParams.ORIENT, dto.getOrient()));
                     // 产权性质
                     room.setHouseProperty(parameterContainer.getBusinessValue(HouseParams.HOUSE_PROPERTY, dto.getHouseProperty()));
-                    room.setDescription(dto.getDescription());
+                    room.setCol1(dto.getC1());
                     // 房屋现状
                     room.setHouseUseType(parameterContainer.getBusinessValue(HouseParams.HOUSE_USE_TYPE, dto.getHouseUseType()));
                     // 设置参数-状态
@@ -487,7 +487,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                             customer.setCarSite2(dto.getCusCarSite2());
                             customer.setCarNo(dto.getCusCarNo());
                             customer.setCarType(dto.getCusCarType());
-                            customer.setDescription(dto.getCusDescription());
+                            customer.setC1(dto.getCusDescription());
 
                             cusId = beanContainer.getBean(CustomerService.class).save(customer);
                         }

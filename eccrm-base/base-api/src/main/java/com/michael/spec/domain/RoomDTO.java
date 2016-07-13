@@ -62,7 +62,7 @@ public class RoomDTO implements DTO {
     private String houseUseType;
 
     @Col(index = 13)
-    private String description;
+    private String c1;
 
     @ApiField("客户姓名")
     @Col(index = 14)
@@ -232,12 +232,12 @@ public class RoomDTO implements DTO {
     }
 
 
-    public String getDescription() {
-        return description;
+    public String getC1() {
+        return c1;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setC1(String c1) {
+        this.c1 = c1;
     }
 
     public String getOrient() {
