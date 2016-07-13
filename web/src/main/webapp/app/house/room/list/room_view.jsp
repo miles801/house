@@ -181,15 +181,13 @@
                                 <td>面积</td>
                                 <td>房屋现状</td>
                                 <td>业主姓名</td>
-                                <td>手机</td>
-                                <td>微信</td>
                                 <td>状态</td>
                                 <td>跟进录入</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.total">
-                                <td colspan="14" class="text-center">无房屋信息!</td>
+                                <td colspan="12" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td>
@@ -204,8 +202,6 @@
                                 <td bo-text="foo.square"></td>
                                 <td bo-text="foo.houseUseTypeName"></td>
                                 <td bo-text="foo.cusName"></td>
-                                <td bo-text="foo.cusPhone"></td>
-                                <td bo-text="foo.cusWechat"></td>
                                 <td bo-text="foo.statusName">
                                     <span bo-text="foo.statusName"
                                           ng-class="{'btn-danger':foo.status=='INACTIVE'}"></span>
@@ -215,7 +211,6 @@
                                     <a class="btn-op yellow" ng-click="addCustomer(foo.id);"
                                        ng-if="!foo.customerId">业主录入</a>
                                     <a class="btn-op yellow" ng-click="applyAdd(foo.id);" ng-if="foo.status=='INVALID'">新增申请</a>
-                                    <a class="btn-op red" ng-click="applyInvalid(foo.id);" ng-if="foo.status=='ACTIVE'">无效申请</a>
                                 </td>
                             </tr>
                             </tbody>

@@ -150,8 +150,6 @@
                                 <td>姓名</td>
                                 <td>性别</td>
                                 <td>年龄段</td>
-                                <td>手机</td>
-                                <td>微信</td>
                                 <td>名下房产</td>
                                 <td style="width: 120px;">录入时间</td>
                                 <td>婚姻状况</td>
@@ -162,7 +160,7 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="13" class="text-center">没有查询到数据！</td>
+                                <td colspan="11" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
@@ -172,8 +170,6 @@
                                 <td bo-text="foo.name"></td>
                                 <td bo-text="foo.sexName"></td>
                                 <td bo-text="foo.ageName"></td>
-                                <td bo-text="foo.phone1|contact:foo.phone2:foo.phone3"></td>
-                                <td bo-text="foo.wechat"></td>
                                 <td style="white-space: normal">
                                     <a ng-click="viewRoom(key)" ng-repeat="key in foo.roomKeys.split(',')"
                                        style="margin-left:8px;cursor: pointer;">{{key}}</a>
@@ -184,7 +180,7 @@
                                 <td bo-text="foo.statusName"></td>
                                 <td class="text-left">
                                     <a class="btn-op blue" ng-click="modify(foo);"
-                                       ng-if="foo.status=='ACTIVE'||foo.status=='INVALID'||foo.status=='APPLY_ADD'">修改</a>
+                                       ng-if="foo.status=='ACTIVE'||foo.status=='INVALID'||foo.status=='APPLY_ADD'">跟进</a>
                                     <a class="btn-op red" ng-click="applyInvalid(foo.id);"
                                        ng-if="foo.status=='ACTIVE'">无效申请</a>
                                     <a class="btn-op yellow" ng-click="applyAdd(foo.id);"

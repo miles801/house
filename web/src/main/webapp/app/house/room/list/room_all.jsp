@@ -177,14 +177,12 @@
                                 <td>面积</td>
                                 <td>房屋现状</td>
                                 <td>业主姓名</td>
-                                <td>手机</td>
-                                <td>微信</td>
                                 <td>状态</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.total">
-                                <td colspan="13" class="text-center">无房屋信息!</td>
+                                <td colspan="11" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td>
@@ -199,8 +197,6 @@
                                 <td bo-text="foo.square"></td>
                                 <td bo-text="foo.houseUseTypeName"></td>
                                 <td bo-text="foo.cusName"></td>
-                                <td bo-text="foo.cusPhone"></td>
-                                <td bo-text="foo.cusWechat"></td>
                                 <td bo-text="foo.statusName"></td>
                             </tr>
                             </tbody>

@@ -147,8 +147,6 @@
                                 <td>姓名</td>
                                 <td>性别</td>
                                 <td>年龄段</td>
-                                <td>手机</td>
-                                <td>微信</td>
                                 <td>婚姻状况</td>
                                 <td>学历</td>
                                 <td>名下房产</td>
@@ -157,7 +155,7 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="9" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
@@ -167,8 +165,6 @@
                                 <td bo-text="foo.name"></td>
                                 <td bo-text="foo.sexName"></td>
                                 <td bo-text="foo.ageName"></td>
-                                <td bo-text="foo.phone1|contact:foo.phone2:foo.phone3"></td>
-                                <td bo-text="foo.wechat"></td>
                                 <td bo-text="foo.marriageName"></td>
                                 <td bo-text="foo.educationName"></td>
                                 <td style="white-space: normal">
