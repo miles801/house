@@ -47,7 +47,7 @@
                             <label validate-error="form.square">面积:</label>
                         </div>
                         <input class="col-7" type="text" ng-model="beans.square"
-                               validate validate-required validate-float name="square" placeholder="m2"/>
+                               validate validate-float name="square" placeholder="m2"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-4">
@@ -56,19 +56,19 @@
                         <div class="col-7">
                             <div class="col-3">
                                 <input class="col-12" type="text" ng-model="beans.type1" validate
-                                       validate-required validate-int placeholder="室"/>
+                                       validate-int placeholder="室"/>
                             </div>
                             <div class="col-3" style="padding-left: 8px;">
                                 <input class="col-12" type="text" ng-model="beans.type2" validate
-                                       validate-required validate-int placeholder="厅"/>
+                                       validate-int placeholder="厅"/>
                             </div>
                             <div class="col-3" style="padding-left: 8px;">
                                 <input class="col-12" type="text" ng-model="beans.type3" validate
-                                       validate-required validate-int placeholder="厨"/>
+                                       validate-int placeholder="厨"/>
                             </div>
                             <div class="col-3" style="padding-left: 8px;">
                                 <input class="col-12" type="text" ng-model="beans.type4" validate
-                                       validate-required validate-int placeholder="卫"/>
+                                       validate-int placeholder="卫"/>
                             </div>
                         </div>
                     </div>

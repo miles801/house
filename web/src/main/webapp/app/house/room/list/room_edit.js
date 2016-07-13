@@ -29,6 +29,9 @@
 
         // 更新
         $scope.update = function () {
+            if (!$scope.beans.square) {
+                $scope.beans.square = null;
+            }
             var promise = RoomService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
                 $scope.form.$setValidity('committed', false);
