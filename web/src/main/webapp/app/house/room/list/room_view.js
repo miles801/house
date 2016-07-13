@@ -77,10 +77,10 @@
             });
 
         };
-        $scope.addCustomer = function (id, customerId) {
+        $scope.addCustomer = function (id) {
             CommonUtils.addTab({
                 title: '客户录入',
-                url: 'house/customer/add?id=' + customerId + '&roomId=' + id,
+                url: 'house/customer/add?roomId=' + id,
                 onUpdate: $scope.query
             });
         };
