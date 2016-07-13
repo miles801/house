@@ -180,7 +180,7 @@
                                 <td>户型</td>
                                 <td>面积</td>
                                 <td>房屋现状</td>
-                                <td>客户姓名</td>
+                                <td>业主姓名</td>
                                 <td>手机</td>
                                 <td>微信</td>
                                 <td>状态</td>
@@ -213,7 +213,7 @@
                                 <td class="text-left">
                                     <a class="btn-op blue" ng-click="update(foo.id);">房屋录入</a>
                                     <a class="btn-op yellow" ng-click="addCustomer(foo.id,foo.customerId);"
-                                       ng-if="!foo.customerId">客户录入</a>
+                                       ng-if="!foo.customerId">业主录入</a>
                                     <a class="btn-op yellow" ng-click="applyAdd(foo.id);" ng-if="foo.status=='INVALID'">新增申请</a>
                                     <a class="btn-op red" ng-click="applyInvalid(foo.id);" ng-if="foo.status=='ACTIVE'">无效申请</a>
                                 </td>
