@@ -46,6 +46,15 @@ public interface RoomDao {
     long getUnitRoomCounts(String unitId);
 
     /**
+     * 查找相同房屋
+     *
+     * @param unitId 单元ID
+     * @param code   房号
+     * @param floor  楼层
+     */
+    Room findSame(String unitId, String code, int floor);
+
+    /**
      * 查询指定楼盘中你最大的房屋编号
      *
      * @param buildingId 楼盘ID
@@ -68,6 +77,14 @@ public interface RoomDao {
      * @return 房屋标号
      */
     List<String> findCodeByCustomer(String customerId);
+
+    /**
+     * 根据客户ID查找对应的房屋信息
+     *
+     * @param customerId 客户ID
+     * @return 房屋列表
+     */
+    List<Room> findByCustomer(String customerId);
 
     /**
      * 根据房屋编号查询房屋信息

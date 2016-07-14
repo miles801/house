@@ -170,6 +170,21 @@
                 }
             });
         };
+        // 申请有效
+        $scope.applyValid = function (customerId) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '确定要将该客户申请为“有效客户”吗?',
+                callback: function () {
+                    var promise = CustomerService.applyValid({ids: customerId}, function () {
+                        AlertFactory.success('操作成功!页面即将返回!');
+                        CommonUtils.addTab('update');
+                        CommonUtils.delay($scope.back, 2000);
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
         //
         $scope.load(id);
         $scope.loadBuilding();

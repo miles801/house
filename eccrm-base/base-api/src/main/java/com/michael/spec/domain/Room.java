@@ -17,11 +17,33 @@ import javax.validation.constraints.NotNull;
 @Table(name = "spec_room")
 public class Room extends CommonDomain {
 
+    /**
+     * 未录入
+     */
     public static final String STATUS_INACTIVE = "INACTIVE";
+    /**
+     * 新增申请
+     */
     public static final String STATUS_APPLY_ADD = "APPLY_ADD";
+    /**
+     * 修改申请
+     */
     public static final String STATUS_APPLY_MODIFY = "APPLY_MODIFY";
+    /**
+     * 申请无效
+     */
     public static final String STATUS_APPLY_INVALID = "APPLY_INVALID";
+    /**
+     * 无效电话
+     */
     public static final String STATUS_INVALID = "INVALID";
+    /**
+     * 新增无效
+     */
+    public static final String STATUS_INVALID_ADD = "INVALID_ADD";
+    /**
+     * 正常
+     */
     public static final String STATUS_ACTIVE = "ACTIVE";
 
     @ApiField("房屋编号")

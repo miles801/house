@@ -127,6 +127,7 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
         for (Unit unit : units) {
             for (int i = 1; i < levels + 1; i++) {
                 Room room = new Room();
+                room.setStatus(Room.STATUS_INACTIVE);
                 room.setRoomKey(roomKey);
                 room.setBlockId(blockId);
                 room.setBuildingId(block.getBuildingId());

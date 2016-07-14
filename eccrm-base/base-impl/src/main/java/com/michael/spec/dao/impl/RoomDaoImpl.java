@@ -78,6 +78,19 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
     }
 
     @Override
+    public Room findSame(String unitId, String code, int floor) {
+        Assert.hasText(unitId, "查询失败!单元ID不能为空!");
+        Assert.hasText(code, "查询失败!房号不能为空!");
+        return (Room) getSession().createQuery("from " + Room.class.getName() + " r where r.unitId=? and r.code=? and r.floor=?")
+                .setParameter(0, unitId)
+                .setParameter(1, code)
+                .setParameter(2, floor)
+                .setFirstResult(0)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
+    @Override
     public String maxKey(String buildingId) {
         Assert.hasText(buildingId, "查询失败!楼盘ID不能为空!");
         return (String) createCriteria(RoomView.class)
@@ -114,6 +127,15 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
         Assert.hasText(customerId, "查询失败!客户ID不能为空!");
         return createCriteria(Room.class)
                 .setProjection(Projections.property("roomKey"))
+                .add(Restrictions.eq("customerId", customerId))
+                .list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Room> findByCustomer(String customerId) {
+        Assert.hasText(customerId, "查询失败!客户ID不能为空!");
+        return createCriteria(Room.class)
                 .add(Restrictions.eq("customerId", customerId))
                 .list();
     }

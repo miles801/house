@@ -21,6 +21,9 @@
             // 申请无效
             applyInvalid: {method: 'POST', params: {method: 'applyInvalid', ids: "@ids"}, isArray: false},
 
+            // 申请有效
+            applyValid: {method: 'POST', params: {method: 'applyValid', ids: "@ids"}, isArray: false},
+
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
 

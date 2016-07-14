@@ -67,14 +67,16 @@
                                     <label>房屋现状:</label>
                                 </div>
                                 <select ng-model="condition.houseUseType" class="w150"
-                                        ng-options="foo.value as foo.name for foo in useType"></select>
+                                        ng-options="foo.value as foo.name for foo in useType"
+                                        ng-change="query();"></select>
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
                                     <label>房屋状态:</label>
                                 </div>
                                 <select ng-model="condition.status" class="w150"
-                                        ng-options="foo.value as foo.name for foo in status"></select>
+                                        ng-options="foo.value as foo.name for foo in status"
+                                        ng-change="query();"></select>
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">

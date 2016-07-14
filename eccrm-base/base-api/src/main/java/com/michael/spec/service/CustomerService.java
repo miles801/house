@@ -92,4 +92,12 @@ public interface CustomerService {
      * @param attachmentIds 附件列表
      */
     void importData(String[] attachmentIds);
+
+    /**
+     * 将客户变为“有效”
+     * 只针对“无效客户”
+     *
+     * @param ids 客户ID列表
+     */
+    void applyValid(String[] ids);
 }

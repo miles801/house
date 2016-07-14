@@ -111,6 +111,13 @@ public class CustomerCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/applyValid", params = {"ids"}, method = RequestMethod.POST)
+    public void applyValid(@RequestParam String ids, HttpServletResponse response) {
+        customerService.applyValid(ids.split(","));
+        GsonUtils.printSuccess(response);
+    }
+
     // 批量设置为无效
     @ResponseBody
     @RequestMapping(value = "/batchPassInvalid", params = {"ids"}, method = RequestMethod.POST)

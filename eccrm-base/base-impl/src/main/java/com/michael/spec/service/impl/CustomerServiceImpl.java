@@ -13,9 +13,12 @@ import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.CustomerDTO;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomNews;
 import com.michael.spec.service.CustomerService;
 import com.michael.spec.service.HouseParams;
+import com.michael.spec.service.RoomNewsService;
 import com.michael.spec.vo.CustomerVo;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
@@ -136,6 +139,56 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                 customer.setStatus(Room.STATUS_ACTIVE);
             } else if (Room.STATUS_APPLY_INVALID.equals(status)) {
                 customer.setStatus(Room.STATUS_INVALID);
+
+                // 同时变更所有的房屋状态
+                List<Room> rooms = roomDao.findByCustomer(id);
+                if (rooms != null && !rooms.isEmpty()) {
+                    ParameterContainer parameterContainer = ParameterContainer.getInstance();
+                    for (Room room : rooms) {
+                        // 日志
+                        String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+                        RoomNews news = new RoomNews();
+                        news.setRoomId(room.getId());
+                        news.setContent(String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, room.getStatus()), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID)));
+                        SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
+
+                        // 变更状态
+                        room.setStatus(Room.STATUS_INVALID);    // 状态为无效电话
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void applyValid(String[] ids) {
+        Assert.notEmpty(ids, "操作失败!客户ID不能为空!");
+        for (String id : ids) {
+            Customer customer = customerDao.findById(id);
+            if (customer == null) {
+                continue;
+            }
+            String status = customer.getStatus();
+            Assert.isTrue(Room.STATUS_INVALID.equals(status), "操作失败!只有“电话无效”的客户才可以被申请为“有效”!");
+
+            // 变更客户状态
+            customer.setStatus(Room.STATUS_ACTIVE);
+
+            // 同时变更所有的房屋状态
+            List<Room> rooms = roomDao.findByCustomer(id);
+            if (rooms != null && !rooms.isEmpty()) {
+                ParameterContainer parameterContainer = ParameterContainer.getInstance();
+                for (Room room : rooms) {
+                    // 日志
+                    String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+                    RoomNews news = new RoomNews();
+                    news.setRoomId(room.getId());
+                    news.setContent(String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_ACTIVE)));
+                    SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
+
+                    // 变更状态
+                    room.setStatus(Room.STATUS_ACTIVE);    // 状态为"正常"
+                }
             }
         }
     }
@@ -145,7 +198,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         Assert.notEmpty(ids, "操作失败!ID不能为空!");
         for (String id : ids) {
             Customer customer = customerDao.findById(id);
-            // 只有“未录入”可以申请为新增
+            // 只有“未录入”和“无效”可以申请为新增
             if (customer != null && (Room.STATUS_INACTIVE.equals(customer.getStatus()) || Room.STATUS_INVALID.equals(customer.getStatus()))) {
                 customer.setStatus(Room.STATUS_APPLY_ADD);
             }

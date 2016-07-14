@@ -11,17 +11,11 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
         $scope.condition = {
             orderBy: 'roomKey',
-            statusInclude: ['APPLY_MODIFY', 'APPLY_INVALID', 'ACTIVE'],
-            reverse: true,
             buildingId: $('#buildingId').val() || null,
             manager: $('#isManager').val()
         };
 
         var condition = $scope.condition;
-        if (!condition.buildingId) {
-            condition.statusInclude.push('APPLY_ADD');
-            condition.statusInclude.push('INVALID');
-        }
 
         // 房屋现状
         RoomParam.useType(function (data) {
@@ -93,7 +87,7 @@
             }
             ModalFactory.confirm({
                 scope: $scope,
-                content: '是否确定将选中的房屋申请为“正常”客户?',
+                content: '是否对选中的房屋进行“新增申请”操作?',
                 callback: function () {
                     var promise = RoomService.batchAdd({ids: id}, function () {
                         AlertFactory.success('操作成功!');
@@ -111,7 +105,7 @@
             }
             ModalFactory.confirm({
                 scope: $scope,
-                content: '是否确定将选中的房屋申请为“无效”房屋?',
+                content: '是否对选中的房屋进行“无效电话”操作?',
                 callback: function () {
                     var promise = RoomService.applyInvalid({ids: id}, function () {
                         AlertFactory.success('操作成功!');
@@ -122,6 +116,19 @@
             });
         };
 
+        $scope.remove = function (id) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '确定要删除该数据?',
+                callback: function () {
+                    var promise = RoomService.deleteByIds({ids: id}, function () {
+                        AlertFactory.success('删除成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
         // 导出数据
         $scope.exportData = function () {
             if ($scope.pager.total < 1) {

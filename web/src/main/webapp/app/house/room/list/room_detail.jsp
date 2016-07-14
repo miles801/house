@@ -222,7 +222,10 @@
                                 <a type="button" class="btn btn-blue" ng-click="modifyCustomer(customer.id);">
                                     业主信息修改
                                 </a>
-                                <a type="button" class="btn btn-blue" ng-click="applyInvalid(customer.id);"> 申请无效 </a>
+                                <a type="button" class="btn btn-blue" ng-click="applyInvalid(customer.id);"
+                                   ng-if="beans.status=='ACTIVE'" ng-cloak> 申请无效 </a>
+                                <a type="button" class="btn btn-blue" ng-click="applyValid(customer.id);"
+                                   ng-if="beans.status=='INVALID'" ng-cloak> 申请有效 </a>
                             </div>
                         </div>
                     </div>

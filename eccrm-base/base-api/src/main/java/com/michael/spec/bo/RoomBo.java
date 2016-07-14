@@ -90,6 +90,18 @@ public class RoomBo implements BO {
 
     private Boolean manager;
 
+    @Condition
+    private String customerId;
+
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
     public Boolean getManager() {
         return manager;
     }

@@ -66,7 +66,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public String save(Room room) {
         // 生成房屋编号
-        room.setStatus(Room.STATUS_APPLY_ADD);
+        if (StringUtils.isEmpty(room.getStatus())) {
+            room.setStatus(Room.STATUS_INACTIVE);
+        }
         String key = room.getRoomKey();
         if (StringUtils.isEmpty(key)) {
             key = roomDao.maxKey(room.getBuildingId());
@@ -218,8 +220,8 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         Assert.notEmpty(ids, "操作失败!ID不能为空!");
         for (String id : ids) {
             Room room = roomDao.findRoomById(id);
-            // 只有“无效”可以申请为新增
-            if (room != null && Room.STATUS_INVALID.equals(room.getStatus())) {
+            // 只有“未录入”可以申请为新增
+            if (room != null && Room.STATUS_INACTIVE.equals(room.getStatus())) {
                 room.setStatus(Room.STATUS_APPLY_ADD);
             }
         }
@@ -256,27 +258,26 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                 continue;
             }
             String status = room.getStatus();
-            if (Room.STATUS_APPLY_INVALID.equals(status)) { // 无效申请通过的话，则变为“无效“
+            if (Room.STATUS_APPLY_INVALID.equals(status)) {     // 无效申请  -->  电话无效
                 room.setStatus(Room.STATUS_INVALID);
-            } else {
-                room.setStatus(Room.STATUS_ACTIVE);         // 其他申请被通过，则变为“正常”
+            } else if (Room.STATUS_APPLY_ADD.equals(status)) {    // 新增申请 --> 正常
+                room.setStatus(Room.STATUS_ACTIVE);
             }
         }
     }
 
     @Override
-    public void
-    batchDeny(String[] ids) {
+    public void batchDeny(String[] ids) {
         for (String id : ids) {
             Room room = roomDao.findRoomById(id);
             if (room == null) {
                 continue;
             }
             String status = room.getStatus();
-            if (Room.STATUS_APPLY_INVALID.equals(status)) { // 无效申请驳回的话，则变为“正常“
+            if (Room.STATUS_APPLY_INVALID.equals(status)) {         // 无效电话申请 --> 正常
                 room.setStatus(Room.STATUS_ACTIVE);
-            } else {
-                room.setStatus(Room.STATUS_INVALID);         // 其他申请被通过，则变为“无效”
+            } else if (Room.STATUS_APPLY_ADD.equals(status)) {    // 申请新增 --> 新增无效
+                room.setStatus(Room.STATUS_INVALID_ADD);
             }
         }
     }
@@ -499,12 +500,31 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
                     // 真的保存房屋信息
                     try {
-                        String roomId = save(room);
-
-                        // 给客户添加一套房源
-                        if (StringUtils.isNotEmpty(room.getCustomerId())) {
-                            beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                        // 去重
+                        Room originRoom = roomDao.findSame(unitId, room.getCode(), room.getFloor());
+                        String roomId = null;
+                        if (originRoom == null) {
+                            roomId = save(room);
+                            // 给客户添加一套房源
+                            if (StringUtils.isNotEmpty(room.getCustomerId())) {
+                                beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                            }
+                        } else {
+                            // 覆盖信息
+                            roomId = originRoom.getId();
+                            originRoom.setOrient(room.getOrient());
+                            originRoom.setType1(room.getType1());
+                            originRoom.setType2(room.getType2());
+                            originRoom.setType3(room.getType3());
+                            originRoom.setType4(room.getType4());
+                            originRoom.setSquare(room.getSquare());
+                            originRoom.setHouseProperty(room.getHouseProperty());
+                            originRoom.setHouseUseType(room.getHouseUseType());
+                            if (StringUtils.isEmpty(originRoom.getCustomerId()) && StringUtils.isNotEmpty(room.getCustomerId())) {
+                                beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                            }
                         }
+
                     } catch (Exception e) {
                         Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex(), e.getMessage()));
                     }

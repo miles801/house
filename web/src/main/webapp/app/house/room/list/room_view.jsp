@@ -70,14 +70,16 @@
                                     <label>房屋现状:</label>
                                 </div>
                                 <select ng-model="condition.houseUseType" class="w150"
-                                        ng-options="foo.value as foo.name for foo in useType"></select>
+                                        ng-options="foo.value as foo.name for foo in useType"
+                                        ng-change="query();"></select>
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
                                     <label>房屋状态:</label>
                                 </div>
                                 <select ng-model="condition.status" class="w150"
-                                        ng-options="foo.value as foo.name for foo in status"></select>
+                                        ng-options="foo.value as foo.name for foo in status"
+                                        ng-change="query();"></select>
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
@@ -208,9 +210,11 @@
                                 </td>
                                 <td class="text-left">
                                     <a class="btn-op blue" ng-click="update(foo.id);">房屋录入</a>
-                                    <a class="btn-op yellow" ng-click="addCustomer(foo.id);"
-                                       ng-if="!foo.customerId">业主录入</a>
-                                    <a class="btn-op yellow" ng-click="applyAdd(foo.id);" ng-if="foo.status=='INVALID'">新增申请</a>
+                                    <a class="btn-op yellow" ng-click="addCustomer(foo.id);" ng-if="!foo.customerId">业主录入</a>
+                                    <a class="btn-op yellow" ng-click="applyAdd(foo.id);"
+                                       ng-if="foo.status=='INACTIVE'||foo.status=='INVALID_ADD'">新增申请</a>
+                                    <a class="btn-op red" ng-click="remove(foo.id);"
+                                       ng-if="foo.status=='INACTIVE'||foo.status=='INVALID_ADD'">删除</a>
                                 </td>
                             </tr>
                             </tbody>
