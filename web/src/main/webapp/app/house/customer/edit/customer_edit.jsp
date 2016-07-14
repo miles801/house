@@ -207,12 +207,6 @@
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.carNo" maxlength="40"/>
                     </div>
-                    <div class="row" ng-cloak ng-if="pageType=='detail'">
-                        <div class="form-label col-1-half">
-                            <label>跟进:</label>
-                        </div>
-                        <div class="col-10-half">{{beans.description}}</div>
-                    </div>
                     <div class="row">
                         <div class="form-label col-1-half">
                             <label>状态:</label>
@@ -224,6 +218,42 @@
                         <a class="btn-op green" ng-click="applyValid(beans.id);" style="margin-left: 15px;;"
                            ng-if="pageType=='modify' && beans.status=='INVALID'" ng-cloak>有效申请</a>
                         </span>
+                        <div class="col-1-half">&nbsp; </div>
+                        <div class="col-2-half">
+                            <a type="button" class="btn btn-blue" ng-click="addCusInfo(beans.id);"> 录入跟进 </a>
+                        </div>
+                    </div>
+                    <div class="panel panel-tab" style="margin: 15px 0;position: relative;" ng-cloak
+                         ng-show="pageType=='modify' || pageType=='detail'">
+                        <ul class="nav nav-tabs" style="margin: 5px 0 0 0;width:100%;">
+                            <li class="active"><i>最新动态</i></li>
+                        </ul>
+                        <div class="tab-content" style="height: 100%;width:100%;padding-top: 0!important;">
+                            <div class="table-responsive panel panel-table">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-header">
+                                    <tr>
+                                        <td style="width: 120px;">操作人</td>
+                                        <td style="width: 120px;">操作人电话</td>
+                                        <td style="text-align: left;">内容</td>
+                                        <td style="width: 120px;">操作时间</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-body">
+                                    <tr ng-show="!news.total">
+                                        <td colspan="4" class="text-center">无最新动态!</td>
+                                    </tr>
+                                    <tr bindonce ng-repeat="foo in news.data" ng-cloak>
+                                        <td bo-text="foo.empName"></td>
+                                        <td bo-text="foo.phone"></td>
+                                        <td style="text-align: left;" bo-html="foo.content"></td>
+                                        <td bo-text="foo.createdDatetime|eccrmDatetime"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <div eccrm-page="pager" class="list-pagination"></div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -233,5 +263,6 @@
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/customer.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/customer/customerNews.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/edit/customer_edit.js"></script>
 </html>

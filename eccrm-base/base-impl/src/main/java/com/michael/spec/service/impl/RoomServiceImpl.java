@@ -510,18 +510,22 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                                 beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
                             }
                         } else {
-                            // 覆盖信息
-                            roomId = originRoom.getId();
-                            originRoom.setOrient(room.getOrient());
-                            originRoom.setType1(room.getType1());
-                            originRoom.setType2(room.getType2());
-                            originRoom.setType3(room.getType3());
-                            originRoom.setType4(room.getType4());
-                            originRoom.setSquare(room.getSquare());
-                            originRoom.setHouseProperty(room.getHouseProperty());
-                            originRoom.setHouseUseType(room.getHouseUseType());
-                            if (StringUtils.isEmpty(originRoom.getCustomerId()) && StringUtils.isNotEmpty(room.getCustomerId())) {
-                                beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                            String status = originRoom.getStatus();
+                            // 无效数据，进行覆盖
+                            if (StringUtils.include(status, Room.STATUS_INVALID, Room.STATUS_INACTIVE, Room.STATUS_INACTIVE)) {
+                                // 覆盖信息
+                                roomId = originRoom.getId();
+                                originRoom.setOrient(room.getOrient());
+                                originRoom.setType1(room.getType1());
+                                originRoom.setType2(room.getType2());
+                                originRoom.setType3(room.getType3());
+                                originRoom.setType4(room.getType4());
+                                originRoom.setSquare(room.getSquare());
+                                originRoom.setHouseProperty(room.getHouseProperty());
+                                originRoom.setHouseUseType(room.getHouseUseType());
+                                if (StringUtils.isEmpty(originRoom.getCustomerId()) && StringUtils.isNotEmpty(room.getCustomerId())) {
+                                    beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                                }
                             }
                         }
 

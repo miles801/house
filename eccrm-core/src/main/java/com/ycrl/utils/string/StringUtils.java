@@ -37,6 +37,26 @@ public class StringUtils {
     }
 
     /**
+     * 查找指定的字符串是否在指定的数组中
+     *
+     * @param src    需要查找的字符串
+     * @param arrays 要匹配的结果
+     * @return true 在，false不在
+     */
+    public static boolean include(String src, String... arrays) {
+        if (arrays == null || arrays.length == 0) {
+            return false;
+        }
+        for (String arr : arrays) {
+            boolean isEq = equals(src, arr);
+            if (isEq) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 判断两个字符串是否相等（简化了对null的判断）
      *
      * @param str1 字符串1

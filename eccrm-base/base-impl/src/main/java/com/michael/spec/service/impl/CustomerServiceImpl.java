@@ -1,6 +1,7 @@
 package com.michael.spec.service.impl;
 
 import com.michael.base.common.BaseParameter;
+import com.michael.docs.annotations.ApiField;
 import com.michael.poi.adapter.AnnotationCfgAdapter;
 import com.michael.poi.core.Context;
 import com.michael.poi.core.Handler;
@@ -10,10 +11,8 @@ import com.michael.poi.imp.cfg.Configuration;
 import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.dao.RoomDao;
-import com.michael.spec.domain.Customer;
-import com.michael.spec.domain.CustomerDTO;
-import com.michael.spec.domain.Room;
-import com.michael.spec.domain.RoomNews;
+import com.michael.spec.domain.*;
+import com.michael.spec.service.CustomerNewsService;
 import com.michael.spec.service.CustomerService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.service.RoomNewsService;
@@ -29,15 +28,18 @@ import eccrm.base.attachment.AttachmentProvider;
 import eccrm.base.attachment.utils.AttachmentHolder;
 import eccrm.base.attachment.vo.AttachmentVo;
 import eccrm.base.parameter.service.ParameterContainer;
+import eccrm.utils.BeanCopyUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +77,43 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     @Override
     public void update(Customer customer) {
         ValidatorUtils.validate(customer);
-        customerDao.update(customer);
+
+        Customer originCus = customerDao.findById(customer.getId());
+        Assert.notNull(originCus, "更新失败!客户已经不存在!请刷新后重试!");
+
+        // 保存日志
+        CustomerNews news = new CustomerNews();
+        news.setCustomerId(customer.getId());
+        news.setContent(compare(customer, originCus));
+        SystemContainer.getInstance().getBean(CustomerNewsService.class).save(news);
+
+        // 更新数据
+        BeanCopyUtils.copyPropertiesExclude(customer, originCus, new String[]{"id"});
+    }
+
+
+    private String compare(final Customer customer, final Customer originCus) {
+        final StringBuilder builder = new StringBuilder("<div>变更客户信息：<div>");
+        ReflectionUtils.doWithFields(Customer.class, new ReflectionUtils.FieldCallback() {
+            @Override
+            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+                field.setAccessible(true);
+                Object newValue = field.get(customer);
+                Object oldValue = field.get(originCus);
+                field.setAccessible(false);
+                if (newValue == oldValue) {
+                    return;
+                }
+                ApiField nameAnno = field.getAnnotation(ApiField.class);
+                if (nameAnno == null) {
+                    return;
+                }
+                String name = nameAnno.value();
+                String template = "<span style=\"width:80px;text-align:right;padding-right:12px;\">%s</span>：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin-left:15px;\">%s</span><br/>";
+                builder.append(String.format(template, name, oldValue, newValue));
+            }
+        });
+        return builder.toString();
     }
 
     @Override
@@ -126,6 +164,13 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         customerDao.batchSetStatus(ids, Room.STATUS_INVALID);
     }
 
+    private void saveNews(String customerId, String content) {
+        CustomerNews cn = new CustomerNews();
+        cn.setCustomerId(customerId);
+        cn.setContent(content);
+        SystemContainer.getInstance().getBean(CustomerNewsService.class).save(cn);
+    }
+
     @Override
     public void batchPass(String[] customerIds) {
         Assert.notEmpty(customerIds, "操作失败!ID不能为空!");
@@ -140,16 +185,21 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             } else if (Room.STATUS_APPLY_INVALID.equals(status)) {
                 customer.setStatus(Room.STATUS_INVALID);
 
+                ParameterContainer parameterContainer = ParameterContainer.getInstance();
+                String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+                String content = String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, customer.getStatus()), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID));
+
+                // 客户信息变更日志
+                saveNews(customer.getId(), content);
+
                 // 同时变更所有的房屋状态
                 List<Room> rooms = roomDao.findByCustomer(id);
                 if (rooms != null && !rooms.isEmpty()) {
-                    ParameterContainer parameterContainer = ParameterContainer.getInstance();
                     for (Room room : rooms) {
                         // 日志
-                        String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
                         RoomNews news = new RoomNews();
                         news.setRoomId(room.getId());
-                        news.setContent(String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, room.getStatus()), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID)));
+                        news.setContent(content);
                         SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
 
                         // 变更状态

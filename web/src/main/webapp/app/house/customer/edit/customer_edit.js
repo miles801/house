@@ -4,12 +4,14 @@
 (function (window, angular, $) {
     var app = angular.module('house.customer.edit', [
         'house.customer',
+        'house.customerNews',
         'house.room',
         'eccrm.angular',
         'eccrm.angularstrap'
     ]);
 
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam, RoomService, CustomerModal) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam, RoomService,
+                                     CustomerModal, CustomerNewsModal, CustomerNewsService) {
 
         var pageType = $scope.pageType = $('#pageType').val();
         var id = $('#id').val();
@@ -97,14 +99,8 @@
             CommonUtils.loading(promise, '保存中...');
         };
 
-        $scope.descs = [];
-        $scope.addMyDesc = function () {
-            // $scope.beans.description = ($scope.beans.description || '') + moment().format('YYYY-MM-DD HH:mm:ss') + ' \t' + CommonUtils.loginContext().employeeName + ' \t ' + $scope.myDesc;
-            $scope.descs.push(moment().format('YYYY-MM-DD HH:mm:ss') + ' \t(' + CommonUtils.loginContext().employeeName + ') \t ' + $scope.myDesc);
-            $scope.newDesc = false;
-            $scope.myDesc = null;
-        };
 
+        // 申请无效
         $scope.applyInvalid = function (id) {
             ModalFactory.confirm({
                 scope: $scope,
@@ -120,6 +116,7 @@
             });
         };
 
+        // 变为有效
         $scope.applyValid = function (id) {
             ModalFactory.confirm({
                 scope: $scope,
@@ -134,6 +131,7 @@
                 }
             });
         };
+
         // 更新
         $scope.update = function () {
             $scope.beans.description = $scope.descs.join('@@@');
@@ -147,23 +145,51 @@
             CommonUtils.loading(promise, '更新中...');
         };
 
+        // 选择客户
         $scope.pickCustomer = function () {
             CustomerModal.pick({}, function (o) {
                 $scope.beans = o;
             });
         };
 
+        // 录入跟进
+        $scope.addCusInfo = function (id) {
+            CustomerNewsModal.add({customerId: id}, $scope.loadNews);
+        };
+
         // 加载数据
         $scope.load = function (id) {
             var promise = CustomerService.get({id: id}, function (data) {
                 $scope.beans = data.data || {};
-                if ($scope.beans.description) {
-                    $scope.descs = $scope.beans.description.split('@@@') || [];
+
+                if (pageType == 'detail' || pageType == 'modify') {
+                    $scope.loadNews();
                 }
             });
             CommonUtils.loading(promise, 'Loading...');
         };
 
+        $scope.pager = {
+            fetch: function () {
+                var start = this.start;
+                var limit = this.limit;
+                return CommonUtils.promise(function (defer) {
+                    var promise = CustomerNewsService.pageQuery({
+                        customerId: id,
+                        start: start,
+                        limit: limit
+                    }, function (data) {
+                        $scope.news = data.data || {};
+                        defer.resolve($scope.news);
+                    });
+                    CommonUtils.loading(promise);
+                });
+            }
+        };
+        // 查看最新动态
+        $scope.loadNews = function () {
+            $scope.pager.query();
+        };
 
         if (pageType == 'add') {
             $scope.beans = {};
