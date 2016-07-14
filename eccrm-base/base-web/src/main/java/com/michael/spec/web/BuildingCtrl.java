@@ -46,6 +46,14 @@ public class BuildingCtrl extends BaseController {
         GsonUtils.printData(response, id);
     }
 
+    @RequestMapping(value = "/commit", method = RequestMethod.POST)
+    @ResponseBody
+    public void commit(HttpServletRequest request, HttpServletResponse response) {
+        Building building = GsonUtils.wrapDataToEntity(request, Building.class);
+        String id = buildingService.commit(building);
+        GsonUtils.printData(response, id);
+    }
+
     @RequestMapping(value = "/modify", params = {"id"}, method = RequestMethod.GET)
     public String toModify(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.MODIFY);

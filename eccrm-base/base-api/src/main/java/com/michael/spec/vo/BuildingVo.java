@@ -19,6 +19,16 @@ public class BuildingVo extends Building {
     // 有效房屋
     private Long validRooms;
 
+    private String statusName;
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
     public Long getAllRooms() {
         return allRooms;
     }

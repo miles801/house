@@ -31,12 +31,20 @@
                 <span class="header-button">
                     <c:if test="${pageType eq 'add'}">
                     <button type="button" class="btn btn-green btn-min" ng-click="save()" ng-disabled="form.$invalid">
-                        <span class="glyphicons disk_save"></span> 保存
+                        <span class="glyphicons disk_save"></span> 暂存
+                    </button>
+                    <button type="button" class="btn btn-green btn-min" ng-click="commit()" ng-disabled="form.$invalid">
+                        <span class="glyphicons disk_save"></span> 提交
                     </button>
                     </c:if>
                     <c:if test="${pageType eq 'modify'}">
-                    <button type="button" class="btn btn-green btn-min" ng-click="update()" ng-disabled="form.$invalid">
+                    <button type="button" class="btn btn-green btn-min" ng-click="update()" ng-disabled="form.$invalid"
+                            ng-cloak ng-if="beans.status!=='CANCELED'">
                         <span class="glyphicons claw_hammer"></span> 更新
+                    </button>
+                    <button type="button" class="btn btn-green btn-min" ng-click="commit()" ng-disabled="form.$invalid"
+                            ng-cloak ng-if="beans.status=='INACTIVE'">
+                        <span class="glyphicons claw_hammer"></span> 更新并提交
                     </button>
                     </c:if>
                     <a type="button" class="btn btn-green btn-min" ng-click="back();">
@@ -136,11 +144,14 @@
                         <div class="form-label col-1-half">
                             <label>楼栋总数:</label>
                         </div>
-                        <input class="col-2-half" type="number" ng-model="beans.buildingCounts" validate validate-int/>
+                        <input class="col-2-half" type="number" ng-model="beans.buildingCounts" validate validate-int
+                               validate-required ng-disabled="beans.status && beans.status!=='INACTIVE'"
+                               placeholder="正整数"/>
                         <div class="form-label col-1-half">
                             <label>总户数:</label>
                         </div>
-                        <input class="col-2-half" type="number" ng-model="beans.houseCounts" validate validate-int/>
+                        <input class="col-2-half" type="number" ng-model="beans.houseCounts" validate validate-int
+                               placeholder="正整数"/>
                         <div class="form-label col-1-half">
                             <label>车位数:</label>
                         </div>

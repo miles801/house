@@ -15,6 +15,9 @@
             // 保存
             save: {method: 'POST', params: {method: 'save'}, isArray: false},
 
+            // 提交
+            commit: {method: 'POST', params: {method: 'commit'}, isArray: false},
+
             // 更新
             update: {method: 'POST', params: {method: 'update'}, isArray: false},
 

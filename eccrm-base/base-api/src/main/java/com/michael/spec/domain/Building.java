@@ -120,6 +120,19 @@ public class Building extends CommonDomain {
     @Column(length = 100)
     private String col5;
 
+
+    // 状态：未启用、启用、注销
+    @Column(length = 40)
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Float getAvgPrice() {
         return avgPrice;
     }

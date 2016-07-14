@@ -63,6 +63,17 @@ public class BuildingBo implements BO {
 
     private Boolean manager;
 
+    @Condition
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Boolean getManager() {
         return manager;
     }

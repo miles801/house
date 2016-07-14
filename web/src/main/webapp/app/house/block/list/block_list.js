@@ -8,7 +8,7 @@
         'eccrm.angularstrap',
         'house.block'
     ]);
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, BlockService, BlockParam) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, BlockService) {
 
         $scope.beans = [];
 

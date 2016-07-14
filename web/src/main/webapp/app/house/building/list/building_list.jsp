@@ -146,7 +146,7 @@
                                            title="更新楼盘的维护人列表">维护人</a>
                                     </c:if>
                                     <c:if test='${sessionScope.get("OP_BUILDING_DELETE") eq true}'>
-                                        <a class="btn-op red" ng-click="remove(foo.id);" ng-if="!foo.allRooms">删除</a>
+                                        <a class="btn-op red" ng-click="remove(foo.id);" ng-if="foo.status=='INACTIVE'">删除</a>
                                     </c:if>
                                 </td>
                             </tr>

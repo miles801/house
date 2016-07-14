@@ -8,6 +8,8 @@ package com.michael.base.common;
 public interface BaseParameter {
 
 
+    public static final String STATUS = "SP_STATE_COMMON";
+
     /**
      * 性别：业务参数
      */

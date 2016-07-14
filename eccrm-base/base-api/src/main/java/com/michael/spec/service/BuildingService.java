@@ -11,10 +11,21 @@ import com.ycrl.core.pager.PageVo;
 public interface BuildingService {
 
     /**
-     * 保存
+     * 暂存：状态为未激活
      */
     String save(Building building);
 
+    /**
+     * 提交：状态为正常
+     */
+    String commit(Building building);
+
+    /**
+     * 启用某个楼盘
+     *
+     * @param id 楼盘ID
+     */
+    void enable(String id);
 
     /**
      * 添加维护人

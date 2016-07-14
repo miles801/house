@@ -1,5 +1,6 @@
 package com.michael.spec.service.impl;
 
+import com.michael.base.common.BaseParameter;
 import com.michael.base.emp.dao.EmpDao;
 import com.michael.base.emp.domain.Emp;
 import com.michael.spec.bo.BlockBo;
@@ -8,10 +9,12 @@ import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.BlockDao;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.RoomDao;
+import com.michael.spec.domain.Block;
 import com.michael.spec.domain.Building;
 import com.michael.spec.service.BuildingService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.BuildingVo;
+import com.ycrl.base.common.CommonStatus;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -51,8 +54,41 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
             building.setMasterName(SecurityContext.getEmpName());
         }
         validate(building);
+        // 如果状态为空，则默认为未激活状态
+        if (StringUtils.isEmpty(building.getStatus())) {
+            building.setStatus(CommonStatus.INACTIVE.getValue());
+        }
         String id = buildingDao.save(building);
         return id;
+    }
+
+    @Override
+    public String commit(Building building) {
+        building.setStatus(CommonStatus.ACTIVE.getValue());
+        String id = building.getId();
+        if (StringUtils.isNotEmpty(id)) {
+            // 产生楼栋
+            id = save(building);
+        } else {
+            update(building);
+        }
+
+        // 自动创建楼栋
+        Integer counts = building.getBuildingCounts();
+        if (counts != null && counts > 0) {
+            for (int i = 0; i < counts; i++) {
+                Block block = new Block();
+                block.setBuildingId(id);
+                block.setCode((i + 1) + "");
+                blockDao.save(block);
+            }
+        }
+        return id;
+    }
+
+    @Override
+    public void enable(String id) {
+
     }
 
     private void validate(Building building) {
@@ -94,6 +130,11 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
     public void deleteByIds(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
+            //
+            Building building = buildingDao.findById(id);
+            if (building == null) {
+                continue;
+            }
             // 校验关联
             BlockBo blockBo = new BlockBo();
             blockBo.setBuildingId(id);
@@ -186,6 +227,8 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
         // 距离地铁
         vo.setSubwayName(container.getBusinessName(HouseParams.SUBWAY, building.getSubway()));
 
+        // 状态
+        vo.setStatusName(container.getSystemName(BaseParameter.STATUS, building.getStatus()));
         // 录入户数
         RoomBo bo = new RoomBo();
         bo.setBuildingId(building.getId());

@@ -64,13 +64,35 @@
 
         // 保存
         $scope.save = function () {
-            var promise = BuildingService.save($scope.beans, function (data) {
-                AlertFactory.success('保存成功!');
-                CommonUtils.addTab('update');
-                window.location.href = "/house/building/modify?id=" + data.data;
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '暂存后，可以继续对该楼盘的数据进行编辑，不会产生楼栋信息，请确认!',
+                callback: function () {
+                    var promise = BuildingService.save($scope.beans, function (data) {
+                        AlertFactory.success('保存成功!');
+                        CommonUtils.addTab('update');
+                        window.location.href = "/house/building/modify?id=" + data.data;
+                    });
+                    CommonUtils.loading(promise, '保存中...');
+                }
             });
-            CommonUtils.loading(promise, '保存中...');
         };
+        // 提交
+        $scope.commit = function () {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '提交后，楼盘的部分数据将无法进行编辑，会产生楼栋信息，请确认!',
+                callback: function () {
+                    var promise = BuildingService.commit($scope.beans, function (data) {
+                        AlertFactory.success('提交成功!');
+                        CommonUtils.addTab('update');
+                        window.location.href = "/house/building/modify?id=" + data.data;
+                    });
+                    CommonUtils.loading(promise, '保存中...');
+                }
+            });
+        };
+
 
 
         // 更新
@@ -90,7 +112,10 @@
                 $scope.beans = data.data || {};
                 $scope.cityAndArea = $scope.beans.cityName + ' - ' + $scope.beans.areaName;
 
-                $scope.initTab(id);
+                if ($scope.beans.status == 'ACTIVE' || $scope.beans.status == 'CANCELED') {
+                    $scope.initTab(id);
+                }
+
             });
             CommonUtils.loading(promise, 'Loading...');
         };
