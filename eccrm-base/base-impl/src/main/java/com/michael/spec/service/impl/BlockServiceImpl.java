@@ -5,8 +5,11 @@ import com.michael.spec.bo.UnitBo;
 import com.michael.spec.dao.BlockDao;
 import com.michael.spec.dao.UnitDao;
 import com.michael.spec.domain.Block;
+import com.michael.spec.domain.Unit;
 import com.michael.spec.service.BlockService;
+import com.michael.spec.service.UnitService;
 import com.michael.spec.vo.BlockVo;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
@@ -66,6 +69,46 @@ public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, B
         Block block = blockDao.findById(id);
         return BeanWrapBuilder.newInstance()
                 .wrap(block, BlockVo.class);
+    }
+
+    @Override
+    public void createUnit(String id) {
+        Assert.hasText(id, "操作失败!ID不能为空!");
+        Block block = blockDao.findById(id);
+        Assert.notNull(block, "操作失败!楼栋不存在，请刷新后重试!");
+        // 查看该楼栋下是否已经具有单元信息
+        UnitBo bo = new UnitBo();
+        bo.setBlockId(id);
+        Long total = unitDao.getTotal(bo);
+        Assert.isTrue(total == null || total == 0, "操作失败!该楼栋下已经具有单元信息，无法再次生成!若需生成请先清理原有数据!");
+        Integer unitCounts = block.getUnitCounts();
+        UnitService unitService = SystemContainer.getInstance().getBean(UnitService.class);
+        for (int i = 0; i < unitCounts; i++) {
+            Unit unit = new Unit();
+            unit.setBlockId(id);
+            unit.setCode((i + 1) + "");
+            unitService.save(unit);
+        }
+    }
+
+    @Override
+    public void clearUnit(String id) {
+        Assert.hasText(id, "操作失败!ID不能为空!");
+        Block block = blockDao.findById(id);
+        Assert.notNull(block, "操作失败!楼栋不存在，请刷新后重试!");
+
+        // 删除单元
+        UnitBo bo = new UnitBo();
+        bo.setBlockId(id);
+        List<Unit> units = unitDao.query(bo);
+        if (units != null && !units.isEmpty()) {
+            UnitService unitService = SystemContainer.getInstance().getBean(UnitService.class);
+            for (Unit unit : units) {
+                unitService.deleteByIds(new String[]{unit.getId()});
+            }
+        }
+        // 更新实际单元数量
+        block.setRealCounts(0);
     }
 
     @Override

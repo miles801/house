@@ -91,7 +91,7 @@
                                     <tr ng-repeat="foo in beans" ng-cloak>
                                         <td title="点击查询明细！" style="cursor: pointer;">
                                             <input type="text" name="code" ng-model="foo.code" validate
-                                                   validate-required ng-change="check(foo);"/>
+                                                   validate-required ng-change="check(foo);" ng-disabled="foo.id"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.doorCode" validate validate-required
@@ -116,7 +116,7 @@
                                             <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"
                                                ng-if="foo.id">更新</a>
                                             <a class="btn-op red" ng-click="remove(foo.id,$index);">删除</a>
-                                            <a class="btn-op green" ng-click="add(foo);">新建</a>
+                                            <a class="btn-op green" ng-click="add(foo);">复制</a>
                                         </td>
                                     </tr>
                                 </c:if>

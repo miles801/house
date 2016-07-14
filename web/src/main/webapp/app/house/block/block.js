@@ -15,8 +15,14 @@
             // 保存
             save: {method: 'POST', params: {method: 'save'}, isArray: false},
 
+            // 创建单元
+            createUnit: {method: 'POST', params: {method: 'createUnit', id: '@id'}, isArray: false},
+
+            // 清除单元
+            clearUnit: {method: 'POST', params: {method: 'clearUnit', id: '@id'}, isArray: false},
+
             // 更新
-            update: {method: 'POST', params: {method: 'update'}, isArray: false},
+            update: {method: 'POST', params: {method: 'update'}, isArray: false},   
 
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},

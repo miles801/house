@@ -183,6 +183,10 @@
                             <label>绿化率(%):</label>
                         </div>
                         <input class="col-2-half" type="number" ng-model="beans.greenPercent" validate validate-float/>
+                        <div class="form-label col-1-half">
+                            <label>状态:</label>
+                        </div>
+                        <input class="col-2-half" type="text" ng-model="beans.statusName" ng-disabled="true"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">

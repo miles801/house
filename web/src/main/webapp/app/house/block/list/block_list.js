@@ -56,31 +56,74 @@
             if (!bean) {
                 $scope.beans.push({buildingId: buildingId});
             } else {
-                var o = angular.extend({}, bean);
-                o.code = null;
-                o.id = null;
+                var o = {
+                    buildingId: buildingId,
+                    unitCounts: bean.unitCounts,
+                    physicalLevels: bean.physicalLevels,
+                    levels: bean.levels
+                };
                 $scope.beans.push(o);
             }
         };
 
-        // 更新
-        $scope.save = function (bean, form) {
-            var promise;
-            if (!bean.id) {
-                promise = BlockService.save(bean, function (data) {
-                    bean.id = data.data;
-                    form.$setDirty(false);
-                    AlertFactory.success('保存成功!');
-                });
-            } else {
-                promise = BlockService.update(bean, function () {
-                    AlertFactory.success('更新成功!');
-                    form.$setDirty(false);
-                });
-            }
+        // 保存
+        $scope.save = function (bean) {
+            var promise = BlockService.save(bean, function (data) {
+                bean.id = data.data;
+                bean.$valid = false;
+                AlertFactory.success('保存成功!');
+            });
             CommonUtils.loading(promise);
         };
 
+        // 更新
+        $scope.update = function (bean) {
+            var promise = BlockService.update(bean, function () {
+                AlertFactory.success('更新成功!');
+                bean.$valid = false;
+            });
+            CommonUtils.loading(promise);
+
+        };
+
+        // 清除单元
+        $scope.clearUnit = function (id) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '是否要清除该楼栋下已经创建的单元信息，这个一个敏感操作，请仔细确认!',
+                callback: function () {
+                    var promise = BlockService.clearUnit({id: id}, function () {
+                        AlertFactory.success('清除成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
+
+        // 自动创建单元
+        $scope.createUnit = function (id) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '是否要自动创建该楼栋下的所有预设的单元，请仔细确认!',
+                callback: function () {
+                    var promise = BlockService.createUnit({id: id}, function () {
+                        AlertFactory.success('创建成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
+
+        $scope.check = function (bean) {
+            bean.$valid = false;
+            var flag = true;
+            if (!bean.code || !bean.unitCounts || !bean.physicalLevels || !bean.levels) {
+                flag = false;
+            }
+            bean.$valid = flag;
+        };
         $scope.query();
     });
 })(window, angular, jQuery);

@@ -93,7 +93,7 @@
                 $scope.beans.push({blockId: $scope.condition.blockId});
             } else {
                 var o = angular.extend({}, bean);
-                o.code = null;
+                o.doorCode = null;
                 o.id = null;
                 $scope.beans.push(o);
             }

@@ -62,6 +62,22 @@ public class BlockCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    // 创建单元
+    @RequestMapping(value = "/createUnit", params = "id", method = RequestMethod.POST)
+    @ResponseBody
+    public void createUnit(String id, HttpServletResponse response) {
+        blockService.createUnit(id);
+        GsonUtils.printSuccess(response);
+    }
+
+    // 清除单元
+    @RequestMapping(value = "/clearUnit", params = "id", method = RequestMethod.POST)
+    @ResponseBody
+    public void clearUnit(String id, HttpServletResponse response) {
+        blockService.clearUnit(id);
+        GsonUtils.printSuccess(response);
+    }
+
     @RequestMapping(value = {"/detail"}, params = {"id"}, method = RequestMethod.GET)
     public String toDetail(@RequestParam String id, HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.DETAIL);

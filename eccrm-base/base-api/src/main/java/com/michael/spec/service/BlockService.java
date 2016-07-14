@@ -33,6 +33,16 @@ public interface BlockService {
     BlockVo findById(String id);
 
     /**
+     * 产生单元信息
+     */
+    void createUnit(String id);
+
+    /**
+     * 移除单元信息
+     */
+    void clearUnit(String id);
+
+    /**
      * 批量删除
      */
     void deleteByIds(String[] ids);

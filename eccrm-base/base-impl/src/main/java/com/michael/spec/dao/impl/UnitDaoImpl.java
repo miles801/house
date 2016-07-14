@@ -2,6 +2,7 @@ package com.michael.spec.dao.impl;
 
 import com.michael.spec.bo.UnitBo;
 import com.michael.spec.dao.UnitDao;
+import com.michael.spec.domain.Block;
 import com.michael.spec.domain.Unit;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
@@ -52,6 +53,15 @@ public class UnitDaoImpl extends HibernateDaoHelper implements UnitDao {
         getSession().createQuery("delete from " + Unit.class.getName() + " e where e.id=?")
                 .setParameter(0, id)
                 .executeUpdate();
+    }
+
+    @Override
+    public Long getUnitCount(String blockId) {
+        Assert.hasText(blockId, "查询失败!楼栋ID不能为空!");
+        Long total = (Long) getSession().createQuery("select count(b.code) from " + Block.class.getName() + " b where b.blockId=? group by b.code ")
+                .setParameter(0, blockId)
+                .uniqueResult();
+        return total;
     }
 
     @Override

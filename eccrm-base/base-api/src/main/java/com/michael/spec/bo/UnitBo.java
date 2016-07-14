@@ -15,10 +15,20 @@ public class UnitBo implements BO {
     private String code;
 
     @Condition
+    private String doorCode;
+    @Condition
     private String type;
 
     @Condition
     private String orient;
+
+    public String getDoorCode() {
+        return doorCode;
+    }
+
+    public void setDoorCode(String doorCode) {
+        this.doorCode = doorCode;
+    }
 
     public String getBlockId() {
         return blockId;

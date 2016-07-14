@@ -1,6 +1,5 @@
 package com.michael.spec.service.impl;
 
-import com.michael.base.common.BaseParameter;
 import com.michael.base.emp.dao.EmpDao;
 import com.michael.base.emp.domain.Emp;
 import com.michael.spec.bo.BlockBo;
@@ -15,6 +14,7 @@ import com.michael.spec.service.BuildingService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.BuildingVo;
 import com.ycrl.base.common.CommonStatus;
+import com.ycrl.base.common.CommonSysParam;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -66,7 +66,7 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
     public String commit(Building building) {
         building.setStatus(CommonStatus.ACTIVE.getValue());
         String id = building.getId();
-        if (StringUtils.isNotEmpty(id)) {
+        if (StringUtils.isEmpty(id)) {
             // 产生楼栋
             id = save(building);
         } else {
@@ -228,7 +228,7 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
         vo.setSubwayName(container.getBusinessName(HouseParams.SUBWAY, building.getSubway()));
 
         // 状态
-        vo.setStatusName(container.getSystemName(BaseParameter.STATUS, building.getStatus()));
+        vo.setStatusName(container.getSystemName(CommonSysParam.STATUS, building.getStatus()));
         // 录入户数
         RoomBo bo = new RoomBo();
         bo.setBuildingId(building.getId());

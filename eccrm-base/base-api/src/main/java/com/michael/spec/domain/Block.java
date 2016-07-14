@@ -33,6 +33,10 @@ public class Block extends CommonDomain {
      */
     @Column
     private Integer unitCounts;
+
+    // 实际单元数量
+    @Column
+    private Integer realCounts;
     /**
      * 物理层高
      */
@@ -43,6 +47,14 @@ public class Block extends CommonDomain {
      */
     @Column
     private Integer levels;
+
+    public Integer getRealCounts() {
+        return realCounts;
+    }
+
+    public void setRealCounts(Integer realCounts) {
+        this.realCounts = realCounts;
+    }
 
     public String getBuildingId() {
         return buildingId;

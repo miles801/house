@@ -29,6 +29,14 @@ public interface UnitDao {
     void deleteById(String id);
 
     /**
+     * 查询指定楼栋下单元的数量（分组）
+     *
+     * @param blockId 楼栋ID
+     * @return 单元数量
+     */
+    Long getUnitCount(String blockId);
+
+    /**
      * 根据实体对象删除
      * 必须保证该实体是存在的（一般是get或者load得到的对象）
      */
