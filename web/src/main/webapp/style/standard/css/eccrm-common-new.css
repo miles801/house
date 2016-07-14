@@ -2135,7 +2135,7 @@ button[disabled] > .icons,
     cursor: not-allowed !important;
 }
 
-td > a.btn-op {
+a.btn-op {
     margin: 0;
     color: #fff;
     display: inline-block;
@@ -2145,27 +2145,27 @@ td > a.btn-op {
     cursor: pointer;
 }
 
-td > a.btn-op.blue {
+a.btn-op.blue {
     background-color: #3fbff0;
 }
 
-td > a.btn-op.red {
+a.btn-op.red {
     background-color: #e62129;
 }
 
-td > a.btn-op.yellow {
+a.btn-op.yellow {
     background-color: #f08519;
 }
 
-td > a.btn-op.gray {
+a.btn-op.gray {
     background-color: #999999;
 }
 
-td > a.btn-op.green {
+a.btn-op.green {
     background-color: #72bb38;
 }
 
-td > a.btn-op[disabled] {
+a.btn-op[disabled] {
     background-color: #999999;
     cursor: not-allowed;
 }

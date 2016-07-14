@@ -207,32 +207,23 @@
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.carNo" maxlength="40"/>
                     </div>
-                    <div class="row">
+                    <div class="row" ng-cloak ng-if="pageType=='detail'">
                         <div class="form-label col-1-half">
-                            <label>备注:</label>
+                            <label>跟进:</label>
                         </div>
-                        <div class="col-10-half">
-                            <p ng-repeat="foo in descs" ng-cloak>{{foo}}</p>
-                        </div>
+                        <div class="col-10-half">{{beans.description}}</div>
                     </div>
-                    <c:if test="${pageType eq 'add' || pageType eq 'modify'}">
-                        <div class="row" ng-show="!newDesc">
-                            <div class="form-label col-1-half">&nbsp;</div>
-                            <a class="btn btn-blue" ng-click="newDesc=true;">添加新的备注</a>
-                        </div>
-                        <div class="row" ng-cloak ng-show="!!newDesc">
-                            <div class="form-label col-1-half">&nbsp;</div>
-                            <input class="col-9-half" type="text" ng-model="myDesc" maxlength="100"
-                                   placeholder="请输入新的备注"/>
-                            <a class="btn btn-blue" ng-click="addMyDesc();" style="margin-left:8px;">确定</a>
-                            <a class="btn btn-blue" ng-click="newDesc=false;" style="margin-left:8px;">取消</a>
-                        </div>
-                    </c:if>
                     <div class="row">
                         <div class="form-label col-1-half">
                             <label>状态:</label>
                         </div>
-                        <span class="col-2-half" ng-cloak>{{beans.statusName}}</span>
+                        <span class="col-2-half" ng-cloak>
+                        <span>{{beans.statusName}}</span>
+                        <a class="btn-op red" ng-click="applyInvalid(beans.id);" style="margin-left: 15px;;"
+                           ng-if="pageType=='modify' && beans.status=='ACTIVE'" ng-cloak>无效申请</a>
+                        <a class="btn-op green" ng-click="applyValid(beans.id);" style="margin-left: 15px;;"
+                           ng-if="pageType=='modify' && beans.status=='INVALID'" ng-cloak>有效申请</a>
+                        </span>
                     </div>
                 </form>
             </div>

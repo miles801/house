@@ -10,7 +10,7 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
         $scope.condition = {
-            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID']
+            statusInclude: ['APPLY_ADD', 'APPLY_INVALID']
         };
 
         // 性别
@@ -40,9 +40,8 @@
         });
 
         $scope.status = [
-            {name: '请选择...'},
+            {name: '全部...'},
             {name: '新增申请', value: 'APPLY_ADD'},
-            {name: '修改申请', value: 'APPLY_MODIFY'},
             {name: '无效申请', value: 'APPLY_INVALID'}
         ];
 

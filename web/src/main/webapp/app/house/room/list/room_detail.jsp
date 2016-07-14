@@ -138,7 +138,8 @@
                             <div class="float items" ng-cloak>
                                 <div class="item w300">
                                     <div class="form-label w120"><label>编号:</label></div>
-                                    <span class="w180">{{customer.code}}</span>
+                                    <span class="w180"><a class="cp" style="text-decoration: underline;"
+                                                          ng-click="viewCustomer(customer.id);">{{customer.code}}</a></span>
                                 </div>
                                 <div class="item w300">
                                     <div class="form-label w120"><label>姓名:</label></div>
@@ -207,12 +208,6 @@
                                 <div class="item w300">
                                     <div class="form-label w120"><label>描述5:</label></div>
                                     <span class="w180">{{customer.c5}}</span>
-                                </div>
-                                <div class="item " style="width: 100%;">
-                                    <div class="form-label w120"><label>备注:</label></div>
-                                    <div class="w720" style="padding-top: 5px;">
-                                        <p ng-repeat="foo in customerDescs" ng-cloak>{{foo}}</p>
-                                    </div>
                                 </div>
                             </div>
                             <div class="row text-center" style="clear:both;margin: 10px 0;" ng-if="customer.id">

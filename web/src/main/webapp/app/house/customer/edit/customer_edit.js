@@ -11,7 +11,7 @@
 
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam, RoomService, CustomerModal) {
 
-        var pageType = $('#pageType').val();
+        var pageType = $scope.pageType = $('#pageType').val();
         var id = $('#id').val();
         var roomId = $('#roomId').val();
 
@@ -105,6 +105,35 @@
             $scope.myDesc = null;
         };
 
+        $scope.applyInvalid = function (id) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '是否确定将选中的客户申请为“无效电话”客户?',
+                callback: function () {
+                    var promise = CustomerService.applyInvalid({ids: id}, function () {
+                        AlertFactory.success('操作成功!页面即将返回!');
+                        CommonUtils.addTab('update');
+                        CommonUtils.delay($scope.back, 2000);
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
+
+        $scope.applyValid = function (id) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '是否确定将选中的客户申请为“正常”客户?',
+                callback: function () {
+                    var promise = CustomerService.applyValid({ids: id}, function () {
+                        AlertFactory.success('操作成功!页面即将返回!');
+                        CommonUtils.addTab('update');
+                        CommonUtils.delay($scope.back, 2000);
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
         // 更新
         $scope.update = function () {
             $scope.beans.description = $scope.descs.join('@@@');

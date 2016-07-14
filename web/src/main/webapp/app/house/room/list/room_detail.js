@@ -144,6 +144,13 @@
                 }
             })
         };
+
+        $scope.viewCustomer = function (customerId) {
+            CommonUtils.addTab({
+                title: '查看客户信息',
+                url: 'house/customer/detail?id=' + customerId + '&roomId=' + id
+            })
+        };
         // 修改客户信息
         $scope.modifyCustomer = function (customerId) {
             CommonUtils.addTab({

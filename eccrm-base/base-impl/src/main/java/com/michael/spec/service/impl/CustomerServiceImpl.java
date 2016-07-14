@@ -198,8 +198,10 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         Assert.notEmpty(ids, "操作失败!ID不能为空!");
         for (String id : ids) {
             Customer customer = customerDao.findById(id);
+            Assert.notNull(customer, "操作失败!客户不存在!请刷新后重试!");
             // 只有“未录入”和“无效”可以申请为新增
-            if (customer != null && (Room.STATUS_INACTIVE.equals(customer.getStatus()) || Room.STATUS_INVALID.equals(customer.getStatus()))) {
+            String status = customer.getStatus();
+            if (Room.STATUS_INACTIVE.equals(status) || Room.STATUS_INVALID.equals(status) || Room.STATUS_INVALID_ADD.equals(status)) {
                 customer.setStatus(Room.STATUS_APPLY_ADD);
             }
         }
@@ -207,6 +209,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
 
     @Override
     public void batchModify(String[] ids) {
+        Assert.isTrue(false, "该功能已注销!");
         Assert.notEmpty(ids, "操作失败!ID不能为空!");
         for (String id : ids) {
             Customer customer = customerDao.findById(id);
@@ -227,9 +230,11 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             }
             String status = customer.getStatus();
             if (Room.STATUS_APPLY_ADD.equals(status)) {
-                customer.setStatus(Room.STATUS_INVALID);
-            } else if (Room.STATUS_APPLY_MODIFY.equals(status) || Room.STATUS_APPLY_INVALID.equals(status)) {
+                customer.setStatus(Room.STATUS_INVALID_ADD);
+            } else if (Room.STATUS_APPLY_INVALID.equals(status)) {
                 customer.setStatus(Room.STATUS_ACTIVE);
+            } else {
+                Assert.isTrue(false, "无效的申请状态!" + status);
             }
         }
     }

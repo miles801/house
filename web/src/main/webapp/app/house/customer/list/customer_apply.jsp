@@ -69,42 +69,44 @@
                                 <label>性别:</label>
                             </div>
                             <select class="w150" ng-model="condition.sex"
-                                    ng-options="foo.value as foo.name for foo in sex"></select>
+                                    ng-options="foo.value as foo.name for foo in sex" ng-change="query();"></select>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
                                 <label>婚姻状况:</label>
                             </div>
                             <select class="w150" ng-model="condition.marriage"
-                                    ng-options="foo.value as foo.name for foo in marriage"></select>
+                                    ng-options="foo.value as foo.name for foo in marriage"
+                                    ng-change="query();"></select>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
                                 <label>资产规模:</label>
                             </div>
                             <select class="w150" ng-model="condition.money"
-                                    ng-options="foo.value as foo.name for foo in money"></select>
+                                    ng-options="foo.value as foo.name for foo in money" ng-change="query();"></select>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
                                 <label>年龄段:</label>
                             </div>
                             <select class="w150" ng-model="condition.age"
-                                    ng-options="foo.value as foo.name for foo in age"></select>
+                                    ng-options="foo.value as foo.name for foo in age" ng-change="query();"></select>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
                                 <label>学历:</label>
                             </div>
                             <select class="w150" ng-model="condition.education"
-                                    ng-options="foo.value as foo.name for foo in education"></select>
+                                    ng-options="foo.value as foo.name for foo in education"
+                                    ng-change="query();"></select>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
                                 <label>状态:</label>
                             </div>
                             <select class="w150" ng-model="condition.status"
-                                    ng-options="foo.value as foo.name for foo in status"></select>
+                                    ng-options="foo.value as foo.name for foo in status" ng-change="query();"></select>
                         </div>
                     </div>
                 </div>

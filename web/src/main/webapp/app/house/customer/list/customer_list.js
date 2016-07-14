@@ -10,7 +10,6 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
         $scope.condition = {
-            statusInclude: ['APPLY_ADD', 'APPLY_MODIFY', 'APPLY_INVALID', 'INVALID', 'ACTIVE'],
             orderBy: 'code',
             reverse: true
         };
@@ -41,10 +40,14 @@
             $scope.education.unshift({name: '请选择...'});
         });
         // 状态
-        CustomerParam.status(function (data) {
-            $scope.status = data;
-            $scope.status.unshift({name: '请选择...'});
-        });
+        $scope.status = [
+            {name: '全部...'},
+            {name: '新增申请', value: 'APPLY_ADD'},
+            {name: '新增无效', value: 'INVALID_ADD'},
+            {name: '无效申请', value: 'APPLY_INVALID'},
+            {name: '电话无效', value: 'INVALID'},
+            {name: '正常', value: 'ACTIVE'},
+        ];
 
         //查询数据
         $scope.query = function () {
@@ -130,33 +133,9 @@
                 }
             });
         };
-        $scope.applyInvalid = function (id) {
-            if (!id) {
-                id = $scope.items.map(function (o) {
-                    return o.id;
-                }).join(',');
-            }
-            ModalFactory.confirm({
-                scope: $scope,
-                content: '是否确定将选中的客户申请为“无效”客户?',
-                callback: function () {
-                    var promise = CustomerService.applyInvalid({ids: id}, function () {
-                        AlertFactory.success('操作成功!');
-                        $scope.query();
-                    });
-                    CommonUtils.loading(promise);
-                }
-            });
-        };
 
         // 更新
         $scope.modify = function (bean) {
-            var status = bean.status;
-            if (!(status == 'ACTIVE' || status == 'APPLY_ADD' || status == 'INVALID')) {
-                AlertFactory.error('只允许修改状态为“正常”、“新增申请”、“无效”的客户!');
-                return;
-            }
-
             CommonUtils.addTab({
                 title: '更新客户管理',
                 url: '/house/customer/modify?id=' + bean.id,
