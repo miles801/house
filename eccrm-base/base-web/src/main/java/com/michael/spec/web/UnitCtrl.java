@@ -85,6 +85,13 @@ public class UnitCtrl extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/generate", params = "blockId", method = RequestMethod.POST)
+    public void generate(String blockId, HttpServletResponse response) {
+        Integer total = unitService.generate(blockId);
+        GsonUtils.printData(response, total);
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/query", params = "blockId", method = RequestMethod.POST)
     public void query(String blockId, HttpServletRequest request, HttpServletResponse response) {
         UnitBo bo = GsonUtils.wrapDataToEntity(request, UnitBo.class);

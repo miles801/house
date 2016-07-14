@@ -43,7 +43,7 @@
 
             // 导入数据
             importData: {method: 'POST', params: {method: 'import', attachmentIds: '@attachmentIds'}, isArray: false},
-            
+
             // 分页查询
             pageQuery: {
                 method: 'POST',
@@ -58,7 +58,11 @@
             },
 
             // 查询指定单元下的所有房间
-            query: {method: 'POST', params: {method: 'query', unitId: '@unitId'}, isArray: false},
+            query: {
+                method: 'POST',
+                params: {method: 'query', unitCode: '@unitCode', start: '@start', limit: '@limit'},
+                isArray: false
+            },
 
             // 根据id字符串（使用逗号分隔多个值）
             deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}

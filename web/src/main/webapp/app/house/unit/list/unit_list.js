@@ -124,6 +124,24 @@
             CommonUtils.loading(promise);
         };
 
+        $scope.generateRoom = function () {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '<span class="error">该操作将会根据该楼栋下的所有单元信息创建出所有的房屋列表，请确认已经完善了单元信息，并且之前并没有执行该操作!</span>',
+                callback: function () {
+                    var promise = UnitService.generate({blockId: $scope.condition.blockId}, function (data) {
+                        if (data.data > 0) {
+                            AlertFactory.success('创建成功!共创建了' + data.data + '个房屋!');
+                        } else {
+                            AlertFactory.success('创建失败!');
+                        }
+                    });
+                    CommonUtils.loading(promise, "创建中...")
+                }
+
+            });
+        };
+
         $scope.check = function (bean) {
             bean.$valid = false;
             var flag = true;

@@ -139,14 +139,10 @@ public class RoomCtrl extends BaseController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/query", params = "unitId", method = RequestMethod.POST)
-    public void query(String unitId, HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public void query(HttpServletRequest request, HttpServletResponse response) {
         RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);
-        if (bo == null) {
-            bo = new RoomBo();
-        }
-        bo.setUnitId(unitId);
-        List<RoomView> data = roomService.query(bo);
+        PageVo data = roomService.pageQuery(bo);
         GsonUtils.printData(response, data);
     }
 

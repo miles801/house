@@ -35,7 +35,7 @@
                 </span>
                 <span class="header-button">
                         <a type="button" class="btn btn-green btn-min"
-                           ng-disabled="!(condition.blockId && condition.unitId)"
+                           ng-disabled="!(condition.blockId && condition.unitCode)"
                            ng-click="query();" ng-cloak>
                                 查询
                         </a>
@@ -56,8 +56,8 @@
                             <div class="form-label col-1-half">
                                 <label>单元:</label>
                             </div>
-                            <select ng-model="condition.unitId" class="col-2-half"
-                                    ng-options="o.id as o.code for o in units"
+                            <select ng-model="condition.unitCode" class="col-2-half"
+                                    ng-options="o.code as o.name for o in units"
                                     ng-change="unitChange();"></select>
                             <div class="form-label col-1-half">
                                 <label>楼层:</label>
@@ -90,9 +90,11 @@
                             <table class="table table-striped table-hover">
                                 <thead class="table-header">
                                 <tr>
+                                    <td style="width: 40px;">序号</td>
                                     <td>楼栋</td>
                                     <td>单元</td>
                                     <td>楼层</td>
+                                    <td>房屋编号</td>
                                     <td>门牌号</td>
                                     <td>面积</td>
                                     <td>户型(室-厅-厨-卫)</td>
@@ -102,20 +104,22 @@
                                 </thead>
                                 <tbody class="table-body">
                                 <c:if test="${param.pageType ne 'detail'}">
-                                    <tr ng-show="!beans.length">
-                                        <td colspan="8" class="text-center">
+                                    <tr ng-show="!beans.total">
+                                        <td colspan="10" class="text-center">
                                             <a class="btn-op blue"
-                                               ng-click="!(condition.blockId && condition.unitId) || add();"
-                                               ng-disabled="!(condition.blockId && condition.unitId)" ng-cloak>新建</a>
+                                               ng-click="!(condition.blockId && condition.unitCode) || add();"
+                                               ng-disabled="!(condition.blockId && condition.unitCode)" ng-cloak>新建</a>
                                         </td>
                                     </tr>
-                                    <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                    <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                        <td bo-text="pager.start+$index+1"></td>
                                         <td bo-text="foo.blockCode"></td>
                                         <td bo-text="foo.unitCode"></td>
                                         <td>
                                             <input type="text" ng-model="foo.floor" validate validate-required
                                                    validate-int ng-change="check(foo);"/>
                                         </td>
+                                        <td bo-text="foo.roomKey"></td>
                                         <td>
                                             <input type="text" name="code" ng-model="foo.code" validate
                                                    validate-required ng-change="check(foo);"/>
@@ -156,10 +160,10 @@
                                     </tr>
                                 </c:if>
                                 <c:if test="${param.pageType eq 'detail'}">
-                                    <tr ng-show="!beans.length">
+                                    <tr ng-show="!beans.total">
                                         <td colspan="8" class="text-center">无房屋信息</td>
                                     </tr>
-                                    <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                    <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                         <td bo-text="foo.blockCode"></td>
                                         <td bo-text="foo.unitCode"></td>
                                         <td bo-text="foo.floor"></td>
@@ -172,6 +176,7 @@
                                 </c:if>
                                 </tbody>
                             </table>
+                            <div class="list-pagination" eccrm-page="pager"></div>
                         </form>
                     </div>
                 </div>

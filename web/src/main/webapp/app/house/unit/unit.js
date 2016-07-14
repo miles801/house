@@ -21,6 +21,9 @@
             // 根据id查询信息
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},
 
+            // 生成房屋信息
+            generate: {method: 'POST', params: {method: 'generate', blockId: '@blockId'}, isArray: false},
+
             // 分页查询
             pageQuery: {
                 method: 'POST',

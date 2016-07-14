@@ -38,4 +38,12 @@ public interface UnitService {
     void deleteByIds(String[] ids);
 
     List<Unit> query(UnitBo bo);
+
+    /**
+     * 根据楼栋自动创建房屋信息
+     *
+     * @param blockId 楼栋ID
+     * @return 创建的总房屋数量
+     */
+    Integer generate(String blockId);
 }

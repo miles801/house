@@ -71,6 +71,10 @@ public class Building extends CommonDomain {
     @Column
     private Integer buildingCounts;
 
+    // 实际楼栋总数
+    @Column
+    private Integer realCounts;
+
     // 总户数
     @Column
     private Integer houseCounts;
@@ -124,6 +128,14 @@ public class Building extends CommonDomain {
     // 状态：未启用、启用、注销
     @Column(length = 40)
     private String status;
+
+    public Integer getRealCounts() {
+        return realCounts;
+    }
+
+    public void setRealCounts(Integer realCounts) {
+        this.realCounts = realCounts;
+    }
 
     public String getStatus() {
         return status;

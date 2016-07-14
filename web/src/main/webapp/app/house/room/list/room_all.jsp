@@ -154,12 +154,15 @@
                     <span class="glyphicons list"></span>
                     <span>房间管理</span>
                 </div>
-                <c:if test='${sessionScope.get("ROOM_DATA_EXPORT") eq true}'>
-                    <a type="button" class="btn btn-green btn-min" ng-click="exportData();" ng-disabled="!beans.total">
-                        <span class="glyphicons search"></span>
-                        导出数据
-                    </a>
-                </c:if>
+                <div class="header-button">
+                    <c:if test='${sessionScope.get("ROOM_DATA_EXPORT") eq true}'>
+                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
+                           ng-disabled="!beans.total">
+                            <span class="glyphicons search"></span>
+                            导出数据
+                        </a>
+                    </c:if>
+                </div>
             </div>
             <div class="block-content">
                 <div class="content-wrap">

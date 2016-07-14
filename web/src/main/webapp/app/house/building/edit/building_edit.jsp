@@ -148,16 +148,20 @@
                                validate-required ng-disabled="beans.status && beans.status!=='INACTIVE'"
                                placeholder="正整数"/>
                         <div class="form-label col-1-half">
+                            <label>录入楼栋数:</label>
+                        </div>
+                        <input class="col-2-half" type="number" ng-model="beans.realCounts" ng-disabled="true"/>
+                        <div class="form-label col-1-half">
                             <label>总户数:</label>
                         </div>
                         <input class="col-2-half" type="number" ng-model="beans.houseCounts" validate validate-int
                                placeholder="正整数"/>
+                    </div>
+                    <div class="row">
                         <div class="form-label col-1-half">
                             <label>车位数:</label>
                         </div>
                         <input class="col-2-half" type="number" ng-model="beans.carCounts" validate validate-int/>
-                    </div>
-                    <div class="row">
                         <div class="form-label col-1-half">
                             <label>地铁距离:</label>
                         </div>
@@ -167,13 +171,13 @@
                             <label>学区:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.school"/>
+                    </div>
+                    <div class="row">
                         <div class="form-label col-1-half">
                             <label>过户指导价格:</label>
                         </div>
                         <input class="col-2-half" type="number" ng-model="beans.price" validate validate-float
                                placeholder="元/m2"/>
-                    </div>
-                    <div class="row">
                         <div class="form-label col-1-half">
                             <label>容积率:</label>
                         </div>
@@ -183,16 +187,18 @@
                             <label>绿化率(%):</label>
                         </div>
                         <input class="col-2-half" type="number" ng-model="beans.greenPercent" validate validate-float/>
-                        <div class="form-label col-1-half">
-                            <label>状态:</label>
-                        </div>
-                        <input class="col-2-half" type="text" ng-model="beans.statusName" ng-disabled="true"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
                             <label>备注:</label>
                         </div>
                         <textarea class="col-10-half" rows="6" ng-model="beans.description"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="form-label col-1-half">
+                            <label>状态:</label>
+                        </div>
+                        <input class="col-2-half" type="text" ng-model="beans.statusName" ng-disabled="true"/>
                     </div>
                 </form>
             </div>

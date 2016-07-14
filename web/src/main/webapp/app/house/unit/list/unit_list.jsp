@@ -64,6 +64,12 @@
                     <span class="glyphicons list"></span>
                     <span ng-cloak>单元管理</span>
                 </div>
+                <div class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="generateRoom();"
+                       ng-disabled="!condition.blockId">
+                        一键生成房屋信息
+                    </a>
+                </div>
             </div>
             <div class="block-content">
                 <div class="content-wrap">
@@ -91,7 +97,7 @@
                                     <tr ng-repeat="foo in beans" ng-cloak>
                                         <td title="点击查询明细！" style="cursor: pointer;">
                                             <input type="text" name="code" ng-model="foo.code" validate
-                                                   validate-required ng-change="check(foo);" ng-disabled="foo.id"/>
+                                                   validate-required ng-change="check(foo);"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.doorCode" validate validate-required
@@ -110,7 +116,7 @@
                                                     ng-options="o.value as o.name for o in orients"
                                                     ng-change="check(foo);"></select>
                                         </td>
-                                        <td>
+                                        <td class="text-left">
                                             <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="save(foo);"
                                                ng-if="!foo.id">保存</a>
                                             <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"

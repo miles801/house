@@ -3,8 +3,10 @@ package com.michael.spec.service.impl;
 import com.michael.spec.bo.BlockBo;
 import com.michael.spec.bo.UnitBo;
 import com.michael.spec.dao.BlockDao;
+import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.UnitDao;
 import com.michael.spec.domain.Block;
+import com.michael.spec.domain.Building;
 import com.michael.spec.domain.Unit;
 import com.michael.spec.service.BlockService;
 import com.michael.spec.service.UnitService;
@@ -14,6 +16,7 @@ import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
+import com.ycrl.utils.number.IntegerUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -26,6 +29,9 @@ import java.util.List;
 @Service("blockService")
 public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, BlockVo> {
     @Resource
+    private BuildingDao buildingDao;
+
+    @Resource
     private BlockDao blockDao;
 
     @Resource
@@ -34,6 +40,12 @@ public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, B
     @Override
     public String save(Block block) {
         ValidatorUtils.validate(block);
+        // 更新楼盘的实际楼栋数量
+        String buildingId = block.getBuildingId();
+        Building building = buildingDao.findById(buildingId);
+        building.setRealCounts(IntegerUtils.add(building.getRealCounts(), 1));
+
+        // 保存
         String id = blockDao.save(block);
         return id;
     }
@@ -120,7 +132,17 @@ public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, B
             bo.setBlockId(id);
             Long total = unitDao.getTotal(bo);
             Assert.isTrue(total == null || total == 0, "删除失败!该楼栋下已经存在单元信息，无法删除!");
-            blockDao.deleteById(id);
+            Block block = blockDao.findById(id);
+            if (block == null) {
+                continue;
+            }
+            blockDao.delete(block);
+
+            // 更新楼盘的实际楼栋数量
+            Building building = buildingDao.findById(block.getBuildingId());
+            Assert.notNull(building, "数据异常!楼栋关联的楼盘不存在!");
+            building.setRealCounts(IntegerUtils.add(building.getRealCounts(), -1));
+
         }
     }
 

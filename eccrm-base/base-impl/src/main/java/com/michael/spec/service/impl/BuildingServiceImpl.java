@@ -10,11 +10,13 @@ import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.RoomDao;
 import com.michael.spec.domain.Block;
 import com.michael.spec.domain.Building;
+import com.michael.spec.service.BlockService;
 import com.michael.spec.service.BuildingService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.vo.BuildingVo;
 import com.ycrl.base.common.CommonStatus;
 import com.ycrl.base.common.CommonSysParam;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -76,11 +78,12 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
         // 自动创建楼栋
         Integer counts = building.getBuildingCounts();
         if (counts != null && counts > 0) {
+            BlockService blockService = SystemContainer.getInstance().getBean(BlockService.class);
             for (int i = 0; i < counts; i++) {
                 Block block = new Block();
                 block.setBuildingId(id);
                 block.setCode((i + 1) + "");
-                blockDao.save(block);
+                blockService.save(block);
             }
         }
         return id;

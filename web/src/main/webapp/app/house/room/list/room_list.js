@@ -38,13 +38,24 @@
             });
             CommonUtils.loading(promise);
         };
-        $scope.units = [{code: '请选择'}];
+        $scope.units = [{code: '', name: '请选择'}];
         // 获取单元列表
         $scope.loadUnit = function () {
             var promise = UnitService.query({blockId: $scope.condition.blockId}, function (data) {
                 data = data.data || [];
-                data.unshift($scope.units[0]);
-                $scope.units = data;
+                // 查询出来的是单元的ID等信息，实际需要的是单元的编号
+                // 所以需要将单元编号进行去重处理
+                var code = {};
+                angular.forEach(data, function (o) {
+                    if (!code[o.code]) {
+                        code[o.code] = true;
+                        $scope.units.push({
+                            name: o.code,
+                            code: o.code
+                        });
+                    }
+                });
+                code = null;
             });
             CommonUtils.loading(promise);
         };
@@ -59,6 +70,8 @@
         };
 
         $scope.blockChange = function () {
+            $scope.units.length = 1;
+            $scope.condition.unitCode = '';
             $scope.loadUnit();
             // 获取当前的楼栋编号
             var blockId = $scope.condition.blockId;
@@ -73,20 +86,27 @@
         $scope.unit = {};
         $scope.unitChange = function () {
             $scope.query();
-            var promise = UnitService.get({id: $scope.condition.unitId}, function (data) {
-                $scope.unit = data.data || {};
-            });
-            CommonUtils.loading(promise);
         };
 
+        $scope.pager = {
+            limit: 10,
+            fetch: function () {
+                var param = angular.extend({}, {start: this.start, limit: this.limit}, $scope.condition);
+                $scope.beans = [];
+                return CommonUtils.promise(function (defer) {
+                    var promise = RoomService.pageQuery(param, function (data) {
+                        param = null;
+                        $scope.beans = data.data || {total: 0};
+                        defer.resolve($scope.beans);
+                    });
+                    CommonUtils.loading(promise, 'Loading...');
+                });
+            }
+        };
 
         //查询数据
         $scope.query = function () {
-            var promise = RoomService.query($scope.condition, function (data) {
-                $scope.beans = data.data || [];
-            });
-
-            CommonUtils.loading(promise);
+            $scope.pager.query();
         };
 
 
