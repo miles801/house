@@ -57,7 +57,6 @@
         });
         // 保存
         $scope.save = function () {
-            $scope.beans.description = $scope.descs.join('@@@');
             var promise;
             if (isChange) {
                 var o = {
@@ -134,7 +133,6 @@
 
         // 更新
         $scope.update = function () {
-            $scope.beans.description = $scope.descs.join('@@@');
             $scope.beans.roomId = roomId || '';
             var promise = CustomerService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
@@ -161,7 +159,6 @@
         $scope.load = function (id) {
             var promise = CustomerService.get({id: id}, function (data) {
                 $scope.beans = data.data || {};
-
                 if (pageType == 'detail' || pageType == 'modify') {
                     $scope.loadNews();
                 }

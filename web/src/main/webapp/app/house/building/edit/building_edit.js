@@ -68,6 +68,7 @@
                 scope: $scope,
                 content: '暂存后，可以继续对该楼盘的数据进行编辑，不会产生楼栋信息，请确认!',
                 callback: function () {
+                    $scope.clear();
                     var promise = BuildingService.save($scope.beans, function (data) {
                         AlertFactory.success('保存成功!');
                         CommonUtils.addTab('update');
@@ -83,6 +84,7 @@
                 scope: $scope,
                 content: '提交后，楼盘的部分数据将无法进行编辑，会产生楼栋信息，请确认!',
                 callback: function () {
+                    $scope.clear();
                     var promise = BuildingService.commit($scope.beans, function (data) {
                         AlertFactory.success('提交成功!');
                         CommonUtils.addTab('update');
@@ -94,9 +96,29 @@
         };
 
 
+        $scope.clear = function () {
+            var beans = $scope.beans;
+            if (!beans.propertyPrice) {
+                beans.propertyPrice = null;
+            }
+            if (!beans.price) {
+                beans.price = null;
+            }
+            if (!beans.avgPrice) {
+                beans.avgPrice = null;
+            }
+            if (!beans.containPercent) {
+                beans.containPercent = null;
+            }
+            if (!beans.greenPercent) {
+                beans.greenPercent = null;
+            }
+
+        };
 
         // 更新
         $scope.update = function () {
+            $scope.clear();
             var promise = BuildingService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
                 $scope.form.$setValidity('committed', false);

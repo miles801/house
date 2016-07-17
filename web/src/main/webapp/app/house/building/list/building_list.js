@@ -83,7 +83,7 @@
         $scope.view = function (id) {
             $scope.closeTab();
             CommonUtils.addTab({
-                title: '房屋列表',
+                title: '楼盘明细',
                 onClose: $scope.closeTab,
                 url: '/house/building/detail?id=' + id
             });

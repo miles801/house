@@ -48,6 +48,18 @@ public class RoomBusiness extends CommonDomain {
     @Column
     private Double price;
 
+    @ApiField("描述")
+    @Column(length = 1000)
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getRoomId() {
         return roomId;
     }

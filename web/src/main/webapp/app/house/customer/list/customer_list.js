@@ -160,7 +160,6 @@
             var o = angular.extend({}, $scope.condition);
             o.start = null;
             o.limit = null;
-            o.statusIncludes = o.statusInclude.join(',');
             window.location.href = CommonUtils.contextPathURL('/house/customer/export?' + $.param(o));
         };
     });

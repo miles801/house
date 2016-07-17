@@ -54,7 +54,7 @@
                             <tbody class="table-body">
                             <c:if test="${param.pageType ne 'detail'}">
                                 <tr ng-show="!beans.length">
-                                    <td colspan="6" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a>
+                                    <td colspan="7" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="foo in beans" ng-cloak>
@@ -90,11 +90,13 @@
                             </c:if>
                             <c:if test="${param.pageType eq 'detail'}">
                                 <tr ng-show="!beans.length">
-                                    <td colspan="5" class="text-center">无楼栋信息!</td>
+                                    <td colspan="7" class="text-center">无楼栋信息!</td>
                                 </tr>
                                 <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                    <td bo-text="$index+1"></td>
                                     <td bo-text="foo.code"></td>
                                     <td bo-text="foo.unitCounts"></td>
+                                    <td bo-text="foo.realCounts"></td>
                                     <td bo-text="foo.physicalLevels"></td>
                                     <td bo-text="foo.levelsLevels"></td>
                                     <td></td>

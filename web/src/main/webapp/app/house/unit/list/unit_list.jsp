@@ -78,6 +78,7 @@
                             <table class="table table-striped table-hover">
                                 <thead class="table-header">
                                 <tr>
+                                    <td>序号</td>
                                     <td>单元号</td>
                                     <td>门牌号</td>
                                     <td>面积(m2)</td>
@@ -89,12 +90,13 @@
                                 <tbody class="table-body">
                                 <c:if test="${param.pageType ne 'detail'}">
                                     <tr ng-show="!beans.length">
-                                        <td colspan="6" class="text-center">
+                                        <td colspan="7" class="text-center">
                                             <a class="btn-op blue" ng-click="!condition.blockId || add();"
                                                ng-disabled="!condition.blockId" ng-cloak>新建</a>
                                         </td>
                                     </tr>
                                     <tr ng-repeat="foo in beans" ng-cloak>
+                                        <td>{{$index+1}}</td>
                                         <td title="点击查询明细！" style="cursor: pointer;">
                                             <input type="text" name="code" ng-model="foo.code" validate
                                                    validate-required ng-change="check(foo);"/>
@@ -128,9 +130,10 @@
                                 </c:if>
                                 <c:if test="${param.pageType eq 'detail'}">
                                     <tr ng-show="!beans.length">
-                                        <td colspan="6" class="text-center">无单元数据!</td>
+                                        <td colspan="7" class="text-center">无单元数据!</td>
                                     </tr>
                                     <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                        <td bo-text="$index+1"></td>
                                         <td bo-text="foo.code"></td>
                                         <td bo-text="foo.doorCode"></td>
                                         <td bo-text="foo.square"></td>

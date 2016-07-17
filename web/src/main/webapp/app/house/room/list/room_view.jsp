@@ -184,7 +184,7 @@
                                 <td>房屋现状</td>
                                 <td>业主姓名</td>
                                 <td>状态</td>
-                                <td>跟进录入</td>
+                                <td>跟进维护</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">

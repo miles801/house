@@ -22,6 +22,7 @@ import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.string.StringUtils;
@@ -183,14 +184,20 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         room.setCustomerId(customerId);
     }
 
-    private String compare(final Customer customer, final Customer originCus) {
-        final StringBuilder builder = new StringBuilder("变更客户信息：");
-        ReflectionUtils.doWithFields(Customer.class, new ReflectionUtils.FieldCallback() {
+    /**
+     * @param newO 新对象
+     * @param oriO 原始对象
+     * @param <T>  类型
+     * @return 不同的类容
+     */
+    private <T> String compare(final T newO, final T oriO) {
+        final StringBuilder builder = new StringBuilder("变更信息：");
+        ReflectionUtils.doWithFields(newO.getClass(), new ReflectionUtils.FieldCallback() {
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 field.setAccessible(true);
-                Object newValue = field.get(customer);
-                Object oldValue = field.get(originCus);
+                Object newValue = field.get(newO);
+                Object oldValue = field.get(oriO);
                 field.setAccessible(false);
                 if (newValue == oldValue) {
                     return;
@@ -221,7 +228,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         for (String id : ids) {
             Room room = roomDao.findRoomById(id);
             // 只有“未录入”可以申请为新增
-            if (room != null && Room.STATUS_INACTIVE.equals(room.getStatus())) {
+            if (room != null && StringUtils.include(room.getStatus(), Room.STATUS_INACTIVE, Room.STATUS_INVALID_ADD, Room.STATUS_INVALID)) {
                 room.setStatus(Room.STATUS_APPLY_ADD);
             }
         }
@@ -396,7 +403,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     Context context = RuntimeContext.get();
                     Room room = new Room();
                     BeanUtils.copyProperties(dto, room);
-
+                    if (BeanCopyUtils.isEmpty(room)) {
+                        return;
+                    }
                     // 设置楼盘
                     String buildingName = dto.getBuildingName();
                     Assert.hasText(buildingName, String.format("数据错误,楼盘/小区名称不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
@@ -512,7 +521,16 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                         } else {
                             String status = originRoom.getStatus();
                             // 无效数据，进行覆盖
-                            if (StringUtils.include(status, Room.STATUS_INVALID, Room.STATUS_INACTIVE, Room.STATUS_INACTIVE)) {
+                            if (StringUtils.include(status, Room.STATUS_INVALID, Room.STATUS_INACTIVE, Room.STATUS_INACTIVE, Room.STATUS_INVALID_ADD)) {
+
+                                // 保存日志
+                                RoomNews news = new RoomNews();
+                                String content = compare(room, originRoom);
+                                news.setContent(content);
+                                news.setRoomId(originRoom.getId());
+                                news.setEmpId(SecurityContext.getEmpId());
+                                news.setEmpName(SecurityContext.getEmpName());
+                                SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
                                 // 覆盖信息
                                 roomId = originRoom.getId();
                                 originRoom.setOrient(room.getOrient());
@@ -523,6 +541,10 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                                 originRoom.setSquare(room.getSquare());
                                 originRoom.setHouseProperty(room.getHouseProperty());
                                 originRoom.setHouseUseType(room.getHouseUseType());
+                                // 如果客户ID并不一致，则使用新的
+                                if (!StringUtils.equals(originRoom.getCustomerId(), room.getCustomerId())) {
+                                    originRoom.setCustomerId(room.getCustomerId());
+                                }
                                 if (StringUtils.isEmpty(originRoom.getCustomerId()) && StringUtils.isNotEmpty(room.getCustomerId())) {
                                     beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
                                 }

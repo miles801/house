@@ -35,7 +35,7 @@
                 </span>
                 <span class="header-button">
                         <a type="button" class="btn btn-green btn-min"
-                           ng-disabled="!(condition.blockId && condition.unitCode)"
+                           ng-disabled="!(condition.blockId)"
                            ng-click="query();" ng-cloak>
                                 查询
                         </a>
@@ -63,7 +63,7 @@
                                 <label>楼层:</label>
                             </div>
                             <input type="text" ng-model="condition.floor" class="col-2-half" placeholder="请输入数字"
-                                   maxlength="3"/>
+                                   maxlength="3" validate validate-int/>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                                 </tr>
                                 </thead>
                                 <tbody class="table-body">
-                                <c:if test="${param.pageType ne 'detail'}">
+                                <c:if test="${param.pageType ne 'detail' || sessionScope.get('EDIT_ROOM') ne null}">
                                     <tr ng-show="!beans.total">
                                         <td colspan="10" class="text-center">
                                             <a class="btn-op blue"
@@ -159,14 +159,16 @@
                                         </td>
                                     </tr>
                                 </c:if>
-                                <c:if test="${param.pageType eq 'detail'}">
+                                <c:if test="${param.pageType eq 'detail' && sessionScope.get('EDIT_ROOM') eq null}">
                                     <tr ng-show="!beans.total">
-                                        <td colspan="8" class="text-center">无房屋信息</td>
+                                        <td colspan="10" class="text-center">无房屋信息</td>
                                     </tr>
                                     <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                        <td bo-text="$index+1"></td>
                                         <td bo-text="foo.blockCode"></td>
                                         <td bo-text="foo.unitCode"></td>
                                         <td bo-text="foo.floor"></td>
+                                        <td bo-text="foo.roomKey"></td>
                                         <td bo-text="foo.code"></td>
                                         <td bo-text="foo.square"></td>
                                         <td bo-text="foo.type1+'-'+foo.type2+'-'+foo.type3+'-'+foo.type4"></td>

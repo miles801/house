@@ -108,6 +108,15 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                 if (nameAnno == null) {
                     return;
                 }
+                if (newValue == null) {
+                    newValue = "";
+                }
+                if (oldValue == null) {
+                    oldValue = "";
+                }
+                if (newValue.equals(oldValue)) {
+                    return;
+                }
                 String name = nameAnno.value();
                 String template = "<span style=\"width:80px;text-align:right;padding-right:12px;\">%s</span>：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin-left:15px;\">%s</span><br/>";
                 builder.append(String.format(template, name, oldValue, newValue));
@@ -332,6 +341,9 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                     Context context = RuntimeContext.get();
                     Customer customer = new Customer();
                     BeanUtils.copyProperties(dto, customer);
+                    if (BeanCopyUtils.isEmpty(customer)) {
+                        return;
+                    }
                     // 设置参数
                     String sex = dto.getSex();
                     if (StringUtils.isNotEmpty(sex)) {

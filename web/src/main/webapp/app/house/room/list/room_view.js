@@ -73,7 +73,7 @@
         };
         $scope.addCustomer = function (id) {
             CommonUtils.addTab({
-                title: '客户录入',
+                title: '业主录入',
                 url: 'house/customer/add?roomId=' + id,
                 onUpdate: $scope.query
             });

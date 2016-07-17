@@ -27,11 +27,12 @@
                                     <td>卖方</td>
                                     <td>买方</td>
                                     <td>成交价格</td>
+                                    <td>描述</td>
                                 </tr>
                                 </thead>
                                 <tbody class="table-body">
                                 <tr ng-show="!beans.total">
-                                    <td colspan="6" class="text-center">没有查询到数据！</td>
+                                    <td colspan="7" class="text-center">没有查询到数据！</td>
                                 </tr>
                                 <tr bindonce ng-repeat="foo in beans.data">
                                     <td bo-text="$index+1"></td>
@@ -40,6 +41,7 @@
                                     <td bo-text="foo.originCustomerName"></td>
                                     <td bo-text="foo.newCustomerName"></td>
                                     <td bo-text="foo.price|number:2"></td>
+                                    <td style="white-space: normal;" bo-text="foo.description"></td>
                                 </tr>
                                 </tbody>
                             </table>

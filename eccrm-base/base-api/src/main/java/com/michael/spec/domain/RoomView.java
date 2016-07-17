@@ -128,6 +128,16 @@ public class RoomView {
     @Transient
     @ApiField("朝向名称")
     private String orientName;
+    @Column
+    private String modifierId;
+
+    public String getModifierId() {
+        return modifierId;
+    }
+
+    public void setModifierId(String modifierId) {
+        this.modifierId = modifierId;
+    }
 
     public Date getCreatedDatetime() {
         return createdDatetime;

@@ -76,7 +76,13 @@
                             </div>
                             <input ng-model="rb.price" class="col-2-half" type="text" validate validate-required
                                    validate-float
-                                   placeholder="单位是元"/>
+                                   placeholder="单位是万元"/>
+                        </div>
+                        <div class="row">
+                            <div class="form-label col-1-half">
+                                <label>描述:</label>
+                            </div>
+                            <textarea rows="4" ng-model="rb.description" maxlength="500" class="col-10-half"></textarea>
                         </div>
                         <div class="ycrl split" style="margin-top:15px;"></div>
                         <h3 class="text-center">新<c:out value="${name}"/>信息</h3>

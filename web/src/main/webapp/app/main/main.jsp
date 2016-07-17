@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>后台数据管理系统</title>
+    <title>楼盘经营管理系统</title>
     <link rel="stylesheet" href="<%=contextPath%>/vendor/bootstrap-v3.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="<%=contextPath%>/style/standard/css/eccrm-common-new.css"/>
     <link rel="stylesheet" href="<%=contextPath%>/app/main/css/main.css"/>
@@ -40,7 +40,7 @@
                     <img src="<%=contextPath%>/app/main/images/icon/h7.png" width="24" height="24" title="更改密码">
                 </a>
             </div>
-            <span style="font-size: 30px; position: absolute; left: 50px; color: #fff; top: 8px;">后台数据管理系统</span>
+            <span style="font-size: 30px; position: absolute; left: 50px; color: #fff; top: 8px;">楼盘经营管理系统</span>
         </div>
     </div>
     <div id="main">

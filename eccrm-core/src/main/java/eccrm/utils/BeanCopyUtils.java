@@ -1,5 +1,6 @@
 package eccrm.utils;
 
+import com.ycrl.utils.gson.GsonUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
@@ -49,6 +50,25 @@ public class BeanCopyUtils {
         copyProperties(source, target, properties);
     }
 
+
+    /**
+     * 判断一个对象是否为空，如果对象的属性也没有值，那么也视为空
+     *
+     * @return true：空对象
+     */
+    public static boolean isEmpty(Object object) {
+        if (object == null) {
+            return true;
+        }
+        if (object.toString().equals("")) {
+            return true;
+        }
+        String json = GsonUtils.toJson(object);
+        if ("{}".equals(json) || "[]".equals(json) || json.matches("\\{(\\w+:(null|\"\"))+\\}")) {
+            return true;
+        }
+        return false;
+    }
 
     public static void copyProperties(
             final Object source,

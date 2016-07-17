@@ -247,7 +247,7 @@
                                     <tr bindonce ng-repeat="foo in news.data" ng-cloak>
                                         <td bo-text="foo.empName"></td>
                                         <td bo-text="foo.phone"></td>
-                                        <td style="text-align: left;" bo-html="foo.content"></td>
+                                        <td style="text-align: left;white-space: normal" bo-html="foo.content"></td>
                                         <td bo-text="foo.createdDatetime|eccrmDatetime"></td>
                                     </tr>
                                     </tbody>

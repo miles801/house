@@ -28,6 +28,9 @@ public class OrderNode {
     }
 
     public Order next() {
-        return iterator.next();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        }
+        return null;
     }
 }

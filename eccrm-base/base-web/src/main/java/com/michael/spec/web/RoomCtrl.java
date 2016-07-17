@@ -199,7 +199,6 @@ public class RoomCtrl extends BaseController {
     // 导出数据
     @RequestMapping(value = "/export", method = RequestMethod.GET)
     public String export(HttpServletRequest request, HttpServletResponse response) {
-        String param = request.getParameter("param");
         Gson gson = new GsonBuilder().registerTypeAdapter(Date.class, new DateStringConverter("yyyy-MM-dd HH:mm:ss"))
                 .create();
         RoomBo bo = GsonUtils.wrapDataToEntity(request, RoomBo.class);

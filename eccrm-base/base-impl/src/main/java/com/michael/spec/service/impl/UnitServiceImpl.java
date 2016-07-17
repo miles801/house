@@ -59,9 +59,11 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
         total = unitDao.getTotal(bo);
         if (total == null || total == 0) {
             Integer counts = block.getUnitCounts();
-            Integer realCounts = block.getRealCounts();
-            Assert.isTrue(IntegerUtils.add(realCounts, 1) <= IntegerUtils.add(counts, 0), "保存失败!该单元所关联的楼栋下已经具有足够的单元!请核对数据后再行尝试!");
-            block.setRealCounts(IntegerUtils.add(realCounts, 1));   // 更新楼栋的实际单元数量
+            if (counts != null && counts > 0) {
+                Integer realCounts = block.getRealCounts();
+                Assert.isTrue(IntegerUtils.add(realCounts, 1) <= IntegerUtils.add(counts, 0), "保存失败!该单元所关联的楼栋下已经具有足够的单元!请核对数据后再行尝试!");
+                block.setRealCounts(IntegerUtils.add(realCounts, 1));   // 更新楼栋的实际单元数量
+            }
         }
         // 保存
         String id = unitDao.save(unit);

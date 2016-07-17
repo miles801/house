@@ -5,6 +5,7 @@ import com.ycrl.base.common.CommonDomain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -37,7 +38,7 @@ public class CustomerNews extends CommonDomain {
     @Column(length = 40)
     private String type;
     @ApiField("内容")
-    @Column(length = 1000)
+    @Lob
     private String content;
 
     public String getCustomerId() {

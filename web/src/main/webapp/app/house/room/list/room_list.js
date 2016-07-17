@@ -12,7 +12,7 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, UnitParam, UnitService, BlockService, RoomService) {
         $scope.beans = [];
-        $scope.condition = {};
+        $scope.condition = {unitCode: ''};
         var buildingId = $('#buildingId').val();
         if (!buildingId) {
             AlertFactory.error('错误的访问方式!没有获得楼盘ID!');
@@ -49,10 +49,8 @@
                 angular.forEach(data, function (o) {
                     if (!code[o.code]) {
                         code[o.code] = true;
-                        $scope.units.push({
-                            name: o.code,
-                            code: o.code
-                        });
+                        o.name = o.code;
+                        $scope.units.push(o);
                     }
                 });
                 code = null;
@@ -72,6 +70,8 @@
         $scope.blockChange = function () {
             $scope.units.length = 1;
             $scope.condition.unitCode = '';
+            $scope.unit = null;
+            $scope.query();
             $scope.loadUnit();
             // 获取当前的楼栋编号
             var blockId = $scope.condition.blockId;
@@ -86,12 +86,23 @@
         $scope.unit = {};
         $scope.unitChange = function () {
             $scope.query();
+            // 获取当前的单元ID
+            for (var i = 0; i < $scope.units.length; i++) {
+                if ($scope.units[i].code == $scope.condition.unitCode) {
+                    $scope.unit = $scope.units[i];
+                    return;
+                }
+            }
         };
 
         $scope.pager = {
             limit: 10,
             fetch: function () {
                 var param = angular.extend({}, {start: this.start, limit: this.limit}, $scope.condition);
+                if (param.floor && !(/^\d+$/g.test(param.floor))) {
+                    AlertFactory.error('楼层只能是正整数!');
+                    return;
+                }
                 $scope.beans = [];
                 return CommonUtils.promise(function (defer) {
                     var promise = RoomService.pageQuery(param, function (data) {
@@ -146,12 +157,18 @@
                     newItem.type3 = types[2] || 0;
                     newItem.type4 = types[3] || 0;
                 }
-                $scope.beans.push(newItem);
+                $scope.beans = $scope.beans || {};
+                $scope.beans.data = $scope.beans.data || [];
+                $scope.beans.data.push(newItem);
+                $scope.beans.total = ($scope.beans.total || 0) + 1;
             } else {
                 var o = angular.extend({}, bean);
                 o.code = null;
                 o.id = null;
-                $scope.beans.push(o);
+                $scope.beans = $scope.beans || {};
+                $scope.beans.data = $scope.beans.data || [];
+                $scope.beans.data.push(o);
+                $scope.beans.total = ($scope.beans.total || 0) + 1;
             }
         };
 
