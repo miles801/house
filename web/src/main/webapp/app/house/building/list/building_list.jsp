@@ -80,12 +80,16 @@
                     <span>楼盘管理</span>
                 </div>
                 <span class="header-button">
+                    <c:if test="${sessionScope.get('OP_BUILDING_ADD') eq true}">
                         <a type="button" class="btn btn-green btn-min" ng-click="add();">
                             <span class="glyphicons plus"></span> 新建
                         </a>
-                        <a type="button" class="btn btn-green btn-min" ng-click="remove();">
-                            <span class="glyphicons plus"></span> 删除
-                        </a>
+                    </c:if>
+                    <c:if test="${sessionScope.get('OP_BUILDING_DELETE') eq true}">
+                            <a type="button" class="btn btn-green btn-min" ng-click="remove();">
+                                <span class="glyphicons plus"></span> 删除
+                            </a>
+                    </c:if>
                 </span>
             </div>
             <div class="block-content">
