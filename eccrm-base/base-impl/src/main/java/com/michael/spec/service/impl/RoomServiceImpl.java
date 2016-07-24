@@ -66,10 +66,10 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Override
     public String save(Room room) {
-        // 生成房屋编号
         if (StringUtils.isEmpty(room.getStatus())) {
             room.setStatus(Room.STATUS_INACTIVE);
         }
+        // 生成房屋编号
         String key = room.getRoomKey();
         if (StringUtils.isEmpty(key)) {
             key = roomDao.maxKey(room.getBuildingId());
@@ -78,10 +78,17 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             String buildingId = room.getBuildingId();
             Building building = buildingDao.findById(buildingId);
             Assert.notNull(building, "操作失败!楼盘不存在!");
-            String name = building.getName();
+            String code = building.getCode();
+            // 默认按照楼盘的编号来对房屋进行编号
+            // 如果楼盘的编号为空，则使用楼盘的名称的首写字母
             String keyCode = "";
-            for (char c : name.toCharArray()) {
-                keyCode += new SimplePinYin().toPinYin(c + "", new StandardStrategy()).substring(0, 1);
+            if (StringUtils.isNotEmpty(code)) {
+                keyCode = code;
+            } else {
+                String name = building.getName();
+                for (char c : name.toCharArray()) {
+                    keyCode += new SimplePinYin().toPinYin(c + "", new StandardStrategy()).substring(0, 1);
+                }
             }
             room.setRoomKey(keyCode.toUpperCase() + "-000001");
         } else {

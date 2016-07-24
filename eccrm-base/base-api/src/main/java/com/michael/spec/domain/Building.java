@@ -18,6 +18,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "spec_building")
 public class Building extends CommonDomain {
 
+    // 编号,用于在生成房屋时使用
+    @Column(length = 40, unique = true)
+    private String code;
     // 城市
     @Column(length = 40)
     private String city;
@@ -30,7 +33,7 @@ public class Building extends CommonDomain {
     private String areaName;
     // 楼盘名称
     @NotNull(message = "楼盘名称不能为空!")
-    @Column(length = 40, nullable = false)
+    @Column(length = 40, nullable = false, unique = true)
     private String name;
     // 楼盘地址
     @Column(length = 100)
@@ -128,6 +131,14 @@ public class Building extends CommonDomain {
     // 状态：未启用、启用、注销
     @Column(length = 40)
     private String status;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public Integer getRealCounts() {
         return realCounts;

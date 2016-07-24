@@ -69,14 +69,23 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
 
         // 设置状态
         customer.setStatus(Room.STATUS_APPLY_ADD);
-        ValidatorUtils.validate(customer);
+
+        validate(customer);
+
         String id = customerDao.save(customer);
         return id;
     }
 
+    private void validate(Customer customer) {
+        ValidatorUtils.validate(customer);
+        // 验证名称是否重复
+        boolean exists = customerDao.hasPhone(customer.getPhone1(), customer.getId());
+        Assert.isTrue(!exists, "操作失败!电话号码[" + customer.getPhone1() + "]已经被其他客户注册使用!");
+    }
+
     @Override
     public void update(Customer customer) {
-        ValidatorUtils.validate(customer);
+        validate(customer);
 
         Customer originCus = customerDao.findById(customer.getId());
         Assert.notNull(originCus, "更新失败!客户已经不存在!请刷新后重试!");

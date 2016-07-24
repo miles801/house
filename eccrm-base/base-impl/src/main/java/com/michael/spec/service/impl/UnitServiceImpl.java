@@ -1,5 +1,6 @@
 package com.michael.spec.service.impl;
 
+import com.michael.spec.bo.RoomBo;
 import com.michael.spec.bo.UnitBo;
 import com.michael.spec.dao.BlockDao;
 import com.michael.spec.dao.RoomDao;
@@ -17,6 +18,7 @@ import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.number.IntegerUtils;
+import com.ycrl.utils.string.StringUtils;
 import eccrm.base.parameter.service.ParameterContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -126,15 +128,34 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
         RoomService roomService = SystemContainer.getInstance().getBean(RoomService.class);
         int total = 0;
         String roomKey = null;
-        for (Unit unit : units) {
-            for (int i = 1; i < levels + 1; i++) {
+        for (int i = 1; i < levels + 1; i++) {
+            for (Unit unit : units) {
+                // 如果门牌号为空，则跳过！
+                String doorCode = unit.getDoorCode();
+                if (StringUtils.isEmpty(doorCode)) {
+                    continue;
+                }
+                // 查找已经生成的房屋,如果找到则跳过
+                RoomBo rb = new RoomBo();
+                rb.setUnitId(unit.getId());
+                rb.setFloor(i);
+                Long t = roomDao.getTotal(rb);
+                if (t != null && t > 0) {
+                    continue;
+                }
+                // 如果没有找到类似的，则执行保存操作
                 Room room = new Room();
                 room.setStatus(Room.STATUS_INACTIVE);
                 room.setRoomKey(roomKey);
                 room.setBlockId(blockId);
                 room.setBuildingId(block.getBuildingId());
                 room.setFloor(i);           // 楼层
-                room.setCode(i + "0" + unit.getDoorCode()); // 门牌号
+                // 门牌号
+                if (doorCode.matches("[A-Za-z]+")) {    // 只有字母的情况
+                    room.setCode(i + doorCode);
+                } else {
+                    room.setCode(i + "0" + doorCode);
+                }
                 room.setSquare(unit.getSquare());           // 默认面积
                 room.setOrient(unit.getOrient());           // 默认朝向
                 room.setUnitId(unit.getId());               // 单元信息

@@ -26,6 +26,9 @@
 <div class="main condition-row-1" ng-app="house.room.list" ng-controller="Ctrl">
     <div class="dn">
         <input type="hidden" id="buildingId" value="${param.id}"/>
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+            <input type="hidden" id="isManager" value="true"/>
+        </c:if>
     </div>
     <div class="list-condition">
         <div class="block">
@@ -56,8 +59,8 @@
                             <div class="form-label col-1-half">
                                 <label>单元:</label>
                             </div>
-                            <select ng-model="condition.unitCode" class="col-2-half"
-                                    ng-options="o.code as o.name for o in units"
+                            <select ng-model="condition.unitId" class="col-2-half"
+                                    ng-options="o.id as o.name for o in units"
                                     ng-change="unitChange();"></select>
                             <div class="form-label col-1-half">
                                 <label>楼层:</label>
@@ -78,9 +81,17 @@
                     <span>房间管理</span>
                 </div>
                 <div class="header-button">
-                    <a type="button" class="btn btn-green btn-min" ng-click="importData();">
-                        批量导入
-                    </a>
+                    <c:if test="${sessionScope.get('OP_ROOM_IMPORT') eq true}">
+                        <a type="button" class="btn btn-green btn-min" ng-click="importData();">
+                            批量导入
+                        </a>
+                    </c:if>
+                    <c:if test="${sessionScope.get('OP_ROOM_BATCH_DELETE') eq true}">
+                        <a type="button" class="btn btn-green btn-min" ng-click="remove();" ng-cloak
+                           ng-disabled="!anyone">
+                            删除
+                        </a>
+                    </c:if>
                 </div>
             </div>
             <div class="block-content">
@@ -90,6 +101,10 @@
                             <table class="table table-striped table-hover">
                                 <thead class="table-header">
                                 <tr>
+                                    <td class="width-min">
+                                        <div select-all-checkbox checkboxes="beans.data" selected-items="items"
+                                             anyone-selected="anyone"></div>
+                                    </td>
                                     <td style="width: 40px;">序号</td>
                                     <td>楼栋</td>
                                     <td>单元</td>
@@ -105,13 +120,14 @@
                                 <tbody class="table-body">
                                 <c:if test="${param.pageType ne 'detail' || sessionScope.get('EDIT_ROOM') ne null}">
                                     <tr ng-show="!beans.total">
-                                        <td colspan="10" class="text-center">
+                                        <td colspan="11" class="text-center">
                                             <a class="btn-op blue"
                                                ng-click="!(condition.blockId && condition.unitCode) || add();"
                                                ng-disabled="!(condition.blockId && condition.unitCode)" ng-cloak>新建</a>
                                         </td>
                                     </tr>
                                     <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                        <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                         <td bo-text="pager.start+$index+1"></td>
                                         <td bo-text="foo.blockCode"></td>
                                         <td bo-text="foo.unitCode"></td>
@@ -161,9 +177,10 @@
                                 </c:if>
                                 <c:if test="${param.pageType eq 'detail' && sessionScope.get('EDIT_ROOM') eq null}">
                                     <tr ng-show="!beans.total">
-                                        <td colspan="10" class="text-center">无房屋信息</td>
+                                        <td colspan="11" class="text-center">无房屋信息</td>
                                     </tr>
                                     <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
+                                        <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                         <td bo-text="$index+1"></td>
                                         <td bo-text="foo.blockCode"></td>
                                         <td bo-text="foo.unitCode"></td>
@@ -178,13 +195,13 @@
                                 </c:if>
                                 </tbody>
                             </table>
-                            <div class="list-pagination" eccrm-page="pager"></div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="list-pagination" eccrm-page="pager"></div>
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>

@@ -14,6 +14,7 @@
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-all.js"></script>
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-strap-all.js"></script>
     <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-ztree-all.js"></script>
+    <script type="text/javascript" src="<%=contextPath%>/app/base/region/region.js"></script>
     <script>
         window.angular.contextPathURL = '<%=contextPath%>';
     </script>
@@ -46,6 +47,17 @@
                                 <label>楼盘名称:</label>
                             </div>
                             <input class="w120" type="text" ng-model="condition.name"/>
+                        </div>
+                        <div class="item w300">
+                            <div class="form-label w80">
+                                <label>城市/区域:</label>
+                            </div>
+                            <div class="w200" style="position: relative;">
+                                <input class="col-12" type="text" ng-model="city" readonly ztree-single="regionTree"
+                                       placeholder="点击选择城市/区县"/>
+                                <span class="add-on" style="top:3px;right: 22px;cursor:pointer;" title="清除"><i
+                                        class="icons fork" ng-click="clearRegion();"></i></span>
+                            </div>
                         </div>
                         <div class="item w200">
                             <div class="form-label w80">
@@ -86,7 +98,8 @@
                         </a>
                     </c:if>
                     <c:if test="${sessionScope.get('OP_BUILDING_DELETE') eq true}">
-                            <a type="button" class="btn btn-green btn-min" ng-click="remove();">
+                            <a type="button" class="btn btn-green btn-min" ng-click="remove();" ng-disabled="!anyone"
+                               ng-cloak>
                                 <span class="glyphicons plus"></span> 删除
                             </a>
                     </c:if>
@@ -103,6 +116,7 @@
                                          anyone-selected="anyone"></div>
                                 </td>
                                 <td>楼盘名称</td>
+                                <td>编号</td>
                                 <td>城市</td>
                                 <td>均价(元/m2)</td>
                                 <td>建筑类型</td>
@@ -117,13 +131,14 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="12" class="text-center">没有查询到数据！</td>
+                                <td colspan="13" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td title="点击查询明细！" style="cursor: pointer;">
                                     <a ng-click="view(foo.id)" bo-text="foo.name"></a>
                                 </td>
+                                <td bo-text="foo.code"></td>
                                 <td bo-text="foo.cityName+' - '+foo.areaName"></td>
                                 <td bo-text="foo.avgPrice"></td>
                                 <td bo-text="foo.typeName"></td>

@@ -89,6 +89,18 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
     }
 
     @Override
+    public boolean hasCode(String code, String id) {
+        Assert.hasText(code, "查询失败!楼盘编号不能为空!");
+        Criteria criteria = createRowCountsCriteria(Building.class)
+                .add(Restrictions.eq("code", code));
+        if (StringUtils.isNotEmpty(id)) {
+            criteria.add(Restrictions.ne("id", id));
+        }
+        Long total = (Long) criteria.uniqueResult();
+        return total != null && total > 0;
+    }
+
+    @Override
     public Building findById(String id) {
         Assert.hasText(id, "ID不能为空!");
         return (Building) getSession().get(Building.class, id);

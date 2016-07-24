@@ -21,6 +21,11 @@ public interface RoomDao {
     List<RoomView> query(RoomBo bo);
 
     /**
+     * 查询房屋担心
+     */
+    List<Room> queryRoom(RoomBo bo);
+
+    /**
      * 查询总记录数
      */
     Long getTotal(RoomBo bo);

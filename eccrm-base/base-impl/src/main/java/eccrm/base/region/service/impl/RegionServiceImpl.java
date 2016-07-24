@@ -75,7 +75,7 @@ public class RegionServiceImpl implements RegionService, BeanWrapCallback<Region
         //查询数据
         List<Region> regions = regionDao.query(bo);
         return BeanWrapBuilder.newInstance()
-                .setCallback(this)
+//                .setCallback(this)
                 .wrapList(regions, RegionVo.class);
     }
 

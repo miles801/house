@@ -48,6 +48,14 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<Room> queryRoom(RoomBo bo) {
+        Criteria criteria = createCriteria(Room.class);
+        initCriteria(criteria, bo);
+        return criteria.list();
+    }
+
+    @Override
     public Long getTotal(RoomBo bo) {
         Criteria criteria = createRowCountsCriteria(RoomView.class);
         initCriteria(criteria, bo);

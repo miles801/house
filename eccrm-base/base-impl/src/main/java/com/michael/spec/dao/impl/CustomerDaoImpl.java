@@ -92,6 +92,18 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
                 .executeUpdate();
     }
 
+    @Override
+    public boolean hasPhone(String phone1, String id) {
+        Assert.hasText(phone1, "查询失败!电话号码不能为空!");
+        Criteria criteria = createRowCountsCriteria(Customer.class)
+                .add(Restrictions.eq("phone1", phone1));
+        if (StringUtils.isNotEmpty(id)) {
+            criteria.add(Restrictions.ne("id", id));
+        }
+        Long total = (Long) criteria.uniqueResult();
+        return total != null && total > 0;
+    }
+
     private void initCriteria(Criteria criteria, CustomerBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         if (bo == null) {

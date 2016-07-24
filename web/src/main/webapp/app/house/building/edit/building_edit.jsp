@@ -73,6 +73,11 @@
                                    name="cityName"
                                    readonly ztree-single="regionTree" placeholder="点击选择，定位到区"/>
                         </div>
+                        <div class="form-label col-1-half">
+                            <label validate-error="form.code">楼盘编号:</label>
+                        </div>
+                        <input class="col-2-half" type="text" ng-model="beans.code" validate validate-required
+                               name="code" placeholder="由纯字母组成，全站唯一，用于生成房屋时用到" ng-disabled="pageType!=='add'"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
@@ -150,7 +155,8 @@
                         <div class="form-label col-1-half">
                             <label>录入楼栋数:</label>
                         </div>
-                        <input class="col-2-half" type="number" ng-model="beans.realCounts" ng-disabled="true"/>
+                        <input class="col-2-half" type="number" ng-model="beans.realCounts" ng-disabled="true"
+                               placeholder="由程序自动产生"/>
                         <div class="form-label col-1-half">
                             <label>总户数:</label>
                         </div>
@@ -194,7 +200,7 @@
                         </div>
                         <textarea class="col-10-half" rows="6" ng-model="beans.description"></textarea>
                     </div>
-                    <div class="row">
+                    <div class="row" ng-cloak ng-if="pageType!=='add'">
                         <div class="form-label col-1-half">
                             <label>状态:</label>
                         </div>

@@ -12,7 +12,7 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, UnitParam, UnitService, BlockService, RoomService) {
         $scope.beans = [];
-        $scope.condition = {unitCode: ''};
+        $scope.condition = {orderBy: 'floor', manager: $('#isManager').val()};
         var buildingId = $('#buildingId').val();
         if (!buildingId) {
             AlertFactory.error('错误的访问方式!没有获得楼盘ID!');
@@ -38,7 +38,7 @@
             });
             CommonUtils.loading(promise);
         };
-        $scope.units = [{code: '', name: '请选择'}];
+        $scope.units = [{id: null, code: '', name: '请选择'}];
         // 获取单元列表
         $scope.loadUnit = function () {
             var promise = UnitService.query({blockId: $scope.condition.blockId}, function (data) {
@@ -47,8 +47,8 @@
                 // 所以需要将单元编号进行去重处理
                 var code = {};
                 angular.forEach(data, function (o) {
-                    if (!code[o.code]) {
-                        code[o.code] = true;
+                    if (!code[o.id]) {
+                        code[o.id] = true;
                         o.name = o.code;
                         $scope.units.push(o);
                     }
@@ -69,7 +69,7 @@
 
         $scope.blockChange = function () {
             $scope.units.length = 1;
-            $scope.condition.unitCode = '';
+            $scope.condition.unitId = null;
             $scope.unit = null;
             $scope.query();
             $scope.loadUnit();
@@ -88,7 +88,7 @@
             $scope.query();
             // 获取当前的单元ID
             for (var i = 0; i < $scope.units.length; i++) {
-                if ($scope.units[i].code == $scope.condition.unitCode) {
+                if ($scope.units[i].id == $scope.condition.unitId) {
                     $scope.unit = $scope.units[i];
                     return;
                 }
@@ -123,17 +123,31 @@
 
         // 删除或批量删除
         $scope.remove = function (id, index) {
+            // 临时数据
+            if (!id && index !== undefined) {
+                $scope.beans.data.splice(index, 1);
+                $scope.beans.total--;
+                return;
+            }
+            // 批量删除
+            if (!id && index == undefined) {
+                var ids = [];
+                angular.forEach($scope.items, function (o) {
+                    ids.push(o.id);
+                });
+                id = ids.join(',');
+            }
             if (!id) {
-                $scope.beans.splice(index, 1);
+                AlertFactory.error('请先选择需要删除的数据!');
                 return;
             }
             ModalFactory.confirm({
                 scope: $scope,
-                content: '<span class="text-danger">数据一旦删除将不可恢复，请确认!</span>',
+                content: '<span class="text-danger">数据一旦删除将不可恢复，并且本页面未做保存的数据也将会被退回到原始状态，请确认!</span>',
                 callback: function () {
                     var promise = RoomService.deleteByIds({ids: id}, function () {
                         AlertFactory.success('删除成功!');
-                        $scope.beans.splice(index, 1);
+                        $scope.pager.query();
                     });
                     CommonUtils.loading(promise);
                 }

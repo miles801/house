@@ -5,13 +5,36 @@
     var app = angular.module('house.building.list', [
         'eccrm.angular',
         'eccrm.angularstrap',
+        'eccrm.angular.ztree',
+        'eccrm.base.region',
         'eccrm.base.employee.modal',    // 员工
         'house.building'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, BuildingService, BuildingParam,
-                                     EmployeeModal, BuildingModal) {
+                                     EmployeeModal, BuildingModal, RegionPicker) {
         $scope.condition = {
             manager: $('#isManager').val()
+        };
+
+        $scope.regionTree = RegionPicker.getRegionTree(function (o) {
+            if (o.type !== 2 && o.type !== 3) {
+                AlertFactory.error('请选择城市或者区县!');
+                return;
+            }
+            $scope.city = o.name;
+            if (o.type == 2) {
+                $scope.condition.city = o.id;
+            } else if (o.type == 3) {
+                $scope.condition.area = o.id;
+                $scope.city = o.getParentNode().name + '-' + o.name;
+            }
+            $scope.query();
+        });
+        // 清除选择的城市
+        $scope.clearRegion = function () {
+            $scope.city = null;
+            $scope.condition.city = null;
+            $scope.condition.area = null;
         };
 
         // 学区
@@ -44,6 +67,17 @@
 
         // 删除或批量删除
         $scope.remove = function (id) {
+            if (!id) {
+                var ids = [];
+                angular.forEach($scope.items, function (o) {
+                    ids.push(o.id);
+                });
+                id = ids.join(',');
+            }
+            if (!id) {
+                AlertFactory.error('请选择要删除的数据!');
+                return;
+            }
             ModalFactory.confirm({
                 scope: $scope,
                 content: '数据一旦删除将不可恢复，请确认!',

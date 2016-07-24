@@ -43,7 +43,7 @@
                         <div class="row float">
                             <div class="item w240">
                                 <div class="form-label w80">
-                                    <label>楼盘:</label>
+                                    <label>楼盘名称:</label>
                                 </div>
                                 <input type="text" class="w150" ng-model="condition.buildingName"/>
                             </div>

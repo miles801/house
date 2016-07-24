@@ -13,7 +13,7 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, BuildingService, BuildingParam,
                                      RegionPicker) {
 
-        var pageType = $('#pageType').val();
+        var pageType = $scope.pageType = $('#pageType').val();
         var id = $('#id').val();
 
         // 建筑类型

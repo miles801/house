@@ -18,8 +18,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.id.Assigned;
+import org.hibernate.persister.entity.SingleTableEntityPersister;
+import org.hibernate.tuple.IdentifierProperty;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,9 +51,10 @@ public class ImportRegion {
     }
 
     public static void main(String[] args) {
+        // 设置id生成策略为assigned
         ImportRegion ir = new ImportRegion();
         try {
-//            ir.importProvince();
+            ir.importProvince();
             ir.importCity();
             ir.importDistrict();
         } catch (Exception e) {
@@ -67,6 +72,11 @@ public class ImportRegion {
         int i = 0;
         Session session = sessionFactory.openSession();
         session.setFlushMode(FlushMode.COMMIT);
+        SingleTableEntityPersister classMetadata = (SingleTableEntityPersister) session.getSessionFactory().getClassMetadata(Region.class);
+        IdentifierProperty identifierProperty = classMetadata.getEntityMetamodel().getIdentifierProperty();
+        Field field = identifierProperty.getClass().getDeclaredField("identifierGenerator");
+        field.setAccessible(true);
+        field.set(identifierProperty, new Assigned());
         Transaction transaction = session.beginTransaction();
         while (iterator.hasNext()) {
             Node node = (Node) iterator.next();
@@ -110,18 +120,18 @@ public class ImportRegion {
         Iterator iterator = data.iterator();
         int i = 0;
         int sequenceNo = 1;
-        String oldParent = null;
         Session session = sessionFactory.openSession();
+        SingleTableEntityPersister classMetadata = (SingleTableEntityPersister) session.getSessionFactory().getClassMetadata(Region.class);
+        IdentifierProperty identifierProperty = classMetadata.getEntityMetamodel().getIdentifierProperty();
+        Field field = identifierProperty.getClass().getDeclaredField("identifierGenerator");
+        field.setAccessible(true);
+        field.set(identifierProperty, new Assigned());
         session.beginTransaction();
         while (iterator.hasNext()) {
             Node node = (Node) iterator.next();
             String id = node.valueOf("@ID");
             String name = node.valueOf("@CityName");
             String provinceId = node.valueOf("@PID");
-            if (!provinceId.equals(oldParent)) {
-                sequenceNo = 1;
-                oldParent = provinceId;
-            }
             String zipcode = node.valueOf("@ZipCode");
             Region region = new Region();
             region.setId((1000 + Integer.parseInt(id)) + "");
@@ -130,9 +140,8 @@ public class ImportRegion {
             region.setPinyin(pinYin.toPinYin(name, strategy));
             region.setJp(getJP(name));
             region.setCode(regions.get(name));// 设置区号
-            Region parent = new Region();
-            parent.setId(provinceId);
             region.setZipcode(zipcode);
+            region.setParentId(provinceId);
             region.setSequenceNo(sequenceNo++);
             region.setType(RegionType.CITY.getValue());
             session.save(region);
@@ -155,26 +164,25 @@ public class ImportRegion {
         Iterator iterator = data.iterator();
         int i = 0;
         int sequenceNo = 1;
-        String oldParent = null;
         Session session = sessionFactory.openSession();
+        SingleTableEntityPersister classMetadata = (SingleTableEntityPersister) session.getSessionFactory().getClassMetadata(Region.class);
+        IdentifierProperty identifierProperty = classMetadata.getEntityMetamodel().getIdentifierProperty();
+        Field field = identifierProperty.getClass().getDeclaredField("identifierGenerator");
+        field.setAccessible(true);
+        field.set(identifierProperty, new Assigned());
         session.beginTransaction();
         while (iterator.hasNext()) {
             Node node = (Node) iterator.next();
             String id = node.valueOf("@ID");
             String name = node.valueOf("@DistrictName");
             String cityId = node.valueOf("@CID");
-            if (!cityId.equals(oldParent)) {
-                sequenceNo = 1;
-                oldParent = cityId;
-            }
             Region region = new Region();
             region.setId((10000 + Integer.parseInt(id)) + "");
             region.setName(name);
             logger.info("保存区县[" + (i + 1) + "]：" + id + "--" + name + ",所属城市：" + cityId);
             region.setPinyin(pinYin.toPinYin(name, strategy));
             region.setJp(getJP(name));
-            Region parent = new Region();
-            parent.setId((1000 + Integer.parseInt(cityId)) + "");
+            region.setParentId((1000 + Integer.parseInt(cityId)) + "");
             region.setSequenceNo(sequenceNo++);
             region.setType(RegionType.DISTRICT.getValue());
             i++;

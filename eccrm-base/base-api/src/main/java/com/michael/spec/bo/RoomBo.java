@@ -35,6 +35,7 @@ public class RoomBo implements BO {
     @Condition
     private Integer floor;
 
+    @ApiField("门牌号")
     @Condition
     private String code;
 
@@ -182,14 +183,6 @@ public class RoomBo implements BO {
         this.unitId = unitId;
     }
 
-    public String getUnitCode() {
-        return unitCode;
-    }
-
-    public void setUnitCode(String unitCode) {
-        this.unitCode = unitCode;
-    }
-
     public Integer getFloor() {
         return floor;
     }
@@ -309,5 +302,13 @@ public class RoomBo implements BO {
 
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
+    }
+
+    public String getUnitCode() {
+        return unitCode;
+    }
+
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
     }
 }

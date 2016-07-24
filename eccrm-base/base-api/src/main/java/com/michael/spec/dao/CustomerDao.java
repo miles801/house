@@ -48,4 +48,13 @@ public interface CustomerDao {
     Customer findByPhone(String phone);
 
     void batchSetStatus(String[] customerIds, String status);
+
+    /**
+     * 判断指定的电话号码是否已经被其他客户注册
+     *
+     * @param phone1 电话号码
+     * @param id     客户ID
+     * @return TRUE已经被注册
+     */
+    boolean hasPhone(String phone1, String id);
 }

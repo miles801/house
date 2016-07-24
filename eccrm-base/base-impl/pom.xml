@@ -76,9 +76,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ycrl.thirdparty</groupId>
-            <artifactId>sqlserver2008</artifactId>
-            <version>1.0</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- 其他常用工具包 -->

@@ -51,4 +51,13 @@ public interface BuildingDao {
      * @return true：存在
      */
     boolean hasName(String name, String id);
+
+    /**
+     * 判断编号是否重复
+     *
+     * @param code 编号
+     * @param id   id
+     * @return true重复
+     */
+    boolean hasCode(String code, String id);
 }

@@ -96,8 +96,16 @@ public class BuildingServiceImpl implements BuildingService, BeanWrapCallback<Bu
 
     private void validate(Building building) {
         ValidatorUtils.validate(building);
+        // 验证名称是否重复
         boolean exists = buildingDao.hasName(building.getName(), building.getId());
-        Assert.isTrue(!exists, "操作失败!名称重复!");
+        Assert.isTrue(!exists, "操作失败!楼盘名称重复!");
+
+        // 编号重复
+        String code = building.getCode();
+        if (StringUtils.isNotEmpty(code)) {
+            boolean hasCode = buildingDao.hasName(building.getName(), building.getId());
+            Assert.isTrue(!hasCode, "操作失败!已经存在编号为[" + code + "]的楼盘!");
+        }
     }
 
     @Override
