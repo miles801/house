@@ -12,8 +12,8 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, UnitParam, UnitService, BlockService, RoomService) {
         $scope.beans = [];
-        $scope.condition = {orderBy: 'floor', manager: $('#isManager').val()};
         var buildingId = $('#buildingId').val();
+        $scope.condition = {buildingId: buildingId, orderBy: 'floor', manager: $('#isManager').val()};
         if (!buildingId) {
             AlertFactory.error('错误的访问方式!没有获得楼盘ID!');
             return false;
@@ -112,6 +112,9 @@
                     });
                     CommonUtils.loading(promise, 'Loading...');
                 });
+            },
+            finishInit: function () {
+                this.query();
             }
         };
 

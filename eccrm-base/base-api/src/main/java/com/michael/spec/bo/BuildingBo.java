@@ -63,8 +63,20 @@ public class BuildingBo implements BO {
 
     private Boolean manager;
 
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String code;
+
     @Condition
     private String status;
+
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getStatus() {
         return status;

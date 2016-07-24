@@ -76,7 +76,7 @@
                         <div class="form-label col-1-half">
                             <label validate-error="form.code">楼盘编号:</label>
                         </div>
-                        <input class="col-2-half" type="text" ng-model="beans.code" validate validate-required
+                        <input class="col-2-half" type="text" ng-model="beans.code" validate valdiate-required
                                name="code" placeholder="由纯字母组成，全站唯一，用于生成房屋时用到" ng-disabled="pageType!=='add'"/>
                     </div>
                     <div class="row">

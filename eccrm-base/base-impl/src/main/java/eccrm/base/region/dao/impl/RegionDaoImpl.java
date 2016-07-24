@@ -1,12 +1,14 @@
 package eccrm.base.region.dao.impl;
 
 import com.ycrl.core.HibernateDaoHelper;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import com.ycrl.core.pager.OrderNode;
 import com.ycrl.core.pager.Pager;
 import eccrm.base.region.bo.RegionBo;
 import eccrm.base.region.dao.RegionDao;
 import eccrm.base.region.domain.Region;
+import eccrm.base.region.domain.RegionType;
 import eccrm.utils.Argument;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
@@ -69,6 +71,21 @@ public class RegionDaoImpl extends HibernateDaoHelper implements RegionDao {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<Region> queryMyArea() {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Region.class);
+        detachedCriteria.setProjection(Projections.id());
+        detachedCriteria.add(Restrictions.eq("type", RegionType.CITY.getValue()));
+        detachedCriteria.add(Restrictions.eq("masterId", SecurityContext.getEmpId()));
+        return createCriteria(Region.class)
+                .add(Property.forName("parentId").in(detachedCriteria))
+                .addOrder(Order.asc("parentId"))
+                .addOrder(Order.asc("sequenceNo"))
+                .list();
+
+    }
+
+    @Override
     public synchronized int nextSequenceNo(String parentId) {
         Integer max = 0;
         if (parentId == null) {
@@ -81,7 +98,7 @@ public class RegionDaoImpl extends HibernateDaoHelper implements RegionDao {
     }
 
     private void initCriteria(Criteria criteria, RegionBo bo) {
-        CriteriaUtils.addCondition(criteria,bo);
+        CriteriaUtils.addCondition(criteria, bo);
     }
 
     @Override

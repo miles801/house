@@ -160,6 +160,10 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             // 比较两个对象并返回不一样的内容
             String content = compare(customer, originCus);
             news.setContent(content);
+            ValidatorUtils.validate(customer);
+            // 验证名称是否重复
+            boolean exists = customerDao.hasPhone(customer.getPhone1(), customerId);
+            Assert.isTrue(!exists, "操作失败!电话号码[" + customer.getPhone1() + "]已经被其他客户注册使用!");
             BeanUtils.copyProperties(customer, originCus);
             customer.setId(null);
         }

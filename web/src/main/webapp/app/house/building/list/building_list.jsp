@@ -20,7 +20,7 @@
     </script>
 </head>
 <body>
-<div class="main condition-row-1" ng-app="house.building.list" ng-controller="Ctrl">
+<div class="main condition-row-2" ng-app="house.building.list" ng-controller="Ctrl">
     <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
         <div class="dn">
             <input type="hidden" id="isManager" value="true"/>
@@ -47,6 +47,12 @@
                                 <label>楼盘名称:</label>
                             </div>
                             <input class="w120" type="text" ng-model="condition.name"/>
+                        </div>
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>楼盘编号:</label>
+                            </div>
+                            <input class="w120" type="text" ng-model="condition.code"/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w80">

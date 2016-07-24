@@ -7,11 +7,9 @@ import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import com.ycrl.utils.string.StringUtils;
+import eccrm.base.region.domain.Region;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -46,12 +44,14 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
     public DetachedCriteria getPersonalBuilding(String empId) {
         DetachedCriteria criteria = DetachedCriteria.forClass(Building.class)
                 .setProjection(Projections.property("id"));
-        criteria.add(
-                Restrictions.disjunction()
-                        .add(Restrictions.eq("masterId", empId))
-                        .add(Restrictions.like("maintainId", empId + ";", MatchMode.ANYWHERE))
-        );
-
+        Junction or = Restrictions.disjunction()
+                .add(Restrictions.eq("masterId", SecurityContext.getEmpId()))
+                .add(Restrictions.like("maintainId", SecurityContext.getEmpId() + ";", MatchMode.ANYWHERE));
+        DetachedCriteria regionCriteria = DetachedCriteria.forClass(Region.class).setProjection(Projections.property("id")).add(Restrictions.eq("masterId", SecurityContext.getEmpId()));
+        // 自己负责的城市/区域的数据
+        or.add(Property.forName("city").in(regionCriteria));
+        or.add(Property.forName("area").in(regionCriteria));
+        criteria.add(or);
         return criteria;
     }
 
@@ -111,11 +111,14 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
         CriteriaUtils.addCondition(criteria, bo);
         boolean isNotManager = !(bo != null && bo.getManager() != null && bo.getManager());
         if (isNotManager) {
-            criteria.add(
-                    Restrictions.disjunction()
-                            .add(Restrictions.eq("masterId", SecurityContext.getEmpId()))
-                            .add(Restrictions.like("maintainId", SecurityContext.getEmpId() + ";", MatchMode.ANYWHERE))
-            );
+            Junction or = Restrictions.disjunction()
+                    .add(Restrictions.eq("masterId", SecurityContext.getEmpId()))
+                    .add(Restrictions.like("maintainId", SecurityContext.getEmpId() + ";", MatchMode.ANYWHERE));
+            DetachedCriteria regionCriteria = DetachedCriteria.forClass(Region.class).setProjection(Projections.property("id")).add(Restrictions.eq("masterId", SecurityContext.getEmpId()));
+            // 自己负责的城市/区域的数据
+            or.add(Property.forName("city").in(regionCriteria));
+            or.add(Property.forName("area").in(regionCriteria));
+            criteria.add(or);
         }
     }
 

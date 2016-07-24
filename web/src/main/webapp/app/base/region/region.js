@@ -10,7 +10,16 @@
         return $resource(CommonUtils.contextPathURL('base/region/:method'), {}, {
             save: {method: 'POST', params: {method: 'save'}, isArray: false},//保存
             update: {method: 'POST', params: {method: 'update'}, isArray: false},//更新
-            deleteByIds: {method: 'POST', params: {method: 'delete', ids: '@ids'}, isArray: false},//更新
+
+            // 设置区域负责人
+            setMaster: {method: 'POST', params: {method: 'master-set'}, isArray: false},//更新
+
+            // 清空区域负责人
+            clearMaster: {method: 'POST', params: {method: 'master-clear', id: '@id'}, isArray: false},
+
+            // 查询我负责的城市的所有区域
+            mine: {method: 'GET', params: {method: 'mine'}, isArray: false},
+            deleteByIds: {method: 'POST', params: {method: 'delete', ids: '@ids'}, isArray: false},
             get: {method: 'GET', params: {method: 'get', id: '@id'}, isArray: false},//根据id查询对象
 
             //查询所有的树，有url

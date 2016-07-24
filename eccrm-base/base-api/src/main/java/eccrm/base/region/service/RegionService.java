@@ -35,9 +35,29 @@ public interface RegionService extends VoWrapper<Region, RegionVo> {
     RegionVo queryByCode(String code);
 
     /**
+     * 查询我所负责的所有城市的县区
+     */
+    List<RegionVo> queryMine();
+
+    /**
      * 根据城市id获取所属省份信息（只返回id、名称）
      *
      * @param city 城市id
      */
     RegionVo getBelongProvence(String city);
+
+    /**
+     * 设置负责人（只能针对县区级别）
+     *
+     * @param id       行政区域ID
+     * @param masterId 负责人ID
+     */
+    void setMaster(String id, String masterId);
+
+    /**
+     * 清空负责人（只能针对县区级别）
+     *
+     * @param id 行政区域ID
+     */
+    void clearMaster(String id);
 }

@@ -1,5 +1,8 @@
 package eccrm.base.region.service.impl;
 
+import com.michael.base.emp.dao.EmpDao;
+import com.michael.base.emp.domain.Emp;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.exception.NullParamException;
@@ -8,6 +11,7 @@ import com.ycrl.utils.uuid.UUIDGenerator;
 import eccrm.base.region.bo.RegionBo;
 import eccrm.base.region.dao.RegionDao;
 import eccrm.base.region.domain.Region;
+import eccrm.base.region.domain.RegionType;
 import eccrm.base.region.service.RegionService;
 import eccrm.base.region.vo.RegionVo;
 import eccrm.core.VoHelper;
@@ -17,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: miles
@@ -102,6 +108,58 @@ public class RegionServiceImpl implements RegionService, BeanWrapCallback<Region
         RegionVo vo = new RegionVo();
         BeanUtils.copyProperties(region, vo);
         return vo;
+    }
+
+    @Override
+    public List<RegionVo> queryMine() {
+        List<Region> regions = regionDao.queryMyArea();
+        final Map<String, String> map = new HashMap<String, String>();
+        return BeanWrapBuilder.newInstance()
+                .setCallback(new BeanWrapCallback<Region, RegionVo>() {
+                    @Override
+                    public void doCallback(Region region, RegionVo vo) {
+                        // 设置上级名称
+                        String parentId = region.getParentId();
+                        if (com.ycrl.utils.string.StringUtils.isEmpty(region.getParentName())) {
+                            // 从缓存的数据中取出名称
+                            String pn = map.get(parentId);
+                            // 如果名称还未进行缓存，则重新加载
+                            if (com.ycrl.utils.string.StringUtils.isEmpty(pn)) {
+                                Region r = regionDao.findById(parentId);
+                                if (r != null) {
+                                    vo.setParentName(r.getName());
+                                    map.put(parentId, r.getName());
+                                }
+                            } else {
+                                vo.setParentName(pn);
+                            }
+                        }
+                    }
+                })
+                .wrapList(regions, RegionVo.class);
+    }
+
+    @Override
+    public void setMaster(String id, String masterId) {
+        Assert.hasText(id, "操作失败!行政区域ID不能为空!");
+        Assert.hasText(masterId, "操作失败!负责人ID不能为空!");
+        Region region = regionDao.findById(id);
+        Assert.notNull(region, "操作失败!行政区域已经不存在!请刷新后重试!");
+        Assert.isTrue(RegionType.DISTRICT.getValue().equals(region.getType()), "操作失败!只允许对县区的负责人进行设置!");
+        Emp emp = SystemContainer.getInstance().getBean(EmpDao.class).findById(masterId);
+        Assert.notNull(emp, "操作失败!员工已经不存在，请刷新后重试!");
+        region.setMasterId(masterId);
+        region.setMasterName(emp.getName());
+    }
+
+    @Override
+    public void clearMaster(String id) {
+        Assert.hasText(id, "操作失败!行政区域ID不能为空!");
+        Region region = regionDao.findById(id);
+        Assert.notNull(region, "操作失败!行政区域已经不存在!请刷新后重试!");
+        Assert.isTrue(RegionType.DISTRICT.getValue().equals(region.getType()), "操作失败!只允许对县区的负责人进行设置!");
+        region.setMasterId(null);
+        region.setMasterName(null);
     }
 
     @Override

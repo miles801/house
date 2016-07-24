@@ -36,7 +36,7 @@
 
         // 修改
         $scope.modify = function (id) {
-            RegionModal.modify({scope: $scope, id: id}, initTree);
+            RegionModal.modify({scope: $scope, id: id}, $scope.query);
         };
 
         // 查看

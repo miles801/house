@@ -1,14 +1,17 @@
 package eccrm.base.region.web;
 
+import com.ycrl.core.pager.PageVo;
+import com.ycrl.core.web.BaseController;
+import com.ycrl.utils.gson.GsonUtils;
 import eccrm.base.region.bo.RegionBo;
 import eccrm.base.region.domain.Region;
 import eccrm.base.region.service.RegionService;
 import eccrm.base.region.vo.RegionVo;
-import com.ycrl.core.pager.PageVo;
-import com.ycrl.core.web.BaseController;
-import com.ycrl.utils.gson.GsonUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +52,28 @@ public class RegionCtrl extends BaseController {
         regionService.update(region);
         GsonUtils.printSuccess(response);
         return null;
+    }
+
+    @RequestMapping(value = "/mine", method = RequestMethod.GET)
+    @ResponseBody
+    public void queryMyArea(HttpServletRequest request, HttpServletResponse response) {
+        List<RegionVo> data = regionService.queryMine();
+        GsonUtils.printData(response, data);
+    }
+
+    @RequestMapping(value = "/master-set", method = RequestMethod.POST)
+    @ResponseBody
+    public void setMaster(HttpServletRequest request, HttpServletResponse response) {
+        Region region = GsonUtils.wrapDataToEntity(request, Region.class);
+        regionService.setMaster(region.getId(), region.getMasterId());
+        GsonUtils.printSuccess(response);
+    }
+
+    @RequestMapping(value = "/master-clear", params = "id", method = RequestMethod.POST)
+    @ResponseBody
+    public void clearMaster(String id, HttpServletResponse response) {
+        regionService.clearMaster(id);
+        GsonUtils.printSuccess(response);
     }
 
 

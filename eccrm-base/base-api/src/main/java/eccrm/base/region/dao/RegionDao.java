@@ -53,4 +53,9 @@ public interface RegionDao {
     Region getBelongProvence(String city);
 
     public Region findById(String id);
+
+    /**
+     * 查询我负责的县区集合
+     */
+    List<Region> queryMyArea();
 }
