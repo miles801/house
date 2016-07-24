@@ -37,6 +37,14 @@ public interface UnitService {
      */
     void deleteByIds(String[] ids);
 
+    /**
+     * 强制删除！
+     * 删除单元的同时，会删除该单元下的所有房屋，并同时跟新楼栋的单元数数量
+     *
+     * @param ids 单元ID
+     */
+    void forceDelete(String[] ids);
+
     List<Unit> query(UnitBo bo);
 
     /**

@@ -43,6 +43,15 @@ public interface BlockService {
     void clearUnit(String id);
 
     /**
+     * 强制删除！
+     * 删除楼栋的同时，会删除该楼栋下的所有房屋和单元
+     *
+     * @param ids 单元ID
+     */
+    void forceDelete(String[] ids);
+
+
+    /**
      * 批量删除
      */
     void deleteByIds(String[] ids);

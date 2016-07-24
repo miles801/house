@@ -147,6 +147,27 @@ public class BlockServiceImpl implements BlockService, BeanWrapCallback<Block, B
     }
 
     @Override
+    public void forceDelete(String[] ids) {
+        if (ids == null || ids.length == 0) return;
+        UnitService unitService = SystemContainer.getInstance().getBean(UnitService.class);
+        UnitBo bo = new UnitBo();
+        for (String id : ids) {
+            // 删除楼栋
+            blockDao.deleteById(id);
+
+            bo.setBlockId(id);
+            // 强制删除单元
+            List<Unit> units = unitDao.query(bo);
+            if (units != null) {
+                for (Unit unit : units) {
+                    unitService.forceDelete(new String[]{unit.getId()});
+                }
+            }
+
+        }
+    }
+
+    @Override
     public List<Block> query(BlockBo bo) {
         return blockDao.query(bo);
     }

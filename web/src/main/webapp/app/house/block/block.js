@@ -36,6 +36,9 @@
             // 查询指定楼盘下所有的
             query: {method: 'POST', params: {method: 'query', buildingId: '@buildingId'}, isArray: false},
 
+            // 强制删除
+            forceDelete: {method: 'DELETE', params: {method: 'delete-force', ids: '@ids'}, isArray: false},
+            
             // 根据id字符串（使用逗号分隔多个值）
             deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}
         })

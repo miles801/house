@@ -111,4 +111,15 @@ public class UnitCtrl extends BaseController {
         GsonUtils.printSuccess(response);
     }
 
+    /**
+     * 强制删除!慎重使用改功能！
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delete-force", params = {"ids"}, method = RequestMethod.DELETE)
+    public void forceDelete(@RequestParam String ids, HttpServletResponse response) {
+        String[] idArr = ids.split(",");
+        unitService.forceDelete(idArr);
+        GsonUtils.printSuccess(response);
+    }
+
 }

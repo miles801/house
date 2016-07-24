@@ -87,6 +87,31 @@
             });
         };
 
+        // 强制删除!
+        $scope.forceDelete = function () {
+            var ids = [];
+            angular.forEach($scope.items, function (o) {
+                if (o.id) {
+                    ids.push(o.id);
+                }
+            });
+            if (ids.length == 0) {
+                AlertFactory.error('无可以删除的数据!请选择后重试!');
+                return;
+            }
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '警告!该功能是高风险操作!一旦确认，将会删除单元和单元下的所有房屋信息，请仔细确认后再行删除,确认删除?',
+                callback: function () {
+                    var promise = UnitService.forceDelete({ids: ids.join(',')}, function () {
+                        AlertFactory.success('删除成功!');
+                        $scope.query();
+                    });
+                    CommonUtils.loading((promise));
+                }
+            });
+        };
+
         // 新增
         $scope.add = function (bean) {
             if (!bean) {

@@ -34,6 +34,9 @@
             // 查询指定楼栋下的所有单元
             query: {method: 'POST', params: {method: 'query', blockId: '@blockId'}, isArray: false},
 
+            // 强制删除
+            forceDelete: {method: 'DELETE', params: {method: 'delete-force', ids: '@ids'}, isArray: false},
+            
             // 根据id字符串（使用逗号分隔多个值）
             deleteByIds: {method: 'DELETE', params: {method: 'delete', ids: '@ids'}, isArray: false}
         })

@@ -108,7 +108,49 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
         for (String id : ids) {
             long counts = roomDao.getUnitRoomCounts(id);
             Assert.isTrue(counts == 0, "删除失败!该单元下已经存在了房间信息，无法直接删除!");
-            unitDao.deleteById(id);
+
+            Unit unit = unitDao.findById(id);
+            if (unit == null) {
+                continue;
+            }
+            // 楼栋的已注册单元数减1
+            String blockId = unit.getBlockId();
+            Block block = blockDao.findById(blockId);
+            if (block != null) {
+                block.setRealCounts(IntegerUtils.add(block.getRealCounts(), -1));
+            }
+            // 删除单元
+            unitDao.delete(unit);
+
+        }
+    }
+
+    @Override
+    public void forceDelete(String[] ids) {
+        if (ids == null || ids.length == 0) return;
+        RoomBo bo = new RoomBo();
+        for (String id : ids) {
+            bo.setUnitId(id);
+            List<Room> rooms = roomDao.queryRoom(bo);
+            if (rooms != null) {
+                for (Room room : rooms) {
+                    roomDao.delete(room);
+                }
+            }
+
+            Unit unit = unitDao.findById(id);
+            if (unit == null) {
+                continue;
+            }
+            // 楼栋的已注册单元数减1
+            String blockId = unit.getBlockId();
+            Block block = blockDao.findById(blockId);
+            if (block != null) {
+                block.setRealCounts(IntegerUtils.add(block.getRealCounts(), -1));
+            }
+            // 删除单元
+            unitDao.delete(unit);
+
         }
     }
 

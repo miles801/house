@@ -33,6 +33,12 @@
                 <a type="button" class="btn btn-green btn-min" ng-click="query();">
                     <span class="glyphicons message_forward"></span> 刷新
                 </a>
+                <c:if test="${sessionScope.get('OP_BLOCK_DELETE_FORCE') eq true}">
+                    <a type="button" class="btn btn-green btn-min" ng-click="forceDelete();" ng-cloak
+                       ng-disabled="!anyone">
+                        <span class="glyphicons message_forward"></span> 强制删除
+                    </a>
+                </c:if>
             </div>
         </div>
         <div class="block-content">
@@ -42,6 +48,10 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
+                                <td class="width-min">
+                                    <div select-all-checkbox checkboxes="beans" selected-items="items"
+                                         anyone-selected="anyone"></div>
+                                </td>
                                 <td style="width: 40px;">序号</td>
                                 <td>楼栋号</td>
                                 <td>单元数</td>
@@ -54,10 +64,11 @@
                             <tbody class="table-body">
                             <c:if test="${param.pageType ne 'detail'}">
                                 <tr ng-show="!beans.length">
-                                    <td colspan="7" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a>
+                                    <td colspan="8" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="foo in beans" ng-cloak>
+                                    <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                     <td>{{$index+1}}</td>
                                     <td title="点击查询明细！" style="cursor: pointer;">
                                         <input type="text" ng-model="foo.code" validate validate-required
@@ -93,6 +104,7 @@
                                     <td colspan="7" class="text-center">无楼栋信息!</td>
                                 </tr>
                                 <tr bindonce ng-repeat="foo in beans" ng-cloak>
+                                    <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                     <td bo-text="$index+1"></td>
                                     <td bo-text="foo.code"></td>
                                     <td bo-text="foo.unitCounts"></td>
