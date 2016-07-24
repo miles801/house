@@ -23,7 +23,7 @@ public class Region extends CommonDomain {
     /**
      * 名称
      */
-    @Column(length = 40,nullable = false)
+    @Column(length = 40, nullable = false)
     @NotNull(message = "行政区域名称不能为空!")
     private String name;
 
@@ -64,6 +64,29 @@ public class Region extends CommonDomain {
      */
     @Column
     private Boolean deleted;
+
+    // 负责人
+    @Column(length = 40)
+    private String masterId;
+    @Column(length = 40)
+    private String masterName;
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(String masterId) {
+        this.masterId = masterId;
+    }
+
+    public String getMasterName() {
+        return masterName;
+    }
+
+    public void setMasterName(String masterName) {
+        this.masterName = masterName;
+    }
+
     public Integer getType() {
         return type;
     }

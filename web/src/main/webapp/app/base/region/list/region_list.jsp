@@ -14,6 +14,7 @@
 <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-all.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-strap-all.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/static/ycrl/javascript/angular-ztree-all.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/employee/employee-modal.js"></script>
 <script>
     window.angular.contextPathURL = '<%=contextPath%>';
 </script>
@@ -55,6 +56,7 @@
                                         </td>
                                         <td>名称</td>
                                         <td style="width: 120px;">类型</td>
+                                        <td style="width: 120px;">负责人</td>
                                         <td>拼音</td>
                                         <td>区号</td>
                                         <td>邮政编码</td>
@@ -65,7 +67,7 @@
                                     </thead>
                                     <tbody class="table-body" ng-cloak>
                                     <tr ng-show="!regions.data.length">
-                                        <td colspan="9" class="text-center">没有符合条件的记录！</td>
+                                        <td colspan="10" class="text-center">没有符合条件的记录！</td>
                                     </tr>
                                     <tr bindonce ng-repeat="foo in regions.data">
                                         <td align="center">
@@ -75,6 +77,7 @@
                                             style="cursor: pointer;text-decoration: underline;color:#0000ff"
                                             ng-click="view(foo.id)" bo-text="foo.name"></td>
                                         <td class="text-center" bo-text="foo.type | regionType"></td>
+                                        <td bo-text="foo.masterName"></td>
                                         <td bo-text="foo.pinyin"></td>
                                         <td bo-text="foo.code"></td>
                                         <td bo-text="foo.zipcode"></td>

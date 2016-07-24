@@ -49,6 +49,17 @@ public class RegionBo implements BO {
     @Condition
     private Boolean deleted;
 
+    @Condition
+    private String masterId;
+
+    public String getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(String masterId) {
+        this.masterId = masterId;
+    }
+
     public Integer getType() {
         return type;
     }

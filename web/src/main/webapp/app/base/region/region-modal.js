@@ -11,9 +11,10 @@
         'eccrm.base.region',
         'eccrm.angular',
         'eccrm.angularstrap',
+        'eccrm.base.employee.modal',    // 员工
         'eccrm.directive.ztree'
     ]);
-    app.factory('RegionModal', function ($modal, RegionService, AlertFactory, RegionConstant, ModalFactory, CommonUtils) {
+    app.factory('RegionModal', function ($modal, RegionService, AlertFactory, RegionConstant, ModalFactory, CommonUtils, EmployeeModal) {
             var pageTypes = ['add', 'modify', 'view'];
             var common = function (cfg, callback) {
                 var defaults = {
@@ -39,6 +40,20 @@
                 $scope.status = RegionConstant.status;
                 $scope.types = RegionConstant.type;
                 $scope.type = cfg.type;
+
+                // 选择负责人
+                $scope.pickMaster = function () {
+                    EmployeeModal.pickEmployee({}, function (emp) {
+                        $scope.region.masterId = emp.id;
+                        $scope.region.masterName = emp.name;
+                    });
+                };
+
+                $scope.clearMaster = function () {
+                    $scope.region.masterId = null;
+                    $scope.region.masterName = null;
+                };
+
                 $scope.checkCode = {
                     validateMsg: '不合法的区号',
                     trigger: 'now',
