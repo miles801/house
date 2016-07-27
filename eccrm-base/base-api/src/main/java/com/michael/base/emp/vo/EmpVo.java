@@ -24,6 +24,27 @@ public class EmpVo extends Emp {
 
     private String token;
 
+    @ApiField("角色ID，多个值使用逗号分隔")
+    private String roleIds;
+    @ApiField("角色名称，多个值使用逗号分隔")
+    private String roleNames;
+
+    public String getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(String roleIds) {
+        this.roleIds = roleIds;
+    }
+
+    public String getRoleNames() {
+        return roleNames;
+    }
+
+    public void setRoleNames(String roleNames) {
+        this.roleNames = roleNames;
+    }
+
     public String getDutyName() {
         return dutyName;
     }

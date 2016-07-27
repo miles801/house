@@ -4,11 +4,15 @@ import com.michael.base.common.BaseParameter;
 import com.michael.base.emp.bo.EmpBo;
 import com.michael.base.emp.dao.EmpDao;
 import com.michael.base.emp.domain.Emp;
+import com.michael.base.emp.service.EmpEvent;
 import com.michael.base.emp.service.EmpService;
 import com.michael.base.emp.vo.EmpVo;
 import com.michael.base.position.dao.PositionEmpDao;
+import com.michael.base.position.domain.Position;
+import com.michael.base.position.domain.PositionEmp;
 import com.michael.pinyin.SimplePinYin;
 import com.michael.pinyin.StandardStrategy;
+import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
@@ -48,11 +52,32 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
 
         // 保存
         String id = empDao.save(emp);
+
+        // 保存角色（岗位）
+        savePosition(emp.getRoles(), id);
+
         return id;
+    }
+
+    /**
+     * @param roles 角色ID列表，用,进行分隔
+     * @param id    员工ID
+     */
+    private void savePosition(String roles, String id) {
+        if (StringUtils.isNotEmpty(roles)) {
+            String rolesIds[] = roles.split(",");
+            for (String roleId : rolesIds) {
+                PositionEmp pe = new PositionEmp();
+                pe.setEmpId(id);
+                pe.setPositionId(roleId);
+                positionEmpDao.save(pe);
+            }
+        }
     }
 
     private void validate(Emp emp) {
         ValidatorUtils.validate(emp);
+
         // 检查用户编号
         if (StringUtils.isNotEmpty(emp.getCode())) {
             boolean hasCode = empDao.hasCode(emp.getCode(), emp.getId());
@@ -70,10 +95,20 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
 
         // 验证合法性
         validate(emp);
+        if (StringUtils.isEmpty(emp.getPinyin())) {
+            emp.setPinyin(new SimplePinYin().toPinYin(emp.getName(), new StandardStrategy()));
+        }
 
-        emp.setPinyin(new SimplePinYin().toPinYin(emp.getName(), new StandardStrategy()));
+        // 删除之前的岗位，并重新建立关系
+        positionEmpDao.deleteByEmp(emp.getId());
+        savePosition(emp.getRoles(), emp.getId());
 
-        // 机构变更的问题 获取原来的机构，改变新的
+        // 触发相关的事件
+        EmpEvent empEvent = SystemContainer.getInstance().getBean(EmpEvent.class);
+        if (empEvent != null) {
+            empEvent.onUpdate(empDao.findById(emp.getId()), emp);
+        }
+
         empDao.update(emp);
     }
 
@@ -207,5 +242,20 @@ public class EmpServiceImpl implements EmpService, BeanWrapCallback<Emp, EmpVo> 
         ParameterContainer container = ParameterContainer.getInstance();
         vo.setSexName(container.getBusinessName(BaseParameter.SEX, emp.getSex()));
         vo.setDutyName(container.getBusinessName(BaseParameter.DUTY, emp.getDuty()));
+
+        // 查询员工的角色列表（进行回显）
+        List<Position> positions = positionEmpDao.queryByEmp(emp.getId());
+        if (positions != null && !positions.isEmpty()) {
+            StringBuilder builderNames = new StringBuilder();
+            StringBuilder builderIds = new StringBuilder();
+
+            for (Position p : positions) {
+                builderIds.append(",").append(p.getId());
+                builderNames.append(",").append(p.getName());
+            }
+            vo.setRoleIds(builderIds.substring(1));
+            vo.setRoleNames(builderNames.substring(1));
+        }
+
     }
 }

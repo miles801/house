@@ -2,11 +2,14 @@ package com.michael.base.position.dao.impl;
 
 import com.michael.base.position.bo.PositionEmpBo;
 import com.michael.base.position.dao.PositionEmpDao;
+import com.michael.base.position.domain.Position;
 import com.michael.base.position.domain.PositionEmp;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
@@ -81,11 +84,34 @@ public class PositionEmpDaoImpl extends HibernateDaoHelper implements PositionEm
     }
 
     @Override
+    public void deleteByEmp(String empId) {
+        Assert.hasText(empId, "删除失败!员工ID不能为空!");
+        getSession().createQuery("delete from " + PositionEmp.class.getName() + " pe where pe.empId=?")
+                .setParameter(0, empId)
+                .executeUpdate();
+    }
+
+    @Override
     public Long queryEmpTotal(String positionId) {
         Assert.hasText(positionId, "查询失败!岗位ID不能为空!");
         return (Long) createRowCountsCriteria(PositionEmp.class)
                 .add(Restrictions.eq("positionId", positionId))
                 .uniqueResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Position> queryByEmp(String empId) {
+        Assert.hasText(empId, "岗位查询失败!员工ID不能为空!");
+        DetachedCriteria findPositionIds = DetachedCriteria.forClass(PositionEmp.class)
+                .setProjection(Projections.property("positionId"))
+                .add(Restrictions.eq("empId", empId));
+
+        return createCriteria(Position.class)
+                .add(Property.forName("id").in(findPositionIds))
+                .setFirstResult(0)
+                .setMaxResults(Integer.MAX_VALUE)
+                .list();
     }
 
     @Override

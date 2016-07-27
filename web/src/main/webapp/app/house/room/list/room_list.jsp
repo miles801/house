@@ -106,11 +106,11 @@
                                              anyone-selected="anyone"></div>
                                     </td>
                                     <td style="width: 40px;">序号</td>
-                                    <td>楼栋</td>
-                                    <td>单元</td>
+                                    <td style="width: 40px;">楼栋</td>
+                                    <td style="width: 40px;">单元</td>
                                     <td>楼层</td>
-                                    <td>房屋编号</td>
-                                    <td>门牌号</td>
+                                    <td style="width: 120px;">房屋编号</td>
+                                    <td style="width: 80px;">门牌号</td>
                                     <td>面积</td>
                                     <td>户型(室-厅-厨-卫)</td>
                                     <td>朝向</td>
@@ -133,35 +133,35 @@
                                         <td bo-text="foo.unitCode"></td>
                                         <td>
                                             <input type="text" ng-model="foo.floor" validate validate-required
-                                                   validate-int ng-change="check(foo);"/>
+                                                   validate-int ng-change="check(foo);" style="width: 50px;"/>
                                         </td>
                                         <td bo-text="foo.roomKey"></td>
                                         <td>
                                             <input type="text" name="code" ng-model="foo.code" validate
-                                                   validate-required ng-change="check(foo);"/>
+                                                   validate-required ng-change="check(foo);" style="width: 60px;"/>
                                         </td>
                                         <td>
                                             <input type="text" ng-model="foo.square" validate validate-required
-                                                   validate-float ng-change="check(foo);"/>
+                                                   validate-float ng-change="check(foo);" style="width: 60px;"/>
                                         </td>
                                         <td>
-                                            <input type="text" ng-model="foo.type1" style="width: 50px;" validate
+                                            <input type="text" ng-model="foo.type1" style="width: 40px;" validate
                                                    validate-required validate-int
                                                    placeholder="室" ng-change="check(foo);"/>
-                                            <input type="text" ng-model="foo.type2" style="width: 50px;" validate
+                                            <input type="text" ng-model="foo.type2" style="width: 40px;" validate
                                                    validate-required validate-int ng-change="check(foo);"
                                                    placeholder="厅"/>
-                                            <input type="text" ng-model="foo.type3" style="width: 50px;" validate
+                                            <input type="text" ng-model="foo.type3" style="width: 40px;" validate
                                                    validate-required validate-int ng-change="check(foo);"
                                                    placeholder="厨"/>
-                                            <input type="text" ng-model="foo.type4" style="width: 50px;" validate
+                                            <input type="text" ng-model="foo.type4" style="width: 40px;" validate
                                                    validate-required validate-int ng-change="check(foo);"
                                                    placeholder="卫"/>
                                         </td>
                                         <td>
                                             <select ng-model="foo.orient"
                                                     ng-options="o.value as o.name for o in orients"
-                                                    ng-change="check(foo);"></select>
+                                                    ng-change="check(foo);" style="min-width: 60px;"></select>
                                         </td>
                                         <td>
                                             <a class="btn-op blue" ng-disabled="foo.$invalid" ng-click="save(foo);"

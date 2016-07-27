@@ -6,7 +6,6 @@
     var app = angular.module('base.position', [
         'ngResource',
         'eccrm.angular',
-        'eccrm.base.param',
         'eccrm.angularstrap'
     ]);
 
@@ -64,9 +63,6 @@
         })
     });
 
-    app.service('PositionParam', function (ParameterLoader) {
-        return {};
-    });
 
     app.service('PositionTree', function (CommonUtils, PositionService) {
         return {
@@ -272,6 +268,156 @@
                 }
                 var o = angular.extend({}, options, {pageType: 'view'});
                 common(o, callback);
+            },
+            /**
+             * 单选岗位
+             */
+            pick: function (options, callback) {
+                var modal = $modal({
+                    template: CommonUtils.contextPathURL('/app/base/position/template/modal-position.ftl.html'),
+                    backdrop: 'static'
+                });
+                var $scope = modal.$scope;
+                options = options || {};
+                $scope.condition = angular.extend({}, options.condition);
+                callback = callback || options.callback;
+
+                // 分页对象
+                $scope.pager = {
+                    limit: 5,
+                    fetch: function () {
+                        return CommonUtils.promise(function (defer) {
+                            var obj = angular.extend({deleted: false}, $scope.condition, {
+                                start: $scope.pager.start,
+                                limit: $scope.pager.limit
+                            });
+                            var promise = PositionService.pageQuery(obj, function (data) {
+                                data = data.data || {total: 0};
+                                $scope.beans = data;
+                                defer.resolve(data.total);
+                            });
+                            CommonUtils.loading(promise);
+                        });
+                    },
+                    finishInit: function () {
+                        this.query();
+                    }
+                };
+
+                // 清空查询条件
+                $scope.clear = function () {
+                    $scope.condition = {deleted: false};
+                };
+
+                // 查询
+                $scope.query = function () {
+                    $scope.pager.query();
+                };
+
+                // 点击确认
+                $scope.confirm = function () {
+                    if (angular.isFunction(callback)) {
+                        callback.call($scope, $scope.selected);
+                        modal.hide();
+                    }
+                }
+            },
+
+            /**
+             * 多选岗位
+             * options可配置内容
+             * ids:[] 岗位ID
+             * names:[] 岗位名称
+             * @param options 配置项
+             * @param callback 回调
+             */
+            pickMulti: function (options, callback) {
+                var modal = $modal({
+                    template: CommonUtils.contextPathURL('/app/base/position/template/modal-position-multi.ftl.html'),
+                    backdrop: 'static'
+                });
+                var $scope = modal.$scope;
+                options = options || {};
+                $scope.condition = angular.extend({}, options.condition);
+                callback = callback || options.callback;
+
+                $scope.items = [];
+                // 回显已选岗位（右侧回显）
+                if (options.ids && options.names && options.ids.length == options.names.length) {
+                    angular.forEach(options.ids, function (id, index) {
+                        if (id) {
+                            $scope.items.push({id: id, name: options.names[index]});
+                        }
+                    });
+                }
+                // 分页对象
+                $scope.pager = {
+                    limit: 10,
+                    fetch: function () {
+                        return CommonUtils.promise(function (defer) {
+                            var obj = angular.extend({deleted: false}, $scope.condition, {
+                                start: $scope.pager.start,
+                                limit: $scope.pager.limit
+                            });
+                            var promise = PositionService.pageQuery(obj, function (data) {
+                                data = data.data || {};
+                                $scope.beans = data;
+                                // 回显（左侧勾选）
+                                angular.forEach($scope.items, function (item, index) {
+                                    var id = item.id;
+                                    angular.forEach(data.data || [], function (o) {
+                                        if (o.id == id) {
+                                            o.isSelected = true;
+                                        }
+                                    });
+                                });
+                                defer.resolve(data.total);
+                            });
+                            CommonUtils.loading(promise, '加载中...');
+                        });
+                    }, finishInit: function () {
+                        this.query();
+                    }
+                };
+
+                // 清空查询条件
+                $scope.clear = function () {
+                    $scope.condition = {};
+                };
+
+                // 移除选中项
+                $scope.remove = function (index) {
+                    $scope.items[index].isSelected = false;
+                };
+
+                // 查询
+                $scope.query = function () {
+                    $scope.pager.query();
+                };
+
+                // 点击确认
+                $scope.confirm = function () {
+                    if (angular.isFunction(callback)) {
+                        callback.call($scope, $scope.items);
+                        modal.hide();
+                    }
+                };
+
+                ModalFactory.afterShown(modal, function () {
+                    $('input').bind('keydown', function (e) {
+                        var code = e.which || e.keyCode;
+                        if (code == 13) {
+                            $scope.query();
+                            e.preventDefault();
+                        }
+                    });
+
+                    $scope.$on('destroy', function () {
+                        alert('移除');
+                        $('input').unbind('keydown');
+                    });
+                });
+
             }
         }
     });

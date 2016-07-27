@@ -67,7 +67,8 @@
         $scope.detail = function (code) {
             CommonUtils.addTab({
                 title: '房屋明细',
-                url: '/house/room/view?code=' + code
+                url: '/house/room/view?code=' + code,
+                onUpdate: $scope.query
             });
 
         };
@@ -138,7 +139,7 @@
             var o = angular.extend({}, $scope.condition);
             o.start = null;
             o.limit = null;
-            window.location.href = CommonUtils.contextPathURL('/house/room/export?' + $.param(o));
+            window.open(CommonUtils.contextPathURL('/house/room/export?' + $.param(o)));
         };
     });
 })(window, angular, jQuery);

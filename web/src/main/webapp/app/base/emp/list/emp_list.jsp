@@ -76,7 +76,7 @@
                                 <td>登录名</td>
                                 <td>电话</td>
                                 <td>性别</td>
-                                <td>职务</td>
+                                <td>岗位</td>
                                 <td>账号状态</td>
                                 <td>组织机构</td>
                                 <td>操作</td>
@@ -94,7 +94,7 @@
                                 <td bo-text="foo.loginName"></td>
                                 <td bo-text="foo.mobile"></td>
                                 <td bo-text="foo.sexName"></td>
-                                <td bo-text="foo.dutyName"></td>
+                                <td bo-text="foo.roleNames"></td>
                                 <td bo-text="foo.lockedName"></td>
                                 <td bo-text="foo.orgName"></td>
                                 <td>

@@ -7,10 +7,11 @@
         'eccrm.angular',
         'eccrm.angular.ztree',
         'base.org',
+        'base.position',
         'eccrm.angularstrap'
     ]);
 
-    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, EmpService, Params, OrgTree) {
+    app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, EmpService, ParameterLoader, OrgTree, PositionModal) {
 
         var pageType = $scope.pageType = $('#pageType').val();
         var id = $('#id').val();
@@ -19,13 +20,8 @@
 
         // 性别
         $scope.sex = [{name: '请选择...'}];
-        Params.sex(function (data) {
+        ParameterLoader.loadBusinessParam('BP_SEX', function (data) {
             $scope.sex.push.apply($scope.sex, data)
-        });
-        // 职务
-        $scope.duty = [{name: '请选择...'}];
-        Params.duty(function (data) {
-            $scope.duty.push.apply($scope.duty, data)
         });
 
         // 头像
@@ -81,6 +77,30 @@
         });
 
         $scope.beans = {};
+
+        // 选择岗位
+        $scope.pickPosition = function () {
+            // 获取已保存的岗位信息
+            var beans = $scope.beans;
+            var ids = (beans.roleIds || '').split(',');
+            var names = (beans.roleNames || '').split(',');
+            // 选择岗位
+            PositionModal.pickMulti({ids: ids, names: names}, function (ps) {
+                var pIds = [];
+                var pNames = [];
+                angular.forEach(ps || [], function (p) {
+                    pIds.push(p.id);
+                    pNames.push(p.name);
+                });
+                beans.roleNames = pNames.join(",");
+                beans.roles = pIds.join(",");
+            });
+        };
+
+        // 清除岗位
+        $scope.clearPosition = function () {
+            $scope.beans.roles = null;
+        };
 
         /**
          * 清除机构信息

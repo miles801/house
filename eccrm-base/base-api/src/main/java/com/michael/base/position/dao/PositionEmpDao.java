@@ -1,6 +1,7 @@
 package com.michael.base.position.dao;
 
 import com.michael.base.position.bo.PositionEmpBo;
+import com.michael.base.position.domain.Position;
 import com.michael.base.position.domain.PositionEmp;
 
 import java.util.List;
@@ -51,10 +52,26 @@ public interface PositionEmpDao {
     List<String> queryEmp(String positionId);
 
     /**
+     * 删除指定员工的所有岗位
+     *
+     * @param empId 员工ID
+     */
+    void deleteByEmp(String empId);
+
+    /**
      * 查询指定岗位下员工的数量
      *
      * @param positionId 岗位ID
      * @return 数量
      */
     Long queryEmpTotal(String positionId);
+
+    /**
+     * 查询员工的岗位列表
+     *
+     * @param empId 员工ID
+     * @return 岗位列表
+     */
+    List<Position> queryByEmp(String empId);
+
 }

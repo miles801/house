@@ -7,6 +7,7 @@ import eccrm.base.attachment.AttachmentSymbol;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 员工
@@ -89,6 +90,17 @@ public class Emp extends CommonDomain implements AttachmentSymbol {
     @Column(length = 40, name = "position_level")
     private String duty;
 
+    @ApiField(value = "角色ID", desc = "多个值使用逗号进行分隔")
+    @Transient
+    private String roles;
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
     public String businessId() {
         return getId();

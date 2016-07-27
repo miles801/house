@@ -1028,37 +1028,57 @@
                 },
                 template: '<input type="checkbox" ng-model="master" ng-change="masterChange()" ng-cloak>',
                 controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-                    if (!$scope.items) $scope.items = [];
+                    if ($scope.items == undefined || $scope.items == null) $scope.items = [];
                     //根改变
+                    var items = $scope.items;
                     $scope.masterChange = function () {
                         if ($scope.master) {
                             angular.forEach($scope.checkboxes, function (cb) {
-                                $scope.items.push(cb);
+                                items.push(cb);
                                 cb.isSelected = true;
                             });
                         } else {
-                            $scope.items = [];
+                            if (items.length > 0) {
+                                items.splice(0, items.length);
+                            }
                             angular.forEach($scope.checkboxes, function (cb) {
                                 cb.isSelected = false;
                             });
                         }
                     };
+                    var key = $attrs['itemKey'];    // key用于比较两个对象是否一致的关键属性，例如id或者code
+                    // 监听所有的checkbox的值的变化
                     var destroy = $scope.$watch('checkboxes', function (value) {
-                        var allSet = true,
-                            allClear = true;
-                        if (!value)$scope.items = [];//当checkbox的值发生变化时，清空选中的内容
-                        angular.forEach(value, function (cb) {
-                            var _ind = $.inArray(cb, $scope.items);
-                            if (cb.isSelected) {
-                                if (_ind == -1) {
-                                    $scope.items && $scope.items.push(cb);
-                                }
-                                allClear = false;
+                        var allSet = true, allClear = true;
+                        angular.forEach(value, function (item) {
+                            // item在$scope.items中的下标
+                            var index = -1;
+                            if (!key) {
+                                index = $.inArray(item, items);
                             } else {
-                                allSet = false;
-                                if (_ind != -1) {
-                                    $scope.items && $scope.items.splice(_ind, 1);
+                                for (var i = 0; i < items.length; i++) {
+                                    if (items[i][key] == item[key]) {
+                                        index = i;
+                                        break;
+                                    }
                                 }
+                            }
+                            // 如果item被选中，则加入到$scope.items中（如果还未加入的话）
+                            if (item.isSelected) {
+                                if (index == -1) {
+                                    items.push(item);
+                                } else {
+                                    items[index] = item;
+                                }
+                                allClear = false;   // 将“全部取消”置为false
+                            }
+
+                            // 如果item没有被选中，则从$scope.items中移除（如果存在的话）
+                            if (!item.isSelected) {
+                                if (index != -1) {
+                                    $scope.items.splice(index, 1);
+                                }
+                                allSet = false;
                             }
                         });
 
@@ -1235,4 +1255,3 @@
         });
     })
 })(jQuery);
-

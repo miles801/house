@@ -70,7 +70,7 @@
             var o = angular.extend({}, $scope.condition);
             o.start = null;
             o.limit = null;
-            window.location.href = CommonUtils.contextPathURL('/house/room/export?' + $.param(o));
+            window.open(CommonUtils.contextPathURL('/house/room/export?' + encodeURI(encodeURI($.param(o)))));
         };
     });
 })(window, angular, jQuery);
