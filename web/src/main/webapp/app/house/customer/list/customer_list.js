@@ -10,6 +10,7 @@
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
         $scope.condition = {
+            manager: $('#isManager').val(),
             orderBy: 'code',
             reverse: true
         };

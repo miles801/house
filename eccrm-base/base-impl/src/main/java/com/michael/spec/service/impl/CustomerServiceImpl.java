@@ -291,6 +291,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     @Override
     public void batchDeny(String[] customerIds) {
         Assert.notEmpty(customerIds, "操作失败!ID不能为空!");
+        ParameterContainer parameterContainer = ParameterContainer.getInstance();
         for (String id : customerIds) {
             Customer customer = customerDao.findById(id);
             if (customer == null) {
@@ -299,6 +300,22 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             String status = customer.getStatus();
             if (Room.STATUS_APPLY_ADD.equals(status)) {
                 customer.setStatus(Room.STATUS_INVALID_ADD);
+
+                // 当客户的审批没有通过时，对应的房屋的状态也要改成新增申请无效
+                List<Room> rooms = roomDao.findByCustomer(id);
+                if (rooms != null && !rooms.isEmpty()) {
+                    for (Room room : rooms) {
+                        // 日志
+                        RoomNews news = new RoomNews();
+                        news.setRoomId(room.getId());
+                        String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+                        news.setContent(String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_APPLY_ADD), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID_ADD)));
+                        SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
+
+                        // 变更状态
+                        room.setStatus(Room.STATUS_INVALID_ADD);    // 状态为"无效新增申请"
+                    }
+                }
             } else if (Room.STATUS_APPLY_INVALID.equals(status)) {
                 customer.setStatus(Room.STATUS_ACTIVE);
             } else {

@@ -18,6 +18,11 @@
 </head>
 <body>
 <div class="main condition-row-2" ng-app="house.customer.apply" ng-controller="Ctrl">
+    <div class="dn">
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+            <input type="hidden" id="isManager" value="true"/>
+        </c:if>
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">

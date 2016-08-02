@@ -23,6 +23,7 @@ import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
+import com.ycrl.core.hibernate.HibernateUtils;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.string.StringUtils;
@@ -147,10 +148,17 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     public void addCustomer(String id, Customer customer, RoomBusiness roomBusiness) {
         Assert.hasText(id, "操作失败!ID不能为空!");
         Assert.notNull(customer, "操作失败!客户信息不能为空!");
+        Room room = roomDao.findRoomById(id);
+        Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
+
         SystemContainer beanContainer = SystemContainer.getInstance();
         RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
-        CustomerService customerService = beanContainer.getBean(CustomerService.class);
         String customerId = customer.getId();
+        // 给客户设置所属楼栋
+        String buildingId = room.getBuildingId();
+        customer.setBuildingId(buildingId);
+
+
         RoomNews news = new RoomNews();
         if (StringUtils.isEmpty(customerId)) {
             customerId = beanContainer.getBean(CustomerService.class).save(customer);
@@ -161,13 +169,11 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             String content = compare(customer, originCus);
             news.setContent(content);
             ValidatorUtils.validate(customer);
-//            boolean exists = customerDao.hasPhone(customer.getPhone1(), customerId);
-//            Assert.isTrue(!exists, "操作失败!电话号码[" + customer.getPhone1() + "]已经被其他客户注册使用!");
-            BeanUtils.copyProperties(customer, originCus);
-            customer.setId(null);
+            // 更新客户信息
+            HibernateUtils.evict(originCus);
+            customerDao.update(customer);
         }
-        Room room = roomDao.findRoomById(id);
-        Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
+
 
         // 设置变更信息（添加到最新动态）
         String originCustomerId = room.getCustomerId();
@@ -185,12 +191,12 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             roomBusiness.setOriginCustomerId(originCustomerId);
             roomBusiness.setNewCustomerId(customerId);
             beanContainer.getBean(RoomBusinessService.class).save(roomBusiness);
-        } else {
-
         }
 
+        // 保存最新动态
         roomNewsService.save(news);
 
+        // 给房屋设置客户ID
         room.setCustomerId(customerId);
     }
 
@@ -269,22 +275,37 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Override
     public void batchPass(String[] ids) {
+        ParameterContainer parameterContainer = ParameterContainer.getInstance();
         for (String id : ids) {
             Room room = roomDao.findRoomById(id);
             if (room == null) {
                 continue;
             }
-            String status = room.getStatus();
-            if (Room.STATUS_APPLY_INVALID.equals(status)) {     // 无效申请  -->  电话无效
-                room.setStatus(Room.STATUS_INVALID);
-            } else if (Room.STATUS_APPLY_ADD.equals(status)) {    // 新增申请 --> 正常
-                room.setStatus(Room.STATUS_ACTIVE);
-                // 同时将该房屋对应的客户的状态也变为正常
-                String customerId = room.getCustomerId();
-                if (StringUtils.isNotEmpty(customerId)) {
-                    Customer customer = customerDao.findById(customerId);
-                    Assert.notNull(customer, "操作失败!房屋对应的客户已经不存在，请刷新后重试!");
-                    customer.setStatus(Room.STATUS_ACTIVE);
+            String originStatus = room.getStatus();
+            String newStatus = null;
+            if (Room.STATUS_APPLY_INVALID.equals(originStatus)) {     // 无效申请  -->  电话无效
+                newStatus = Room.STATUS_INVALID;
+            } else if (Room.STATUS_APPLY_ADD.equals(originStatus)) {    // 新增申请 --> 正常
+                newStatus = Room.STATUS_ACTIVE;
+            }
+            room.setStatus(Room.STATUS_ACTIVE);
+
+            // 同时将该房屋对应的客户的状态也变为正常
+            String customerId = room.getCustomerId();
+            if (StringUtils.isNotEmpty(customerId)) {
+                Customer customer = customerDao.findById(customerId);
+                Assert.notNull(customer, "数据错误!房屋对应的客户已经不存在，请与管理员联系!房屋编号[" + room.getRoomKey() + "]");
+                String customerStatus = customer.getStatus();
+                if (originStatus.equals(customerStatus)) { // 只有新增申请的客户状态才需要同时变更
+                    customer.setStatus(newStatus);
+
+                    // 写入客户最新状态
+                    CustomerNews customerNews = new CustomerNews();
+                    customerNews.setCustomerId(customerId);
+                    String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+                    customerNews.setContent(String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, originStatus), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, newStatus)));
+                    SystemContainer.getInstance().getBean(CustomerNewsService.class).save(customerNews);
+
                 }
             }
         }
@@ -292,16 +313,39 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Override
     public void batchDeny(String[] ids) {
+        ParameterContainer parameterContainer = ParameterContainer.getInstance();
         for (String id : ids) {
             Room room = roomDao.findRoomById(id);
             if (room == null) {
                 continue;
             }
-            String status = room.getStatus();
-            if (Room.STATUS_APPLY_INVALID.equals(status)) {         // 无效电话申请 --> 正常
-                room.setStatus(Room.STATUS_ACTIVE);
-            } else if (Room.STATUS_APPLY_ADD.equals(status)) {    // 申请新增 --> 新增无效
-                room.setStatus(Room.STATUS_INVALID_ADD);
+            String originStatus = room.getStatus();
+            String newStatus = null;
+            if (Room.STATUS_APPLY_INVALID.equals(originStatus)) {         // 无效电话申请 --> 正常
+                newStatus = Room.STATUS_ACTIVE;
+            } else if (Room.STATUS_APPLY_ADD.equals(originStatus)) {    // 申请新增 --> 新增无效
+                newStatus = Room.STATUS_INVALID_ADD;
+            }
+
+            room.setStatus(newStatus);
+
+            // 对应的客户信息也要变更为“新增无效”
+            String customerId = room.getCustomerId();
+            if (StringUtils.isNotEmpty(customerId)) {
+                Customer customer = customerDao.findById(customerId);
+                Assert.notNull(customer, "数据错误!房屋对应的客户已经不存在，请与管理员联系!房屋编号[" + room.getRoomKey() + "]");
+                String customerStatus = customer.getStatus();
+                if (originStatus.equals(customerStatus)) { // 只有新增申请的客户状态才需要同时变更
+                    customer.setStatus(newStatus);
+
+                    // 写入客户最新状态
+                    CustomerNews customerNews = new CustomerNews();
+                    customerNews.setCustomerId(customerId);
+                    String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+                    customerNews.setContent(String.format(template, parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, originStatus), parameterContainer.getSystemName(HouseParams.HOUSE_STATUS, newStatus)));
+                    SystemContainer.getInstance().getBean(CustomerNewsService.class).save(customerNews);
+
+                }
             }
         }
     }
