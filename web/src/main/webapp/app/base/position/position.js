@@ -76,7 +76,11 @@
                     data: function () {
                         return CommonUtils.promise(function (defer) {
                             var promise = PositionService.validTree(function (data) {
-                                defer.resolve(data.data || []);
+                                data = data.data || [];
+                                angular.forEach(data, function (o) {
+                                    o.open = true;
+                                });
+                                defer.resolve(data);
                             });
                             CommonUtils.loading(promise);
                         });
@@ -123,6 +127,9 @@
 
                 var promise = PositionService.tree(function (data) {
                     data = data.data || [];
+                    angular.forEach(data, function (o) {
+                        o.open = true;
+                    });
                     var treeObj = $.fn.zTree.init($("#" + id), setting, data);
                     defer.resolve(treeObj);
                 });
@@ -178,6 +185,9 @@
 
                 var promise = PositionService.validTree(function (data) {
                     data = data.data || [];
+                    angular.forEach(data, function (o) {
+                        o.open = true;
+                    });
                     var treeObj = $.fn.zTree.init($("#" + options.id), setting, data);
                     defer.resolve(treeObj);
                 });

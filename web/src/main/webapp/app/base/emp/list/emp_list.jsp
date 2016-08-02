@@ -18,6 +18,12 @@
 </head>
 <body>
 <div class="main condition-row-1" ng-app="base.emp.list" ng-controller="Ctrl">
+    <div class="dn">
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+            <input type="hidden" id="isManager" value="true"/>
+        </c:if>
+        <input type="hidden" id="empId" value="${sessionScope.get('employeeId')}"/>
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -98,7 +104,8 @@
                                 <td bo-text="foo.lockedName"></td>
                                 <td bo-text="foo.orgName"></td>
                                 <td>
-                                    <a ng-disabled="foo.locked!==0" ng-click="foo.locked!==0||modify(foo.id);" class="btn-op blue">编辑</a>
+                                    <a ng-disabled="foo.locked!==0" ng-click="foo.locked!==0||modify(foo.id);"
+                                       class="btn-op blue">编辑</a>
                                     <a ng-disabled="foo.locked!==0" ng-click="foo.locked!==0||remove(foo.id);"
                                        class="btn-op red">禁用</a>
                                     <a ng-disabled="foo.locked!==1" ng-click="foo.locked!==1 || start(foo.id);"

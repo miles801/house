@@ -159,11 +159,21 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
     }
 
     private void initCriteria(Criteria criteria, RoomBo bo) {
+        if (bo == null) {
+            return;
+        }
         Assert.notNull(criteria, "criteria must not be null!");
-        boolean isNotManager = !(bo != null && bo.getManager() != null && bo.getManager());
         CriteriaUtils.addCondition(criteria, bo);
+        // 不是超管，则获得当前员工的负责和维护的所有数据
+        boolean isNotManager = !(bo.getManager() != null && bo.getManager());
         if (isNotManager && StringUtils.isEmpty(bo.getBuildingId())) {
-            criteria.add(Property.forName("buildingId").in(buildingDao.getPersonalBuilding(SecurityContext.getEmpId())));
+            // 如果是负责人，则获取负责的楼盘的房屋;否则获取负责的和维护的所有数据
+            boolean isMaster = bo.getMaster() != null && bo.getMaster();
+            if (isMaster) {
+                criteria.add(Property.forName("buildingId").in(buildingDao.getMasterBuilding(SecurityContext.getEmpId())));
+            } else {
+                criteria.add(Property.forName("buildingId").in(buildingDao.getPersonalBuilding(SecurityContext.getEmpId())));
+            }
         }
     }
 

@@ -74,4 +74,12 @@ public interface PositionEmpDao {
      */
     List<Position> queryByEmp(String empId);
 
+    /**
+     * 查询指定员工的岗位ID集合
+     *
+     * @param empId 员工ID
+     * @return 岗位ID集合
+     */
+    List<String> queryEmpPositionIds(String empId);
+
 }

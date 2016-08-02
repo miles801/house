@@ -89,11 +89,22 @@ public class RoomBo implements BO {
     @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
     private String creatorName;
 
+    // 如果值为true，则表示查询所有数据
     private Boolean manager;
+
+    // 如果值为true，则表示只查询自己负责的楼盘的数据
+    private Boolean master;
 
     @Condition
     private String customerId;
 
+    public Boolean getMaster() {
+        return master;
+    }
+
+    public void setMaster(Boolean master) {
+        this.master = master;
+    }
 
     public String getCustomerId() {
         return customerId;

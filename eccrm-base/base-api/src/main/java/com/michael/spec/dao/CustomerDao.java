@@ -57,4 +57,15 @@ public interface CustomerDao {
      * @return TRUE已经被注册
      */
     boolean hasPhone(String phone1, String id);
+
+    /**
+     * 判断一个客户是否重复
+     *
+     * @param buildingId 楼盘ID
+     * @param name       姓名
+     * @param phone1     电话
+     * @param id         排除的ID
+     * @return true重复
+     */
+    boolean hasSame(String buildingId, String name, String phone1, String id);
 }

@@ -3,11 +3,10 @@ package com.michael.base.position.service.impl;
 import com.michael.base.position.bo.PositionBo;
 import com.michael.base.position.dao.PositionDao;
 import com.michael.base.position.dao.PositionEmpDao;
-import com.michael.base.position.dao.PositionRelationDao;
 import com.michael.base.position.domain.Position;
-import com.michael.base.position.domain.PositionRelation;
 import com.michael.base.position.service.PositionService;
 import com.michael.base.position.vo.PositionVo;
+import com.michael.tree.TreeBuilder;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
@@ -30,43 +29,44 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
     @Resource
     private PositionEmpDao positionEmpDao;
 
-    @Resource
-    private PositionRelationDao positionRelationDao;
 
     @Override
     public String save(Position position) {
         position.setDeleted(false);
+        // 构建树形对象
+        TreeBuilder<Position> treeBuilder = new TreeBuilder<Position>();
+        treeBuilder.beforeSave(position);
+
+        // 验证合法性
+        validate(position);
+
+        // 保存
+        return positionDao.save(position);
+
+    }
+
+    private void validate(Position position) {
         ValidatorUtils.validate(position);
-        String id = positionDao.save(position);
-        // 给所有的父节点添加孩子节点
-        String parentId = position.getParentId();
-        if (StringUtils.isNotEmpty(parentId)) {
-            // 保存直接上级的关系
-            Position parent = positionDao.findById(parentId);
-            Assert.notNull(parent, "保存失败!上级岗位不存在!请刷新后重试!");
-            parent.setParent(true);
-            PositionRelation relation = new PositionRelation();
-            relation.setPositionId(parentId);
-            relation.setChildId(id);
-            positionRelationDao.save(relation);
 
-            // 通过直接上级保存关联上级的关系
-            List<String> parentIds = positionRelationDao.findParents(position.getParentId());
-            for (String pid : parentIds) {
-                PositionRelation pr = new PositionRelation();
-                pr.setChildId(id);
-                pr.setPositionId(pid);
-                positionRelationDao.save(pr);
-            }
+        // 验证编号是否重复
+        boolean hasCode = positionDao.hasCode(position.getCode(), position.getId());
+        Assert.isTrue(!hasCode, "操作失败!编号为[" + position.getCode() + "]的岗位已经存在!");
 
-        }
+        // 验证同一级下名称是否重复
+        boolean hasName = positionDao.hasName(position.getName(), position.getParentId(), position.getId());
+        Assert.isTrue(!hasName, "操作失败!名称为[" + position.getName() + "]的岗位已经存在!(同一层级下岗位名称不能重复)");
 
-        return id;
     }
 
     @Override
     public void update(Position position) {
-        ValidatorUtils.validate(position);
+        // 验证
+        validate(position);
+
+        // 预设树形对象数据
+        new TreeBuilder<Position>().beforeUpdate(position);
+
+        // 更新
         positionDao.update(position);
     }
 
@@ -78,7 +78,6 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
         if (total == null || total == 0) return vo;
         List<Position> positionList = positionDao.query(bo);
         List<PositionVo> vos = BeanWrapBuilder.newInstance()
-                .setCallback(this)
                 .wrapList(positionList, PositionVo.class);
         vo.setData(vos);
         return vo;
@@ -96,16 +95,19 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
     public void disable(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
+            if (StringUtils.isEmpty(id)) {
+                continue;
+            }
             Position position = positionDao.findById(id);
             Assert.notNull(position, "禁用失败!数据不存在，请刷新后重试!");
             position.setDeleted(true);
 
             // 禁用所有下级
-            List<String> childrenPositionIds = positionRelationDao.findChildren(id);
-            for (String childId : childrenPositionIds) {
-                Position child = positionDao.findById(childId);
+            List<Position> children = positionDao.children(id);
+            for (Position child : children) {
                 child.setDeleted(true);
             }
+
         }
     }
 
@@ -117,11 +119,17 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
             Assert.notNull(position, "启用失败!数据不存在，请刷新后重试!");
             position.setDeleted(false);
 
-            // 启用所有上级
-            List<String> childrenPositionIds = positionRelationDao.findParents(id);
-            for (String childId : childrenPositionIds) {
-                Position child = positionDao.findById(childId);
-                child.setDeleted(false);
+            // 启用所有上级（利用path获取上级，所以必须保证path属性的正确性）
+            if (StringUtils.isNotEmpty(position.getParentId())) {
+                String path[] = position.getPath().split("/");
+                for (String p : path) {
+                    if (StringUtils.isEmpty(p) || p.equals(id)) {
+                        continue;
+                    }
+                    Position parent = positionDao.findById(p);
+                    Assert.notNull(parent, String.format("数据错误!岗位[%s(%s)]的上级岗位已经不存在，请与管理员联系处理!", position.getName(), position.getCode()));
+                    parent.setDeleted(false);
+                }
             }
         }
     }
@@ -132,7 +140,6 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
         bo.setDeleted(false);
         List<Position> data = positionDao.query(bo);
         return BeanWrapBuilder.newInstance()
-                .addProperties(new String[]{"id", "name", "code", "parentId", "parentName", "empCounts"})
                 .wrapList(data, PositionVo.class);
     }
 
@@ -140,22 +147,9 @@ public class PositionServiceImpl implements PositionService, BeanWrapCallback<Po
     public List<PositionVo> tree() {
         List<Position> data = positionDao.query(null);
         return BeanWrapBuilder.newInstance()
-                .addProperties(new String[]{"id", "name", "code", "parentId", "parentName", "deleted"})
                 .wrapList(data, PositionVo.class);
     }
 
-    @Override
-    public Integer addEmp(String positionId, int counts) {
-        Assert.hasText(positionId, "添加员工失败!岗位ID不能为空!");
-        Position position = positionDao.findById(positionId);
-        Assert.notNull(position, "添加员工失败!岗位不存在，请刷新后重试!");
-//        if (position.getMaxEmp() != null) {
-//            Assert.isTrue(IntegerUtils.add(position.getEmpCounts(), counts) <= IntegerUtils.add(position.getMaxEmp(), 0), "添加员工失败!超出该岗位允许的最大员工数量!");
-//        }
-//        position.setEmpCounts(IntegerUtils.add(position.getEmpCounts(), counts));
-//        return position.getEmpCounts();
-        return 0;
-    }
 
     @Override
     public void doCallback(Position position, PositionVo vo) {

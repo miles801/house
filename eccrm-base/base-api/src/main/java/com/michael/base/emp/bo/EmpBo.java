@@ -60,8 +60,19 @@ public class EmpBo implements BO {
     @Condition(matchMode = MatchModel.NULL, target = "attendanceNo")
     private Boolean hasAttendance;
 
+    @ApiField("查询由指定人创建以及从属创建的信息")
+    private String creatorId;
+
     @Condition(matchMode = MatchModel.IN, target = "id")
     private List<String> ids;
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
 
     public String getLoginName() {
         return loginName;

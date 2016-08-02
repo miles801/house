@@ -49,11 +49,32 @@ public class CustomerBo implements BO {
     private String duty;
 
     @Condition
+    private String buildingId;
+
+    @Condition
     private String status;
     @Condition(matchMode = MatchModel.IN, target = "status")
     private List<String> statusInclude;
     @Condition(matchMode = MatchModel.NOT_IN, target = "status")
     private List<String> statusExclude;
+
+    private Boolean manager;
+
+    public Boolean getManager() {
+        return manager;
+    }
+
+    public void setManager(Boolean manager) {
+        this.manager = manager;
+    }
+
+    public String getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(String buildingId) {
+        this.buildingId = buildingId;
+    }
 
     public String getMarriage() {
         return marriage;

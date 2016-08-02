@@ -33,7 +33,7 @@ public class SnowflakeID {
         this.workerId = workerId;
     }
 
-    public synchronized long nextId() throws Exception {
+    public synchronized long nextId() {
         long timestamp = timeGen();
         if (this.lastTimestamp == timestamp) { // 如果上一个timestamp与新产生的相等，则sequence加一(0-4095循环); 对新的timestamp，sequence从0开始
             this.sequence = this.sequence + 1 & this.sequenceMask;
@@ -46,7 +46,7 @@ public class SnowflakeID {
 
         if (timestamp < this.lastTimestamp) {
             logger.error(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", (this.lastTimestamp - timestamp)));
-            throw new Exception(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", (this.lastTimestamp - timestamp)));
+            throw new RuntimeException(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", (this.lastTimestamp - timestamp)));
         }
 
         this.lastTimestamp = timestamp;

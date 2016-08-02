@@ -56,6 +56,7 @@
                     <div style="display: none;">
                         <input type="hidden" id="pageType" value="${pageType}"/>
                         <input type="hidden" id="id" value="${id}"/>
+                        <input type="hidden" id="positionIds" value="${sessionScope.get("positionIds")}"/>
                     </div>
                     <div class="row">
                         <div class="form-label col-1-half">
@@ -106,14 +107,14 @@
                             <label>所属岗位:</label>
                         </div>
                         <div class="col-2-half">
-                            <c:if test="${sessionScope.get('OP_EMP_POSITION_MODIFY') eq true}">
+                            <c:if test="${sessionScope.get('OP_EMP_POSITION_MODIFY') eq true and id ne sessionScope.get('employeeId')}">
                                 <input class="col-12" type="text" ng-model="beans.roleNames" validate validate-required
                                        readonly ng-click="pickPosition();" placeholder="点击选择岗位（可多选）"/>
                                 <span class="add-on">
                                     <i class="icons icon cp fork" ng-click="clearPosition();" title="清除"></i>
                                 </span>
                             </c:if>
-                            <c:if test="${sessionScope.get('OP_EMP_POSITION_MODIFY') eq null}">
+                            <c:if test="${sessionScope.get('OP_EMP_POSITION_MODIFY') eq null or id eq sessionScope.get('employeeId')}">
                                 <input class="col-12" type="text" ng-model="beans.roleNames" validate validate-required
                                        disabled/>
                             </c:if>

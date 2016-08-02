@@ -84,8 +84,11 @@
             var beans = $scope.beans;
             var ids = (beans.roleIds || '').split(',');
             var names = (beans.roleNames || '').split(',');
+            var condition = {
+                path: ($('#positionIds').val() || '').split(',')[0]
+            };
             // 选择岗位
-            PositionModal.pickMulti({ids: ids, names: names}, function (ps) {
+            PositionModal.pickMulti({ids: ids, names: names, condition: condition}, function (ps) {
                 var pIds = [];
                 var pNames = [];
                 angular.forEach(ps || [], function (p) {

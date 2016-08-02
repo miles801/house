@@ -1,5 +1,6 @@
 package com.michael.base.position.bo;
 
+import com.michael.docs.annotations.ApiField;
 import com.ycrl.core.hibernate.criteria.BO;
 import com.ycrl.core.hibernate.criteria.Condition;
 import com.ycrl.core.hibernate.criteria.LikeModel;
@@ -18,6 +19,9 @@ public class PositionBo implements BO {
 
     @Condition
     private String parentId;
+
+    @ApiField("根据路径进行查询，会查询出自身及所有的孩子节点")
+    private String path;
 
     @Condition
     private String code;
@@ -52,5 +56,13 @@ public class PositionBo implements BO {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

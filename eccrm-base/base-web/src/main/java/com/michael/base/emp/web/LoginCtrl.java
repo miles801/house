@@ -2,6 +2,7 @@ package com.michael.base.emp.web;
 
 import com.michael.base.emp.service.EmpService;
 import com.michael.base.emp.vo.EmpVo;
+import com.michael.base.position.service.PositionEmpService;
 import com.michael.base.resource.service.ResourceService;
 import com.ycrl.core.SystemContainer;
 import com.ycrl.core.context.Login;
@@ -61,10 +62,16 @@ public class LoginCtrl extends BaseController {
         session.setAttribute(LoginInfo.ORG, vo.getOrgId());
         session.setAttribute(LoginInfo.ORG_NAME, vo.getOrgName());
 
-        // 加载个人的所有的操作资源编号
+        // 设置登录信息
         Login login = new Login();
-        login.setEmpId(vo.getId());
         SecurityContext.set(login);
+        login.setEmpId(vo.getId());
+
+        // 加载个人所具有的所有岗位ID
+        List<String> positionIds = SystemContainer.getInstance().getBean(PositionEmpService.class).myPosition();
+        session.setAttribute("positionIds", StringUtils.join(positionIds, ","));
+
+        // 加载个人的所有的操作资源编号
         List<String> resourceCodes = SystemContainer.getInstance().getBean(ResourceService.class)
                 .queryElementResourceCode();
         if (resourceCodes != null) {

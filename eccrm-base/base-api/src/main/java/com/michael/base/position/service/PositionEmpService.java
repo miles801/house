@@ -43,6 +43,7 @@ public interface PositionEmpService {
      *
      * @param positionId 岗位ID
      * @param empIds     员工ID列表
+     * @return 真正添加的员工的数量
      */
     Integer addEmp(String positionId, String[] empIds);
 
@@ -52,6 +53,7 @@ public interface PositionEmpService {
      *
      * @param positionId 岗位ID
      * @param empIds     员工ID列表
+     * @return 真正删除的员工的数量
      */
     Integer removeEmp(String positionId, String[] empIds);
 

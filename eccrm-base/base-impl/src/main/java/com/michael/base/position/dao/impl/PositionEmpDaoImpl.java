@@ -115,6 +115,17 @@ public class PositionEmpDaoImpl extends HibernateDaoHelper implements PositionEm
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<String> queryEmpPositionIds(String empId) {
+        Assert.hasText(empId, "岗位查询失败!员工ID不能为空!");
+
+        return createCriteria(PositionEmp.class)
+                .setProjection(Projections.property("positionId"))
+                .add(Restrictions.eq("empId", empId))
+                .list();
+    }
+
+    @Override
     public PositionEmp findById(String id) {
         Assert.hasText(id, "ID不能为空!");
         return (PositionEmp) getSession().get(PositionEmp.class, id);

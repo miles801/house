@@ -1,18 +1,22 @@
 package com.michael.spec.dao.impl;
 
 import com.michael.spec.bo.CustomerBo;
+import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.domain.Customer;
 import com.ycrl.core.HibernateDaoHelper;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import com.ycrl.utils.string.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -21,6 +25,9 @@ import java.util.List;
  */
 @Repository("customerDao")
 public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
+
+    @Resource
+    private BuildingDao buildingDao;
 
     @Override
     public String save(Customer customer) {
@@ -104,6 +111,23 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
         return total != null && total > 0;
     }
 
+    @Override
+    public boolean hasSame(String buildingId, String name, String phone1, String id) {
+        Assert.hasText(name, "查询失败!客户姓名不能为空!");
+        Assert.hasText(phone1, "查询失败!电话号码不能为空!");
+        Criteria criteria = createRowCountsCriteria(Customer.class)
+                .add(Restrictions.eq("name", name))
+                .add(Restrictions.eq("phone1", phone1));
+        if (StringUtils.isNotEmpty(buildingId)) {
+            criteria.add(Restrictions.eq("buildingId", buildingId));
+        }
+        if (StringUtils.isNotEmpty(id)) {
+            criteria.add(Restrictions.ne("id", id));
+        }
+        Long total = (Long) criteria.uniqueResult();
+        return total != null && total > 0;
+    }
+
     private void initCriteria(Criteria criteria, CustomerBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         if (bo == null) {
@@ -117,6 +141,10 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
                     .add(Restrictions.like("phone2", phone, MatchMode.ANYWHERE))
                     .add(Restrictions.like("phone3", phone, MatchMode.ANYWHERE))
             );
+        }
+        boolean isNotManager = !(bo != null && bo.getManager() != null && bo.getManager());
+        if (isNotManager && StringUtils.isEmpty(bo.getBuildingId())) {
+            criteria.add(Property.forName("buildingId").in(buildingDao.getPersonalBuilding(SecurityContext.getEmpId())));
         }
     }
 

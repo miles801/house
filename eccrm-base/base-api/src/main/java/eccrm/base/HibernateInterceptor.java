@@ -13,6 +13,7 @@ import java.util.Date;
 /**
  * <p>用于在Hibernate操作数据库，保存实体、更新实体时做一些额外的操作</p>
  * <p>需要在配置Hibernate的时候指定属性entityInterceptor</p>
+ *
  * @author Michael
  */
 public class HibernateInterceptor extends EmptyInterceptor {

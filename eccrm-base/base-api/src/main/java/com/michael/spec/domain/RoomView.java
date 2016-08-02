@@ -102,17 +102,83 @@ public class RoomView {
     private String unitCode;
 
     @Column
-    private String cusName;
-    @Column
-    private String cusPhone;
-    @Column
-    private String cusWechat;
-    @Column
     private String creatorId;
     @Column
     private String creatorName;
     @Column
     private Date createdDatetime;
+
+    // ===============  客户信息   ===================
+    @Column
+    private String cusName;
+    @Column
+    private String cusPhone;
+    @Column
+    private String cusWechat;
+    @ApiField("性别")
+    @Column
+    private String sex;
+    @Transient
+    private String sexName;
+    @ApiField("身份证号码")
+    @Column
+    private String idCard;
+
+    @ApiField("电话2")
+    @Column
+    private String phone2;
+    @ApiField("电话3")
+    @Column
+    private String phone3;
+    @ApiField("邮箱")
+    @Column
+    private String email;
+    @ApiField("年龄段")
+    @Column
+    private String age;
+    @Transient
+    private String ageName;
+    @ApiField("职位")
+    @Column
+    private String duty;
+    @ApiField("工作单位")
+    @Column
+    private String company;
+
+    @ApiField("教育程度")
+    @Column
+    private String education;
+    @Transient
+    private String educationName;
+
+    @ApiField("财产规模")
+    @Column
+    private String money;
+    @Transient
+    private String moneyName;
+    @ApiField("婚姻状况")
+    @Column
+    private String marriage;
+    @Transient
+    private String marriageName;
+    @ApiField("车位1")
+    @Column
+    private String carSite1;
+    @ApiField("车位2")
+    @Column
+    private String carSite2;
+    @ApiField("车牌号")
+    @Column
+    private String carNo;
+    @ApiField("车型")
+    @Column
+    private String carType;
+    @ApiField("家庭人口")
+    @Column
+    private Integer familyCounts;
+    @ApiField("备注")
+    @Column
+    private String cusDescription;
 
     // ===============  数据字典   ===================
 
@@ -130,6 +196,182 @@ public class RoomView {
     private String orientName;
     @Column
     private String modifierId;
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getSexName() {
+        return sexName;
+    }
+
+    public void setSexName(String sexName) {
+        this.sexName = sexName;
+    }
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
+
+    public String getPhone2() {
+        return phone2;
+    }
+
+    public void setPhone2(String phone2) {
+        this.phone2 = phone2;
+    }
+
+    public String getPhone3() {
+        return phone3;
+    }
+
+    public void setPhone3(String phone3) {
+        this.phone3 = phone3;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getAgeName() {
+        return ageName;
+    }
+
+    public void setAgeName(String ageName) {
+        this.ageName = ageName;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
+
+    public String getEducationName() {
+        return educationName;
+    }
+
+    public void setEducationName(String educationName) {
+        this.educationName = educationName;
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
+    }
+
+    public String getMoneyName() {
+        return moneyName;
+    }
+
+    public void setMoneyName(String moneyName) {
+        this.moneyName = moneyName;
+    }
+
+    public String getMarriage() {
+        return marriage;
+    }
+
+    public void setMarriage(String marriage) {
+        this.marriage = marriage;
+    }
+
+    public String getMarriageName() {
+        return marriageName;
+    }
+
+    public void setMarriageName(String marriageName) {
+        this.marriageName = marriageName;
+    }
+
+    public String getCarSite1() {
+        return carSite1;
+    }
+
+    public void setCarSite1(String carSite1) {
+        this.carSite1 = carSite1;
+    }
+
+    public String getCarSite2() {
+        return carSite2;
+    }
+
+    public void setCarSite2(String carSite2) {
+        this.carSite2 = carSite2;
+    }
+
+    public String getCarNo() {
+        return carNo;
+    }
+
+    public void setCarNo(String carNo) {
+        this.carNo = carNo;
+    }
+
+    public String getCarType() {
+        return carType;
+    }
+
+    public void setCarType(String carType) {
+        this.carType = carType;
+    }
+
+    public Integer getFamilyCounts() {
+        return familyCounts;
+    }
+
+    public void setFamilyCounts(Integer familyCounts) {
+        this.familyCounts = familyCounts;
+    }
+
+    public String getCusDescription() {
+        return cusDescription;
+    }
+
+    public void setCusDescription(String cusDescription) {
+        this.cusDescription = cusDescription;
+    }
 
     public String getModifierId() {
         return modifierId;

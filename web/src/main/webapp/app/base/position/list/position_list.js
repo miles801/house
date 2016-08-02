@@ -15,6 +15,7 @@
         };
 
         var initTree = function () {
+            $scope.beans = {};
             PositionTree.tree($scope, 'positionTree', function (o) {
                 $scope.beans = o;
             });
@@ -23,6 +24,7 @@
         $scope.parentOptions = PositionTree.pick(function (o) {
             $scope.beans.parentId = o.id;
             $scope.beans.parentName = o.name;
+            $scope.beans.level = (o.level + 1);
         });
 
         $scope.clearParent = function () {
@@ -91,6 +93,9 @@
         $scope.update = function () {
             var promise = PositionService.update($scope.beans, function (data) {
                 AlertFactory.success('更新成功!');
+                CommonUtils.delay(function () {
+                    window.location.reload();
+                }, 1500);
             });
             CommonUtils.loading(promise);
         };

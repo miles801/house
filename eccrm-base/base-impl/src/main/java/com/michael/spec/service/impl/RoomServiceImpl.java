@@ -161,9 +161,8 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             String content = compare(customer, originCus);
             news.setContent(content);
             ValidatorUtils.validate(customer);
-            // 验证名称是否重复
-            boolean exists = customerDao.hasPhone(customer.getPhone1(), customerId);
-            Assert.isTrue(!exists, "操作失败!电话号码[" + customer.getPhone1() + "]已经被其他客户注册使用!");
+//            boolean exists = customerDao.hasPhone(customer.getPhone1(), customerId);
+//            Assert.isTrue(!exists, "操作失败!电话号码[" + customer.getPhone1() + "]已经被其他客户注册使用!");
             BeanUtils.copyProperties(customer, originCus);
             customer.setId(null);
         }
@@ -280,6 +279,13 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                 room.setStatus(Room.STATUS_INVALID);
             } else if (Room.STATUS_APPLY_ADD.equals(status)) {    // 新增申请 --> 正常
                 room.setStatus(Room.STATUS_ACTIVE);
+                // 同时将该房屋对应的客户的状态也变为正常
+                String customerId = room.getCustomerId();
+                if (StringUtils.isNotEmpty(customerId)) {
+                    Customer customer = customerDao.findById(customerId);
+                    Assert.notNull(customer, "操作失败!房屋对应的客户已经不存在，请刷新后重试!");
+                    customer.setStatus(Room.STATUS_ACTIVE);
+                }
             }
         }
     }
@@ -369,6 +375,13 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
         roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
         roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
+        // 设置客户信息
+        roomView.setAgeName(container.getBusinessName(Customer.AGE_STAGE, roomView.getAge()));
+        roomView.setMoneyName(container.getBusinessName(Customer.MONEY_STAGE, roomView.getMoney()));
+        roomView.setSexName(container.getBusinessName(BaseParameter.SEX, roomView.getSex()));
+        roomView.setEducationName(container.getBusinessName(BaseParameter.EDU, roomView.getEducation()));
+        roomView.setMarriageName(container.getBusinessName(BaseParameter.MARRIAGE, roomView.getMarriage()));
+
     }
 
     @Override
@@ -512,7 +525,8 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                             customer.setCarNo(dto.getCusCarNo());
                             customer.setCarType(dto.getCusCarType());
                             customer.setC1(dto.getCusDescription());
-
+                            customer.setBuildingId(buildingId);
+                            customer.setBuildingName(buildingName);
                             cusId = beanContainer.getBean(CustomerService.class).save(customer);
                         }
                         room.setCustomerId(cusId);

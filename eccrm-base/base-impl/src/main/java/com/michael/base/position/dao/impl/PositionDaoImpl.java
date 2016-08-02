@@ -3,10 +3,14 @@ package com.michael.base.position.dao.impl;
 import com.michael.base.position.bo.PositionBo;
 import com.michael.base.position.dao.PositionDao;
 import com.michael.base.position.domain.Position;
+import com.michael.utils.NullUtils;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
+import com.ycrl.utils.string.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -65,9 +69,50 @@ public class PositionDaoImpl extends HibernateDaoHelper implements PositionDao {
         return (Position) getSession().get(Position.class, id);
     }
 
+    @Override
+    public boolean hasName(String name, String parentId, String id) {
+        Assert.hasText(name, "查询名称是否重复失败!名称不能为空!");
+        Criteria criteria = createRowCountsCriteria(Position.class);
+        criteria.add(Restrictions.eq("name", name));
+        if (StringUtils.isNotEmpty(parentId)) {
+            criteria.add(Restrictions.eq("parentId", parentId));
+        }
+        if (StringUtils.isNotEmpty(id)) {
+            criteria.add(Restrictions.ne("id", id));
+        }
+        Long total = (Long) criteria.uniqueResult();
+        return NullUtils.defaultValue(total, 0L) > 0;
+    }
+
+    @Override
+    public boolean hasCode(String code, String id) {
+        Assert.hasText(code, "查询编号是否重复失败!编号不能为空!");
+        Criteria criteria = createRowCountsCriteria(Position.class);
+        criteria.add(Restrictions.eq("code", code));
+        if (StringUtils.isNotEmpty(id)) {
+            criteria.add(Restrictions.ne("id", id));
+        }
+        Long total = (Long) criteria.uniqueResult();
+        return NullUtils.defaultValue(total, 0L) > 0;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Position> children(String id) {
+        Assert.hasText(id, "查询子岗位失败!岗位ID不能为空!");
+        return createCriteria(Position.class)
+                .add(Restrictions.like("path", "%/" + id + "/%", MatchMode.ANYWHERE))
+                .list();
+    }
+
     private void initCriteria(Criteria criteria, PositionBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);
+
+        // 根据路径进行查询
+        if (bo != null && StringUtils.isNotEmpty(bo.getPath())) {
+            criteria.add(Restrictions.like("path", "%/" + bo.getPath() + "/%"));
+        }
     }
 
 }

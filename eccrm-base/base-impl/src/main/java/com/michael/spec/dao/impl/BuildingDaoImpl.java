@@ -56,6 +56,20 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
     }
 
     @Override
+    public DetachedCriteria getMasterBuilding(String empId) {
+        DetachedCriteria criteria = DetachedCriteria.forClass(Building.class)
+                .setProjection(Projections.property("id"));
+        Junction or = Restrictions.disjunction()
+                .add(Restrictions.eq("masterId", SecurityContext.getEmpId()));
+        DetachedCriteria regionCriteria = DetachedCriteria.forClass(Region.class).setProjection(Projections.property("id")).add(Restrictions.eq("masterId", SecurityContext.getEmpId()));
+        // 自己负责的城市/区域的数据
+        or.add(Property.forName("city").in(regionCriteria));
+        or.add(Property.forName("area").in(regionCriteria));
+        criteria.add(or);
+        return criteria;
+    }
+
+    @Override
     public Long getTotal(BuildingBo bo) {
         Criteria criteria = createRowCountsCriteria(Building.class);
         initCriteria(criteria, bo);

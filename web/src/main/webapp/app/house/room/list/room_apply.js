@@ -12,7 +12,8 @@
         $scope.condition = {
             orderBy: 'roomKey',
             statusInclude: ['APPLY_ADD', 'APPLY_INVALID'],
-            manager: $('#isManager').val()
+            manager: $('#isManager').val(),
+            master: !$('#isManager').val() || true
         };
 
         // 房屋现状

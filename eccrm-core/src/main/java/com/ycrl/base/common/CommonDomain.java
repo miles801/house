@@ -20,7 +20,7 @@ public class CommonDomain {
 
     @ApiField(value = "ID")
     @Id
-    @GenericGenerator(name = "idGenerator", strategy = "uuid")
+    @GenericGenerator(name = "idGenerator", strategy = "com.michael.utils.SnowflakeIDStrategy")
     @GeneratedValue(generator = "idGenerator")
     @Column(name = "id", unique = true, nullable = false)
     private String id;

@@ -119,6 +119,13 @@ public class Customer extends CommonDomain {
     @Column
     private Integer roomCounts;
 
+    @ApiField("楼盘ID")
+    @Column(length = 40)
+    private String buildingId;
+    @ApiField("楼盘名称")
+    @Column(length = 40)
+    private String buildingName;
+
     /**
      * @see com.michael.spec.service.HouseParams#HOUSE_STATUS
      * @see Room
@@ -127,6 +134,22 @@ public class Customer extends CommonDomain {
     @Column(length = 40, nullable = false)
     private String status;
 
+
+    public String getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(String buildingId) {
+        this.buildingId = buildingId;
+    }
+
+    public String getBuildingName() {
+        return buildingName;
+    }
+
+    public void setBuildingName(String buildingName) {
+        this.buildingName = buildingName;
+    }
 
     public Integer getRoomCounts() {
         return roomCounts;

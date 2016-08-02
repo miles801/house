@@ -12,6 +12,7 @@ import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -97,7 +98,11 @@ public class EmpDaoImpl extends HibernateDaoHelper implements EmpDao {
     private void initCriteria(Criteria criteria, EmpBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
 
-        if (bo != null && StringUtils.isNotEmpty(bo.getKeywords())) {
+        if (bo == null) {
+            return;
+        }
+        CriteriaUtils.addCondition(criteria, bo);
+        if (StringUtils.isNotEmpty(bo.getKeywords())) {
             String keywords = bo.getKeywords();
             Disjunction disjunction = Restrictions.disjunction();
             disjunction.add(Restrictions.like("name", keywords, MatchMode.ANYWHERE));
@@ -107,9 +112,33 @@ public class EmpDaoImpl extends HibernateDaoHelper implements EmpDao {
             disjunction.add(Restrictions.like("mobile", keywords, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.like("orgName", keywords, MatchMode.ANYWHERE));
             criteria.add(disjunction);
-        } else {
-            CriteriaUtils.addCondition(criteria, bo);
         }
+
+        if (StringUtils.isNotEmpty(bo.getCreatorId())) {
+            // 查询所有的创建信息
+            List<String> ids = new ArrayList<>();
+            ids.add("-1");
+            masterEmpIds(ids, bo.getCreatorId());
+            criteria.add(Restrictions.in("id", ids));
+        }
+
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> masterEmpIds(List<String> empIds, String empId) {
+        List<String> ids = getSession().createQuery("select e.id from " + Emp.class.getName() + " e where e.creatorId=?")
+                .setParameter(0, empId)
+                .list();
+        if (ids != null && !ids.isEmpty()) {
+            for (String id : ids) {
+                if (!empIds.contains(id)) {
+                    empIds.add(id);
+                    masterEmpIds(empIds, id);
+                }
+            }
+        }
+        return empIds;
     }
 
     @Override

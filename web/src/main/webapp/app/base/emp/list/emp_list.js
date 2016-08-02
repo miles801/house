@@ -8,7 +8,10 @@
         'base.emp'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, EmpService, EmpParam) {
-        $scope.condition = {};
+        $scope.condition = {
+            manager: $('#isManager').val(),
+            creatorId: $('#isManager').val() ? null : $('#empId').val()
+        };
 
         //查询数据
         $scope.query = function () {

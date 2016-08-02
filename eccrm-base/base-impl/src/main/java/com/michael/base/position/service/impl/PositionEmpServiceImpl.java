@@ -9,6 +9,7 @@ import com.michael.base.position.service.PositionService;
 import com.michael.base.position.vo.PositionEmpVo;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
+import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
 import com.ycrl.utils.string.StringUtils;
@@ -91,7 +92,6 @@ public class PositionEmpServiceImpl implements PositionEmpService, BeanWrapCallb
                 counts++;
             }
         }
-        positionService.addEmp(positionId, counts);
         return counts;
     }
 
@@ -109,7 +109,7 @@ public class PositionEmpServiceImpl implements PositionEmpService, BeanWrapCallb
                 }
             }
         }
-        return positionService.addEmp(positionId, -counts);
+        return counts;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class PositionEmpServiceImpl implements PositionEmpService, BeanWrapCallb
 
     @Override
     public List<String> myPosition() {
-        return null;
+        return positionEmpDao.queryEmpPositionIds(SecurityContext.getEmpId());
     }
 
     @Override

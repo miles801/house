@@ -55,12 +55,13 @@
                                     <label validate-error="form.name">名称:</label>
                                 </div>
                                 <input class="col-4" type="text" ng-model="beans.name" name="name"
-                                       validate validate-required maxlength="20"/>
+                                       validate validate-required maxlength="20" placeholder="同一层级下名称必须唯一"/>
                                 <div class="form-label col-1-half">
-                                    <label>编号:</label>
+                                    <label validate-error="form.code">编号:</label>
                                 </div>
-                                <input class="col-4" type="text" ng-model="beans.code"
-                                       placeholder="由英文字母，下划线，数字组成，不可重复" validate validate-naming maxlength="20"/>
+                                <input class="col-4" type="text" ng-model="beans.code" name="code"
+                                       placeholder="由英文字母，下划线，数字组成，不可重复" validate validate-required validate-naming
+                                       maxlength="20"/>
 
                             </div>
                             <div class="row">
@@ -79,7 +80,7 @@
                                     <label>排序:</label>
                                 </div>
                                 <input class="col-4" type="number" ng-model="beans.sequenceNo"
-                                       validate validate-int validate-max-length="4"/>
+                                       validate validate-int validate-max-length="4" placeholder="整形数字,用于在同一层级时进行排序"/>
                             </div>
 
 
@@ -92,6 +93,10 @@
 
                             </div>
                             <div class="row">
+                                <div class="form-label col-2">
+                                    <label>层级:</label>
+                                </div>
+                                <span class="col-4" ng-cloak>{{beans.level?beans.level+1:0}}</span>
                                 <div class="form-label col-2">
                                     <label>状态:</label>
                                 </div>

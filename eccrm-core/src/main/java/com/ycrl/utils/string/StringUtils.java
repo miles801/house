@@ -2,6 +2,7 @@ package com.ycrl.utils.string;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collection;
 
 /**
  * @author miles
@@ -71,6 +72,17 @@ public class StringUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 判断两个字符串是否不等（是equals的取反）
+     *
+     * @param str1 字符串1
+     * @param str2 字符串2
+     * @return true不等，false相等
+     */
+    public static boolean notEquals(String str1, String str2) {
+        return !equals(str1, str2);
     }
 
     /**
@@ -147,11 +159,36 @@ public class StringUtils {
         return length;
     }
 
+    /**
+     * 将string数组的内容转换成单行文本，并以指定分隔符分隔
+     *
+     * @param value string数组
+     * @param split 分隔符
+     * @return 单行文本
+     */
     public static String join(String[] value, String split) {
         if (value == null || value.length < 1) {
             return "";
         }
-        StringBuilder builder = new StringBuilder(value.length);
+        StringBuilder builder = new StringBuilder();
+        for (String v : value) {
+            builder.append(split).append(v);
+        }
+        return builder.substring(1);
+    }
+
+    /**
+     * 将string集合的内容转换成单行文本，并以指定分隔符分隔
+     *
+     * @param value string集合
+     * @param split 分隔符
+     * @return 单行文本
+     */
+    public static String join(Collection<String> value, String split) {
+        if (value == null || value.size() < 1) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
         for (String v : value) {
             builder.append(split).append(v);
         }

@@ -51,13 +51,4 @@ public interface PositionService {
      * 加载整颗有效的树，只返回属性必要的几个字段
      */
     List<PositionVo> validTree();
-
-    /**
-     * 给指定的岗位添加指定数量的员工
-     *
-     * @param positionId 岗位ID
-     * @param counts     员工数量
-     * @return 最新的员工数量
-     */
-    Integer addEmp(String positionId, int counts);
 }

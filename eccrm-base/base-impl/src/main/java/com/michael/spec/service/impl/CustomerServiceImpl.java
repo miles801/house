@@ -78,9 +78,9 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
 
     private void validate(Customer customer) {
         ValidatorUtils.validate(customer);
-        // 验证名称是否重复
-        boolean exists = customerDao.hasPhone(customer.getPhone1(), customer.getId());
-        Assert.isTrue(!exists, "操作失败!电话号码[" + customer.getPhone1() + "]已经被其他客户注册使用!");
+        // 验证重复
+        boolean exists = customerDao.hasSame(customer.getBuildingId(), customer.getName(), customer.getPhone1(), customer.getId());
+        Assert.isTrue(!exists, "操作失败!客户信息重复!");
     }
 
     @Override

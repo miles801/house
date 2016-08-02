@@ -24,6 +24,13 @@ public interface BuildingDao {
     DetachedCriteria getPersonalBuilding(String empId);
 
     /**
+     * 获取是维护人的楼盘的ID离线查询对象
+     *
+     * @param empId 员工ID
+     */
+    DetachedCriteria getMasterBuilding(String empId);
+
+    /**
      * 高级查询接口
      */
     List<Building> query(BuildingBo bo);

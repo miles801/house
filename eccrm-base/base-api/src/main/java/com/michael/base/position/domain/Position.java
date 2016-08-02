@@ -1,11 +1,14 @@
 package com.michael.base.position.domain;
 
 import com.michael.docs.annotations.ApiField;
+import com.michael.tree.Tree;
 import com.ycrl.base.common.CommonDomain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -15,7 +18,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "sys_position")
-public class Position extends CommonDomain {
+public class Position extends CommonDomain implements Tree{
 
     @ApiField(value = "岗位名称")
     @NotNull
@@ -38,17 +41,16 @@ public class Position extends CommonDomain {
     @Column
     private Integer minEmp;
 
-//    @ApiField(value = "该岗位允许的最大员工数")
-//    @Column
-//    private Integer maxEmp;
-
-//    @ApiField(value = "该岗位当前员工数")
-//    @Column
-//    private Integer empCounts;
-
-    @ApiField(value = "是否为父节点/是否有子节点")
+    @ApiField("导航路径")
     @Column
-    private Boolean isParent;
+    private String path;
+
+    @ApiField(value = "层级", desc = "该值由后台自动设置,最小值为0，表示首层")
+    @Column
+    @Min(value = 0)
+    @Max(value = 20)
+    private Integer level;
+
 
     @ApiField(value = "排序号")
     @Column
@@ -59,6 +61,22 @@ public class Position extends CommonDomain {
     @NotNull
     @Column
     private Boolean deleted;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 
     public Integer getSequenceNo() {
         return sequenceNo;
@@ -74,14 +92,6 @@ public class Position extends CommonDomain {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public Boolean getParent() {
-        return isParent;
-    }
-
-    public void setParent(Boolean parent) {
-        isParent = parent;
     }
 
     public String getName() {
