@@ -21,7 +21,12 @@
 
         // 设置负责人
         $scope.setMaster = function (id, name) {
-            EmployeeModal.pickEmployee({}, function (emp) {
+            EmployeeModal.pickEmployee({
+                condition: {
+                    manager: $('#isManager').val(),
+                    creatorId: $('#isManager').val() ? null : $('#empId').val()
+                }
+            }, function (emp) {
                 ModalFactory.confirm({
                     scope: $scope,
                     content: '是否要将区域[' + name + ']的负责人设置为:' + emp.name + ',请确认?',

@@ -31,6 +31,10 @@
                     <span class="glyphicons search"></span>
                 </span>
                 <span class="header-button">
+                        <a type="button" class="btn btn-green btn-min" ng-click="reset();">
+                                <span class="glyphicons search"></span>
+                                重置
+                        </a>
                         <a type="button" class="btn btn-green btn-min" ng-click="query();">
                                 <span class="glyphicons search"></span>
                                 查询
@@ -125,11 +129,25 @@
                                                           ng-change="query();"/>房屋编号</label>
 
                             </div>
-                            <div class="item w300">
+                            <div class="item w100">
                                 <div class="form-label w80">
                                     <label>倒序:</label>
                                 </div>
                                 <input type="checkbox" style="width: 14px;" ng-model="condition.reverse" value="true"
+                                       ng-change="query();"/>
+                            </div>
+                            <div class="item w100">
+                                <div class="form-label w80">
+                                    <label>待售:</label>
+                                </div>
+                                <input type="checkbox" style="width: 14px;" ng-model="condition.onSale" value="true"
+                                       ng-change="query();"/>
+                            </div>
+                            <div class="item w100">
+                                <div class="form-label w80">
+                                    <label>待租:</label>
+                                </div>
+                                <input type="checkbox" style="width: 14px;" ng-model="condition.onRent" value="true"
                                        ng-change="query();"/>
                             </div>
 

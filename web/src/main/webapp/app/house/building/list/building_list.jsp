@@ -21,11 +21,12 @@
 </head>
 <body>
 <div class="main condition-row-2" ng-app="house.building.list" ng-controller="Ctrl">
-    <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
-        <div class="dn">
+    <div class="dn">
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
             <input type="hidden" id="isManager" value="true"/>
-        </div>
-    </c:if>
+        </c:if>
+        <input type="hidden" id="empId" value="${sessionScope.get('employeeId')}"/>
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">

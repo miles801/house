@@ -192,12 +192,7 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
                 room.setBlockId(blockId);
                 room.setBuildingId(block.getBuildingId());
                 room.setFloor(i);           // 楼层
-                // 门牌号
-                if (doorCode.matches("[A-Za-z]+")) {    // 只有字母的情况
-                    room.setCode(i + doorCode);
-                } else {
-                    room.setCode(i + "0" + doorCode);
-                }
+                room.setCode(i + doorCode);
                 room.setSquare(unit.getSquare());           // 默认面积
                 room.setOrient(unit.getOrient());           // 默认朝向
                 room.setUnitId(unit.getId());               // 单元信息

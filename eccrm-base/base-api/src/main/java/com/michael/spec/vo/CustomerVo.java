@@ -13,8 +13,28 @@ public class CustomerVo extends Customer {
     private String moneyName;
     private String marriageName;
     private String statusName;
+    private String typeName;
     // 客户名下房产编号
     private String roomKeys;
+
+    // 在租房屋编号
+    private String rentKeys;
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public String getRentKeys() {
+        return rentKeys;
+    }
+
+    public void setRentKeys(String rentKeys) {
+        this.rentKeys = rentKeys;
+    }
 
     public String getRoomKeys() {
         return roomKeys;

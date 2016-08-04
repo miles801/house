@@ -14,6 +14,7 @@ import com.michael.spec.bo.RoomBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.dao.RoomDao;
+import com.michael.spec.dao.RoomRentDao;
 import com.michael.spec.domain.*;
 import com.michael.spec.service.*;
 import com.michael.spec.vo.BuildingVo;
@@ -34,6 +35,7 @@ import eccrm.base.parameter.dao.BusinessParamItemDao;
 import eccrm.base.parameter.service.ParameterContainer;
 import eccrm.utils.BeanCopyUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -47,6 +49,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +68,9 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Resource
     private CustomerDao customerDao;
+
+    @Resource
+    private RoomRentDao roomRentDao;
 
     @Override
     public String save(Room room) {
@@ -112,35 +119,11 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         Assert.notNull(origin, "更新失败!房屋不存在!请刷新后重试!");
         RoomNews news = new RoomNews();
         news.setRoomId(id);
-        StringBuilder builder = new StringBuilder();
-        String template = "<span style=\"margin:0 15px;\">--></span><span style=\"font-weight:700;color:#ff0000;\">";
-        if (!StringUtils.equals(origin.getType1() + origin.getType2() + origin.getType3() + origin.getType4(), room.getType1() + room.getType2() + room.getType3() + room.getType4())) {
-            builder.append("户型：").append(origin.getType1()).append("-").append(origin.getType2()).append("-").append(origin.getType3()).append("-").append(origin.getType4())
-                    .append(template)
-                    .append(room.getType1()).append("-").append(room.getType2()).append("-").append(room.getType3()).append("-").append(room.getType4())
-                    .append("</spa><br/>");
+        String content = compare(room, origin, new String[]{"id", "creatorId", "creatorName", "modifierId", "modifierName", "createdDatetime", "modifiedDatetime"});
+        news.setContent(content);
+        if (StringUtils.isNotEmpty(news.getContent())) {
+            SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
         }
-        ParameterContainer container = ParameterContainer.getInstance();
-        if (!StringUtils.equals(origin.getOrient(), room.getOrient())) {
-            builder.append("朝向：").append(container.getBusinessName(HouseParams.ORIENT, origin.getOrient()))
-                    .append(template)
-                    .append(container.getBusinessName(HouseParams.ORIENT, room.getOrient()))
-                    .append("</spa><br/>");
-        }
-        if (!StringUtils.equals(origin.getHouseUseType(), room.getHouseUseType())) {
-            builder.append("房屋现状：").append(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, origin.getHouseUseType()))
-                    .append(template)
-                    .append(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, room.getHouseUseType()))
-                    .append("</spa><br/>");
-        }
-        if (!StringUtils.equals(origin.getSquare() + "", room.getSquare() + "")) {
-            builder.append("面积：").append(origin.getSquare())
-                    .append(template)
-                    .append(room.getSquare())
-                    .append("</spa><br/>");
-        }
-        news.setContent(builder.toString());
-        SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
         BeanCopyUtils.copyPropertiesExclude(room, origin, new String[]{"id"});
     }
 
@@ -163,15 +146,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         if (StringUtils.isEmpty(customerId)) {
             customerId = beanContainer.getBean(CustomerService.class).save(customer);
         } else {
-            Customer originCus = customerDao.findById(customerId);
-            Assert.notNull(originCus, "数据错误!客户不存在!" + customerId);
-            // 比较两个对象并返回不一样的内容
-            String content = compare(customer, originCus);
-            news.setContent(content);
-            ValidatorUtils.validate(customer);
-            // 更新客户信息
-            HibernateUtils.evict(originCus);
-            customerDao.update(customer);
+            beanContainer.getBean(CustomerService.class).update(customer);
         }
 
 
@@ -194,10 +169,139 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         }
 
         // 保存最新动态
-        roomNewsService.save(news);
+        if (StringUtils.isNotEmpty(news.getContent())) {
+            roomNewsService.save(news);
+        }
 
         // 给房屋设置客户ID
         room.setCustomerId(customerId);
+    }
+
+    @Override
+    public void addRent(String roomId, Customer customer, RoomRent roomRent) {
+        Assert.hasText(roomId, "操作失败!ID不能为空!");
+        Assert.notNull(customer, "操作失败!租户信息不能为空!");
+        customer.setRent(true);
+        Assert.notNull(roomRent, "操作失败!添加/变更租户时，租赁信息不能为空!");
+        Room room = roomDao.findRoomById(roomId);
+        room.setOnRent(false);
+        room.setHouseUseType("4");  // 租赁
+        Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
+
+        SystemContainer beanContainer = SystemContainer.getInstance();
+        RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
+        // 给客户设置所属楼栋
+        String buildingId = room.getBuildingId();
+        customer.setBuildingId(buildingId);
+
+
+        RoomNews news = new RoomNews();
+        news.setRoomId(roomId);
+        String customerId = customer.getId();
+        if (StringUtils.isEmpty(customerId)) {
+            customerId = beanContainer.getBean(CustomerService.class).save(customer);
+        } else {
+            beanContainer.getBean(CustomerService.class).update(customer);
+        }
+        news.setContent(String.format("添加租户：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
+
+
+        // 保存最新动态
+        roomNewsService.save(news);
+
+        // 保存租赁信息
+        roomRent.setRoomId(roomId);
+        roomRent.setRoomKey(room.getRoomKey());
+        roomRent.setNewCustomerId(customerId);
+        roomRent.setNewCustomerName(customer.getName());
+        RoomRentService roomRentService = SystemContainer.getInstance().getBean(RoomRentService.class);
+        roomRentService.save(roomRent);
+    }
+
+    @Override
+    public void changeRent(String roomId, Customer customer, RoomRent roomRent) {
+        Assert.hasText(roomId, "操作失败!ID不能为空!");
+        Assert.notNull(customer, "操作失败!租户信息不能为空!");
+        customer.setRent(true);
+        customer.setType("2");// 租客
+        Assert.notNull(roomRent, "操作失败!添加/变更租户时，租赁信息不能为空!");
+        Room room = roomDao.findRoomById(roomId);
+        room.setHouseUseType("4");  // 租赁
+        room.setOnRent(false);
+        Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
+
+        SystemContainer beanContainer = SystemContainer.getInstance();
+        RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
+        // 给客户设置所属楼栋
+        String buildingId = room.getBuildingId();
+        customer.setBuildingId(buildingId);
+
+
+        // 获取之前的租户信息
+        RoomRent rr = roomRentDao.findCurrent(roomId);
+        Assert.notNull(rr, "变更租户失败!没有查询到该房屋的租赁信息!请刷新后重试");
+        Assert.isTrue(!rr.getNewCustomerId().equals(customer), "操作失败!租户变更时不能是同一个租户!");
+        // 将状态置为完成
+        rr.setFinish(true);
+        RoomNews news = new RoomNews();
+        news.setRoomId(roomId);
+        String customerId = beanContainer.getBean(CustomerService.class).save(customer);
+        news.setContent(String.format("变更租户：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", rr.getNewCustomerName(), customer.getName()));
+
+
+        // 保存最新动态
+        roomNewsService.save(news);
+
+        // 保存租赁信息
+        roomRent.setRoomId(roomId);
+        roomRent.setRoomKey(room.getRoomKey());
+        roomRent.setNewCustomerId(customerId);
+        roomRent.setNewCustomerName(customer.getName());
+        roomRent.setOriginCustomerId(rr.getNewCustomerId());
+        roomRent.setOriginCustomerName(rr.getNewCustomerName());
+        RoomRentService roomRentService = SystemContainer.getInstance().getBean(RoomRentService.class);
+        roomRentService.save(roomRent);
+    }
+
+    @Override
+    public void updateRent(String roomId, Customer customer, RoomRent roomRent) {
+        // 更新客户信息
+        SystemContainer.getInstance().getBean(CustomerService.class).update(customer);
+
+        // 更新租赁信息（并记录变更记录，如果发生了变更）
+        String roomRentId = roomRent.getId();
+        Assert.notNull(roomRentId, "更新租户信息失败!原租赁信息不能为空!");
+        RoomRent origin = roomRentDao.findById(roomRentId);
+        String content = compare(roomRent, origin, new String[]{"creatorId", "creatorName", "modifierId", "modifierName", "createdDatetime", "modifiedDatetime"});
+        if (StringUtils.isNotEmpty(content)) {
+            // 租赁信息也发生了变更，需要产生一个记录
+            CustomerNews news = new CustomerNews();
+            news.setContent(content);
+            news.setCustomerId(customer.getId());
+            SystemContainer.getInstance().getBean(CustomerNewsService.class).save(news);
+        }
+        HibernateUtils.evict(origin);
+        roomRentDao.update(roomRent);
+    }
+
+    @Override
+    public RoomRent findCurrent(String roomId) {
+        return roomRentDao.findCurrent(roomId);
+    }
+
+    @Override
+    public void deleteRent(String rentId) {
+        Assert.hasText(rentId, "操作失败!租赁ID不能为空!");
+        RoomRent roomRent = roomRentDao.findById(rentId);
+        Assert.notNull(roomRent, "操作失败!租赁信息不存在，请刷新后重试!");
+        roomRent.setFinish(true);
+
+        // 生成动态信息
+        String roomId = roomRent.getRoomId();
+        RoomNews news = new RoomNews();
+        news.setRoomId(roomId);
+        news.setContent(String.format("删除租户：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\"></span>", roomRent.getNewCustomerName()));
+        SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
     }
 
     /**
@@ -206,11 +310,16 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
      * @param <T>  类型
      * @return 不同的类容
      */
-    private <T> String compare(final T newO, final T oriO) {
-        final StringBuilder builder = new StringBuilder("变更信息：");
+    private <T> String compare(final T newO, final T oriO, final String[] exclude) {
+        final StringBuilder builder = new StringBuilder();
         ReflectionUtils.doWithFields(newO.getClass(), new ReflectionUtils.FieldCallback() {
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+                String fieldName = field.getName();
+                // 排除指定名称的属性
+                if (exclude != null && ArrayUtils.contains(exclude, fieldName)) {
+                    return;
+                }
                 field.setAccessible(true);
                 Object newValue = field.get(newO);
                 Object oldValue = field.get(oriO);
@@ -222,7 +331,89 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                 if (nameAnno == null) {
                     return;
                 }
+
                 String name = nameAnno.value();
+                ParameterContainer container = ParameterContainer.getInstance();
+                if (fieldName.equals("sex")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(BaseParameter.SEX, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(BaseParameter.SEX, oldValue.toString());
+                    }
+                } else if (fieldName.equals("age")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(Customer.AGE_STAGE, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(Customer.AGE_STAGE, oldValue.toString());
+                    }
+                } else if (fieldName.equals("education")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(BaseParameter.EDU, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(BaseParameter.EDU, oldValue.toString());
+                    }
+                } else if (fieldName.equals("money")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(Customer.MONEY_STAGE, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(Customer.MONEY_STAGE, oldValue.toString());
+                    }
+                } else if (fieldName.equals("marriage")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(BaseParameter.MARRIAGE, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(BaseParameter.MARRIAGE, oldValue.toString());
+                    }
+                } else if (fieldName.equals("status")) {
+                    if (newValue != null) {
+                        newValue = container.getSystemName(HouseParams.HOUSE_STATUS, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getSystemName(HouseParams.HOUSE_STATUS, oldValue.toString());
+                    }
+                } else if (fieldName.equals("orient")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(HouseParams.ORIENT, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(HouseParams.ORIENT, oldValue.toString());
+                    }
+                } else if (fieldName.equals("houseProperty")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(HouseParams.HOUSE_PROPERTY, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(HouseParams.HOUSE_PROPERTY, oldValue.toString());
+                    }
+                } else if (fieldName.equals("houseUseType")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(HouseParams.HOUSE_USE_TYPE, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(HouseParams.HOUSE_USE_TYPE, oldValue.toString());
+                    }
+                } else if (fieldName.equals("rentUsage")) {
+                    if (newValue != null) {
+                        newValue = container.getBusinessName(HouseParams.RENT_USAGE, newValue.toString());
+                    }
+                    if (oldValue != null) {
+                        oldValue = container.getBusinessName(HouseParams.RENT_USAGE, oldValue.toString());
+                    }
+                } else if (fieldName.equals("rent") || fieldName.equals("onSale") || fieldName.equals("onRent")) {
+                    oldValue = (oldValue == null || !(boolean) oldValue) ? "否" : "是";
+                    newValue = (newValue == null || !(boolean) newValue) ? "否" : "是";
+                }
+                if (newValue != null && newValue instanceof Date) {
+                    newValue = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(newValue);
+                }
+                if (oldValue != null && oldValue instanceof Date) {
+                    oldValue = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(oldValue);
+                }
                 if (newValue == null) {
                     builder.append("<p>" + name + "：" + oldValue.toString() + " --> </p>");
                 }
@@ -415,10 +606,21 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     private void wrapParamName(RoomView roomView) {
         ParameterContainer container = ParameterContainer.getInstance();
-        roomView.setStatusName(container.getSystemName(HouseParams.HOUSE_STATUS, roomView.getStatus()));
+        String statusName = container.getSystemName(HouseParams.HOUSE_STATUS, roomView.getStatus());
+        roomView.setStatusName(statusName);
         roomView.setOrientName(container.getBusinessName(HouseParams.ORIENT, roomView.getOrient()));
         roomView.setHousePropertyName(container.getBusinessName(HouseParams.HOUSE_PROPERTY, roomView.getHouseProperty()));
-        roomView.setHouseUseTypeName(container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType()));
+        String houseUseTypeName = container.getBusinessName(HouseParams.HOUSE_USE_TYPE, roomView.getHouseUseType());
+        if (StringUtils.isEmpty(houseUseTypeName)) {
+            houseUseTypeName = "";
+        }
+        if (roomView.getOnRent() != null && roomView.getOnRent()) {
+            houseUseTypeName += "; 待租";
+        }
+        if (roomView.getOnSale() != null && roomView.getOnSale()) {
+            houseUseTypeName += "; 待售";
+        }
+        roomView.setHouseUseTypeName(houseUseTypeName);
         // 设置客户信息
         roomView.setAgeName(container.getBusinessName(Customer.AGE_STAGE, roomView.getAge()));
         roomView.setMoneyName(container.getBusinessName(Customer.MONEY_STAGE, roomView.getMoney()));
@@ -442,7 +644,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         for (String id : attachmentIds) {
             AttachmentVo vo = AttachmentProvider.getInfo(id);
             Assert.notNull(vo, "附件已经不存在，请刷新后重试!");
-            File file = AttachmentHolder.newInstance().getTempFile(id);
+            final File file = AttachmentHolder.newInstance().getTempFile(id);
             logger.info("准备导入数据：" + file.getAbsolutePath());
             logger.info("初始化导入引擎....");
             long start = System.currentTimeMillis();
@@ -505,11 +707,18 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     room.setBlockId(blockId);
 
                     // 设置单元
+                    Integer floor = dto.getFloor();
+                    Assert.isTrue(floor != null && floor > 0, String.format("数据错误,楼层必须大于0!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    String doorCode = dto.getCode();
+                    Assert.hasText(doorCode, String.format("数据错误,门牌号不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    Assert.isTrue(doorCode.startsWith(floor + ""), String.format("数据错误!门牌号与楼层不匹配!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    String dc = doorCode.substring((floor + "").length());
                     String unitName = dto.getUnitName();
                     Assert.hasText(unitName, String.format("数据错误,单元信息不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
-                    String unitId = (String) session.createQuery("select b.id from " + Unit.class.getName() + " b where b.code=? and b.blockId=?")
+                    String unitId = (String) session.createQuery("select b.id from " + Unit.class.getName() + " b where b.code=? and b.blockId=? and b.doorCode=?")
                             .setParameter(0, unitName)
                             .setParameter(1, blockId)
+                            .setParameter(2, dc)
                             .setMaxResults(1)
                             .uniqueResult();
                     if (StringUtils.isEmpty(unitId)) {
@@ -536,9 +745,10 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     String cusName = dto.getCusName();
                     String cusPhone = dto.getCusPhone();
                     if (StringUtils.isNotEmpty(cusName)) {
-                        String cusId = (String) session.createQuery("select c.id from " + Customer.class.getName() + " c where c.name=? and c.phone1=?")
+                        String cusId = (String) session.createQuery("select c.id from " + Customer.class.getName() + " c where c.name=? and c.phone1=? and c.buildingId=?")
                                 .setParameter(0, cusName)
                                 .setParameter(1, cusPhone)
+                                .setParameter(2, buildingId)
                                 .setMaxResults(1)
                                 .uniqueResult();
                         if (StringUtils.isEmpty(cusId)) {
@@ -594,7 +804,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
                                 // 保存日志
                                 RoomNews news = new RoomNews();
-                                String content = compare(room, originRoom);
+                                String content = compare(room, originRoom, new String[]{"creatorId", "creatorName", "modifierId", "modifierName", "createdDatetime", "modifiedDatetime"});
                                 news.setContent(content);
                                 news.setRoomId(originRoom.getId());
                                 news.setEmpId(SecurityContext.getEmpId());
@@ -627,7 +837,11 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             });
             logger.info("开始导入数据....");
             ImportEngine engine = new ImportEngine(configuration);
-            engine.execute();
+            try {
+                engine.execute();
+            } catch (Exception e) {
+                Assert.isTrue(false, String.format("数据异常!发生在第%d行,%d列!原因:%s", RuntimeContext.get().getRowIndex() + 1, RuntimeContext.get().getCellIndex() + 1, e.getMessage()));
+            }
             logger.info(String.format("导入数据成功,用时(%d)s....", (System.currentTimeMillis() - start) / 1000));
             new File(newFilePath).delete();
         }

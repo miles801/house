@@ -9,14 +9,17 @@ import com.michael.poi.core.ImportEngine;
 import com.michael.poi.core.RuntimeContext;
 import com.michael.poi.imp.cfg.Configuration;
 import com.michael.spec.bo.CustomerBo;
+import com.michael.spec.bo.RoomRentBo;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.dao.RoomDao;
+import com.michael.spec.dao.RoomRentDao;
 import com.michael.spec.domain.*;
 import com.michael.spec.service.CustomerNewsService;
 import com.michael.spec.service.CustomerService;
 import com.michael.spec.service.HouseParams;
 import com.michael.spec.service.RoomNewsService;
 import com.michael.spec.vo.CustomerVo;
+import com.michael.utils.NullUtils;
 import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
@@ -56,8 +59,15 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     @Resource
     private RoomDao roomDao;
 
+    @Resource
+    private RoomRentDao roomRentDao;
+
     @Override
     public String save(Customer customer) {
+        // 默认情况下不是租户
+        if (customer.getRent() == null) {
+            customer.setRent(false);
+        }
         // 设置编号
         String code = customerDao.maxCode();
         int newNo = 1;
@@ -94,7 +104,9 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         CustomerNews news = new CustomerNews();
         news.setCustomerId(customer.getId());
         news.setContent(compare(customer, originCus));
-        SystemContainer.getInstance().getBean(CustomerNewsService.class).save(news);
+        if (StringUtils.isNotEmpty(news.getContent())) {
+            SystemContainer.getInstance().getBean(CustomerNewsService.class).save(news);
+        }
 
         // 更新数据
         BeanCopyUtils.copyPropertiesExclude(customer, originCus, new String[]{"id"});
@@ -102,10 +114,14 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
 
 
     private String compare(final Customer customer, final Customer originCus) {
-        final StringBuilder builder = new StringBuilder("<div>变更客户信息：<div>");
+        final StringBuilder builder = new StringBuilder();
         ReflectionUtils.doWithFields(Customer.class, new ReflectionUtils.FieldCallback() {
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
+                String fieldName = field.getName();
+                if ("id,creatorId,creatorName,modifierId,modifierName,createdDatetime,modifiedDatetime".contains(fieldName)) {
+                    return;
+                }
                 field.setAccessible(true);
                 Object newValue = field.get(customer);
                 Object oldValue = field.get(originCus);
@@ -117,18 +133,31 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                 if (nameAnno == null) {
                     return;
                 }
-                if (newValue == null) {
-                    newValue = "";
-                }
-                if (oldValue == null) {
-                    oldValue = "";
-                }
-                if (newValue.equals(oldValue)) {
+                if (StringUtils.equals(newValue + "", oldValue + "")) {
                     return;
                 }
                 String name = nameAnno.value();
                 String template = "<span style=\"width:80px;text-align:right;padding-right:12px;\">%s</span>：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin-left:15px;\">%s</span><br/>";
-                builder.append(String.format(template, name, oldValue, newValue));
+                ParameterContainer container = ParameterContainer.getInstance();
+                if (fieldName.equals("sex")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getBusinessName(BaseParameter.SEX, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(BaseParameter.SEX, newValue + ""), "")));
+                } else if (fieldName.equals("type")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getBusinessName(Customer.TYPE, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(Customer.TYPE, newValue + ""), "")));
+                } else if (fieldName.equals("age")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getBusinessName(Customer.AGE_STAGE, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(Customer.AGE_STAGE, newValue + ""), "")));
+                } else if (fieldName.equals("education")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getBusinessName(BaseParameter.EDU, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(BaseParameter.EDU, newValue + ""), "")));
+                } else if (fieldName.equals("money")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getBusinessName(Customer.MONEY_STAGE, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(Customer.MONEY_STAGE, newValue + ""), "")));
+                } else if (fieldName.equals("marriage")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getBusinessName(BaseParameter.MARRIAGE, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(BaseParameter.MARRIAGE, newValue + ""), "")));
+                } else if (fieldName.equals("status")) {
+                    builder.append(String.format(template, name, NullUtils.defaultValue(container.getSystemName(HouseParams.HOUSE_STATUS, oldValue + ""), ""), NullUtils.defaultValue(container.getBusinessName(HouseParams.HOUSE_STATUS, newValue + ""), "")));
+                } else if (fieldName.equals("rent")) {
+                    builder.append(String.format(template, name, (boolean) oldValue || oldValue.equals("") ? "是" : "否", (boolean) newValue || newValue.equals("") ? "是" : "否"));
+                } else {
+                    builder.append(String.format(template, name, oldValue, newValue));
+                }
             }
         });
         return builder.toString();
@@ -416,6 +445,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         vo.setEducationName(container.getBusinessName(BaseParameter.EDU, customer.getEducation()));
         vo.setMarriageName(container.getBusinessName(BaseParameter.MARRIAGE, customer.getMarriage()));
         vo.setStatusName(container.getSystemName(HouseParams.HOUSE_STATUS, customer.getStatus()));
+        vo.setTypeName(container.getBusinessName(Customer.TYPE, customer.getType()));
 
         // 名下房产
         List<String> roomKeys = roomDao.findCodeByCustomer(customer.getId());
@@ -426,6 +456,19 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             }
             vo.setRoomCounts(roomKeys.size());
             vo.setRoomKeys(builder.substring(1));
+        }
+
+        // 在租房屋
+        RoomRentBo bo = new RoomRentBo();
+        bo.setNewCustomerId(customer.getId());
+        bo.setFinish(false);
+        List<RoomRent> roomRents = roomRentDao.query(bo);
+        if (roomRents != null && !roomRents.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            for (RoomRent rr : roomRents) {
+                builder.append(",").append(rr.getRoomKey());
+            }
+            vo.setRentKeys(builder.substring(1));
         }
     }
 }

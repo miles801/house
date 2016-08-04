@@ -41,6 +41,17 @@
             // 批量拒绝
             batchDeny: {method: 'POST', params: {method: 'batchDeny', ids: '@ids'}, isArray: false},
 
+            // 查询当前的租赁信息
+            rent: {method: 'GET', params: {method: 'rent', id: '@id'}, isArray: false},
+            // 添加租户
+            addRent: {method: 'POST', params: {method: 'addRent'}, isArray: false},
+            // 变更租户
+            changeRent: {method: 'POST', params: {method: 'changeRent'}, isArray: false},
+            // 更新租户
+            updateRent: {method: 'POST', params: {method: 'updateRent'}, isArray: false},
+            // 删除租户（实际就是设置状态为完成）
+            deleteRent: {method: 'POST', params: {method: 'deleteRent', rentId: '@rentId'}, isArray: false},
+
             // 导入数据
             importData: {method: 'POST', params: {method: 'import', attachmentIds: '@attachmentIds'}, isArray: false},
 

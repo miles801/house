@@ -100,7 +100,7 @@ public class PositionDaoImpl extends HibernateDaoHelper implements PositionDao {
     @SuppressWarnings("unchecked")
     public List<Position> children(String id) {
         Assert.hasText(id, "查询子岗位失败!岗位ID不能为空!");
-        return createCriteria(Position.class)
+        return getSession().createCriteria(Position.class)
                 .add(Restrictions.like("path", "%/" + id + "/%", MatchMode.ANYWHERE))
                 .list();
     }
@@ -111,7 +111,7 @@ public class PositionDaoImpl extends HibernateDaoHelper implements PositionDao {
 
         // 根据路径进行查询
         if (bo != null && StringUtils.isNotEmpty(bo.getPath())) {
-            criteria.add(Restrictions.like("path", "%/" + bo.getPath() + "/%"));
+            criteria.add(Restrictions.like("path", "%/" + bo.getPath() + "/_%"));
         }
     }
 

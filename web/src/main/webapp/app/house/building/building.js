@@ -110,6 +110,7 @@
                     AlertFactory.error('初始化失败!未获取到楼盘ID！');
                     return;
                 }
+                var creatorId = options.creatorId;
                 var $scope = modal.$scope;
                 var load = function () {
                     BuildingService.get({id: id}, function (data) {
@@ -153,7 +154,12 @@
 
                 // 添加维护人员
                 $scope.add = function () {
-                    EmployeeModal.pickMultiEmployee({}, function (emps) {
+                    EmployeeModal.pickMultiEmployee({
+                        condition: {
+                            manager: !creatorId,
+                            creatorId: creatorId
+                        }
+                    }, function (emps) {
                         ModalFactory.confirm({
                             scope: $scope,
                             content: '将选中的员工加入到维护人员列表中，请确认!',

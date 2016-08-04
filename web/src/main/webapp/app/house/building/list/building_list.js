@@ -148,7 +148,12 @@
 
         // 更新负责人
         $scope.modifyMaster = function (id) {
-            EmployeeModal.pickEmployee({}, function (emp) {
+            EmployeeModal.pickEmployee({
+                condition: {
+                    manager: $('#isManager').val(),
+                    creatorId: $('#isManager').val() ? null : $('#empId').val()
+                }
+            }, function (emp) {
                 ModalFactory.confirm({
                     scope: $scope,
                     content: '变更楼盘负责人，请确认该操作！',
@@ -165,7 +170,10 @@
 
         // 更新维护人
         $scope.modifyMaintain = function (id) {
-            BuildingModal.maintain({id: id}, $scope.pager.load);
+            BuildingModal.maintain({
+                id: id,
+                creatorId: $('#isManager').val() ? null : $('#empId').val()
+            }, $scope.pager.load);
         };
 
         $scope.closeTab();

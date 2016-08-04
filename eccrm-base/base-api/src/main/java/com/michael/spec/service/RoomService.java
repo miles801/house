@@ -1,10 +1,7 @@
 package com.michael.spec.service;
 
 import com.michael.spec.bo.RoomBo;
-import com.michael.spec.domain.Customer;
-import com.michael.spec.domain.Room;
-import com.michael.spec.domain.RoomBusiness;
-import com.michael.spec.domain.RoomView;
+import com.michael.spec.domain.*;
 import com.michael.spec.vo.BuildingVo;
 import com.michael.spec.vo.CustomerVo;
 import com.michael.spec.vo.RoomVo;
@@ -119,4 +116,46 @@ public interface RoomService {
      * @return 房屋
      */
     RoomVo findByCode(String code);
+
+    /**
+     * 添加租户
+     *
+     * @param roomId   房屋ID
+     * @param customer 租户
+     * @param roomRent 租赁信息
+     */
+    void addRent(String roomId, Customer customer, RoomRent roomRent);
+
+    /**
+     * 变更租户
+     *
+     * @param roomId   房屋ID
+     * @param customer 新租户
+     * @param roomRent 新租赁信息
+     */
+    void changeRent(String roomId, Customer customer, RoomRent roomRent);
+
+    /**
+     * 修改租户
+     *
+     * @param roomId   房屋ID
+     * @param customer 租户
+     * @param roomRent 租赁信息
+     */
+    void updateRent(String roomId, Customer customer, RoomRent roomRent);
+
+    /**
+     * 查询指定房屋当前的租赁信息
+     *
+     * @param roomId 房屋ID
+     * @return 租赁信息
+     */
+    RoomRent findCurrent(String roomId);
+
+    /**
+     * 删除指定的租赁信息（实际是完成）
+     *
+     * @param rentId 租赁ID
+     */
+    void deleteRent(String rentId);
 }

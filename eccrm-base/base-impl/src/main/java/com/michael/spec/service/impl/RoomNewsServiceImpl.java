@@ -12,6 +12,7 @@ import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
+import com.ycrl.utils.string.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -37,8 +38,8 @@ public class RoomNewsServiceImpl implements RoomNewsService, BeanWrapCallback<Ro
         Emp emp = empDao.findById(empId);
         Assert.notNull(emp, "操作失败!员工不存在!请刷新后重试!");
         roomNews.setEmpName(emp.getName());
-        roomNews.setPhone(emp.getPhone());
-
+        roomNews.setPhone(emp.getMobile());
+        Assert.isTrue(StringUtils.isNotEmpty(roomNews.getContent()), "保存失败!内容不能为空!");
         // 校验
         ValidatorUtils.validate(roomNews);
 

@@ -102,6 +102,7 @@
 
         // 清除岗位
         $scope.clearPosition = function () {
+            $scope.beans.roleNames = null;
             $scope.beans.roles = null;
         };
 

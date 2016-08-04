@@ -224,6 +224,90 @@
                             </div>
                         </div>
                     </div>
+                    <%-- 租户信息 --%>
+                    <div class="panel panel-tab" style="margin: 15px 0;position: relative;" ng-cloak
+                         ng-show="beans.onSale || beans.houseUseType==4">
+                        <ul class="nav nav-tabs" style="margin: 5px 0 0 0;width:100%;">
+                            <li class="active"><i>租户信息</i></li>
+                        </ul>
+                        <div class="tab-content" style="height: 100%;width:100%;padding-top: 0!important;">
+                            <div class="float items" ng-cloak>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>编号:</label></div>
+                                    <span class="w180"><a class="cp" style="text-decoration: underline;"
+                                                          ng-click="viewRent(beans.id,rent.id);">{{rent.code}}</a></span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>姓名:</label></div>
+                                    <span class="w180">{{rent.name}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>性别:</label></div>
+                                    <span class="w180">{{rent.sexName}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>年龄:</label></div>
+                                    <span class="w180">{{rent.age}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>电话1:</label></div>
+                                    <span class="w180">{{rent.phone1}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>电话2:</label></div>
+                                    <span class="w180">{{rent.phone2}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>微信:</label></div>
+                                    <span class="w180">{{rent.wechat}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>邮箱:</label></div>
+                                    <span class="w180">{{rent.email}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>家庭人口:</label></div>
+                                    <span class="w180">{{rent.familyCounts}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>租金:</label></div>
+                                    <span class="w180">{{rr.price}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>到期日:</label></div>
+                                    <span class="w180">{{rr.endDate|eccrmDate}}</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>租赁用途:</label></div>
+                                    <span class="w180" ng-cloak ng-if="rr.rentUsage==1">居家</span>
+                                    <span class="w180" ng-cloak ng-if="rr.rentUsage==2">办公</span>
+                                </div>
+                                <div class="item w300">
+                                    <div class="form-label w120"><label>公司名称:</label></div>
+                                    <span class="w180">{{rr.company}}</span>
+                                </div>
+                            </div>
+                            <div class="row text-center" style="clear:both;margin: 10px 0;">
+                                <a type="button" class="btn btn-blue" ng-click="addRent(beans.id);" ng-cloak
+                                   ng-if="!rent.id">
+                                    录入租户
+                                </a>
+                                <a type="button" class="btn btn-blue"
+                                   ng-click="changeRent(beans.id,rent.id);"
+                                   ng-cloak ng-if="rent.id">
+                                    变更租户
+                                </a>
+                                <a type="button" class="btn btn-blue"
+                                   ng-click="updateRent(beans.id, rent.id);"
+                                   ng-cloak ng-if="rent.id">
+                                    租户信息修改
+                                </a>
+                                <a type="button" class="btn btn-blue"
+                                   ng-click="deleteRent(rr.id);"
+                                   ng-cloak ng-if="rent.id"> 删除租户 </a>
+                            </div>
+                        </div>
+                    </div>
                     <%-- 最新动态 --%>
                     <div class="panel panel-tab" style="margin: 15px 0;position: relative;">
                         <ul class="nav nav-tabs" style="margin: 5px 0 0 0;width:100%;">

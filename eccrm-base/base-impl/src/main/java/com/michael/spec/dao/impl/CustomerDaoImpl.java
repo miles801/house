@@ -1,5 +1,8 @@
 package com.michael.spec.dao.impl;
 
+import com.michael.base.emp.domain.Emp;
+import com.michael.base.position.dao.PositionDao;
+import com.michael.base.position.dao.PositionEmpDao;
 import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +32,11 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
 
     @Resource
     private BuildingDao buildingDao;
+
+    @Resource
+    private PositionDao positionDao;
+    @Resource
+    private PositionEmpDao positionEmpDao;
 
     @Override
     public String save(Customer customer) {
@@ -144,7 +153,34 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
         }
         boolean isNotManager = !(bo != null && bo.getManager() != null && bo.getManager());
         if (isNotManager && StringUtils.isEmpty(bo.getBuildingId())) {
-            criteria.add(Property.forName("buildingId").in(buildingDao.getPersonalBuilding(SecurityContext.getEmpId())));
+            // 如果是负责人，则获取负责的楼盘的房屋;否则获取负责的和维护的所有数据
+            boolean isMaster = bo.getMaster() != null && bo.getMaster();
+            if (isMaster) {
+                criteria.add(Property.forName("buildingId").in(buildingDao.getMasterBuilding(SecurityContext.getEmpId())));
+            } else {
+                List<String> pIds = new ArrayList<>();
+                // 获取自己的所创建的人以及下下级创建的人
+                pIds.add(SecurityContext.getEmpId());
+                belongEmp(pIds, SecurityContext.getEmpId());
+                criteria.add(
+                        Restrictions.or(
+                                Property.forName("creatorId").in(pIds),    // 自己创建的
+                                Property.forName("buildingId").in(buildingDao.getPersonalBuilding(SecurityContext.getEmpId()))// 自己楼盘的
+                        )
+                );
+            }
+        }
+    }
+
+    private void belongEmp(List<String> empIds, String empId) {
+        List<String> ids = getSession().createQuery("select e.id from " + Emp.class.getName() + " e where e.creatorId=?")
+                .setParameter(0, empId)
+                .list();
+        if (ids != null && !ids.isEmpty()) {
+            empIds.addAll(ids);
+            for (String id : ids) {
+                belongEmp(empIds, id);
+            }
         }
     }
 

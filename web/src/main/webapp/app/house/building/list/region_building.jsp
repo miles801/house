@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String contextPath = request.getContextPath();
 %>
@@ -20,6 +21,12 @@
 </head >
 <body>
 <div class="main" ng-app="spec.building.region" ng-controller="Ctrl">
+    <div class="dn">
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+            <input type="hidden" id="isManager" value="true"/>
+        </c:if>
+        <input type="hidden" id="empId" value="${sessionScope.get('employeeId')}"/>
+    </div>
     <div class="block">
         <div class="row block table-list">
             <div class="block-header">

@@ -27,6 +27,11 @@
             $scope.age = data;
             $scope.age.unshift({name: '请选择...'});
         });
+        // 客户类型
+        CustomerParam.type(function (data) {
+            $scope.type = data;
+            $scope.type.unshift({name: '请选择...'});
+        });
         // 性别
         CustomerParam.sex(function (data) {
             $scope.sex = data;

@@ -22,7 +22,7 @@ public class CommonDomain {
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "com.michael.utils.SnowflakeIDStrategy")
     @GeneratedValue(generator = "idGenerator")
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false, length = 40)
     private String id;
 
     @ApiField(value = "创建人/录入人")

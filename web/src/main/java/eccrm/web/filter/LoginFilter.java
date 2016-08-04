@@ -1,14 +1,10 @@
 package eccrm.web.filter;
 
-import com.michael.base.emp.service.EmpService;
-import com.michael.base.emp.vo.EmpVo;
-import com.ycrl.core.SystemContainer;
 import com.ycrl.core.context.Login;
 import com.ycrl.core.context.SecurityContext;
 import com.ycrl.utils.string.StringUtils;
 import eccrm.core.security.LoginInfo;
 import org.apache.log4j.Logger;
-import org.springframework.util.Assert;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -55,7 +51,6 @@ public class LoginFilter implements Filter {
 
         response.addHeader("X-UA-Compatible", "chrome=1,IE=edge,IE=11,IE=10,IE=9,IE=8");
 
-        // FIXME 使用nginx后将此部分逻辑移到nginx中
         String url = request.getRequestURI();
         if (url.matches(".+\\.(js|html|css|png|jpeg|jpg|gif)") || url.equals("/login") || url.equals("/base/emp/login")) {
             filterChain.doFilter(request, response);
@@ -63,32 +58,18 @@ public class LoginFilter implements Filter {
         }
         HttpSession session = request.getSession();
         String empId = (String) session.getAttribute(LoginInfo.EMPLOYEE);
-        String user = request.getParameter("_u");
         Login login = new Login();
         if (StringUtils.isNotEmpty(empId)) {
             login.setEmpId(empId);
+            login.setEmpCode((String) session.getAttribute(LoginInfo.USERNAME));
             login.setEmpName((String) session.getAttribute(LoginInfo.EMPLOYEE_NAME));
             login.setOrgId((String) session.getAttribute(LoginInfo.ORG));
             login.setOrgName((String) session.getAttribute(LoginInfo.ORG_NAME));
-        } else if (StringUtils.isNotEmpty(user)) {
-            EmpVo vo = SystemContainer.getInstance().getBean(EmpService.class).findById(user);
-
-            Assert.notNull(vo, "用户不存在!");
-            login.setEmpId(user);
-            login.setEmpName(vo.getName());
-            login.setEmpCode(vo.getCode());
-            login.setOrgId(vo.getOrgId());
-            login.setOrgName(vo.getOrgName());
         } else {
             response.sendRedirect(defaultLoginHtml);
             return;
         }
-
-        // FIXME 使用nginx后将此部分逻辑移到nginx中
-        String userAgent = request.getHeader("User-Agent");
-        if (StringUtils.isNotEmpty(userAgent) && (userAgent.contains("Android ") || userAgent.contains("CFNetwork/"))) {
-            login.setMobile(true);
-        }
+        logger.info(String.format("%s : %s(%s)-->%s", request.getMethod(), login.getEmpName(), login.getEmpCode(), url));
         SecurityContext.set(login);
         filterChain.doFilter(request, response);
         SecurityContext.remove();

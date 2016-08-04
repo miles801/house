@@ -54,9 +54,15 @@ public class CustomerCtrl extends BaseController {
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public String toAdd(HttpServletRequest request) {
         request.setAttribute(JspAccessType.PAGE_TYPE, JspAccessType.ADD);
-        // 房屋ID
         request.setAttribute("id", request.getParameter("id"));
+        // 房屋ID
         request.setAttribute("roomId", request.getParameter("roomId"));
+        // 租户页面
+        String rent = (String) request.getParameter("rent");
+        if (StringUtils.isNotEmpty(rent)) {
+            request.setAttribute("rent", rent);
+            return "house/customer/edit/customer_rent";
+        }
         return "house/customer/edit/customer_edit";
     }
 

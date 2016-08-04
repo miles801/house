@@ -81,6 +81,22 @@
                     </div>
                     <div class="row">
                         <div class="form-label col-4">
+                            <label>待租:</label>
+                        </div>
+                        <div class="col-2-half">
+                            <label><input type="checkbox" ng-model="beans.onRent"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-label col-4">
+                            <label>待售:</label>
+                        </div>
+                        <div class="col-2-half">
+                            <label><input type="checkbox" ng-model="beans.onSale"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-label col-4">
                             <label>房屋现状:</label>
                         </div>
                         <select ng-model="beans.houseUseType" class="col-7"

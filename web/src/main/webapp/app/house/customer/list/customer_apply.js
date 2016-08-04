@@ -11,6 +11,7 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
         $scope.condition = {
             manager: $('#isManager').val(),
+            master: !$('#isManager').val() || true,
             statusInclude: ['APPLY_ADD', 'APPLY_INVALID']
         };
 
@@ -18,11 +19,6 @@
         CustomerParam.sex(function (data) {
             $scope.sex = data;
             $scope.sex.unshift({name: '请选择...'});
-        });
-        // 资产规模
-        CustomerParam.money(function (data) {
-            $scope.money = data;
-            $scope.money.unshift({name: '请选择...'});
         });
         // 年龄段
         CustomerParam.age(function (data) {
@@ -34,10 +30,10 @@
             $scope.marriage = data;
             $scope.marriage.unshift({name: '请选择...'});
         });
-        // 学历
-        CustomerParam.education(function (data) {
-            $scope.education = data;
-            $scope.education.unshift({name: '请选择...'});
+        // 类型
+        CustomerParam.type(function (data) {
+            $scope.type = data;
+            $scope.type.unshift({name: '全部'});
         });
 
         $scope.status = [

@@ -9,13 +9,20 @@
         'house.room'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
-        $scope.condition = {
+
+        var defaults = {
             orderBy: 'roomKey',
             statusInclude: ['APPLY_ADD', 'APPLY_INVALID'],
             manager: $('#isManager').val(),
             master: !$('#isManager').val() || true
         };
+        $scope.condition = angular.extend({}, defaults);
 
+        // 重置查询条件
+        $scope.reset = function () {
+            $scope.condition = angular.extend({}, defaults);
+            $scope.query();
+        };
         // 房屋现状
         RoomParam.useType(function (data) {
             $scope.useType = data || [];

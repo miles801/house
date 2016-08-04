@@ -77,7 +77,7 @@ public class PositionEmpDaoImpl extends HibernateDaoHelper implements PositionEm
     @SuppressWarnings("unchecked")
     public List<String> queryEmp(String positionId) {
         Assert.hasText(positionId, "查询失败!岗位ID不能为空!");
-        return createCriteria(PositionEmp.class)
+        return getSession().createCriteria(PositionEmp.class)
                 .setProjection(Projections.property("empId"))
                 .add(Restrictions.eq("positionId", positionId))
                 .list();
@@ -119,7 +119,7 @@ public class PositionEmpDaoImpl extends HibernateDaoHelper implements PositionEm
     public List<String> queryEmpPositionIds(String empId) {
         Assert.hasText(empId, "岗位查询失败!员工ID不能为空!");
 
-        return createCriteria(PositionEmp.class)
+        return getSession().createCriteria(PositionEmp.class)
                 .setProjection(Projections.property("positionId"))
                 .add(Restrictions.eq("empId", empId))
                 .list();

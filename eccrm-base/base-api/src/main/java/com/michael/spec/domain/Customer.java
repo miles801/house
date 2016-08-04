@@ -25,10 +25,18 @@ public class Customer extends CommonDomain {
      * 业务参数：财产规模
      */
     public static final String MONEY_STAGE = "MONEY_STAGE";
+    /**
+     * 客户类型
+     */
+    public static final String TYPE = "CUSTOMER_TYPE";
 
     @NotNull(message = "客户编号不能为空!")
     @Column(length = 40, nullable = false)
     private String code;
+
+    @ApiField("客户类型")
+    @Column(length = 40)
+    private String type;
 
     @ApiField("姓名")
     @Column(length = 40)
@@ -134,6 +142,17 @@ public class Customer extends CommonDomain {
     @Column(length = 40, nullable = false)
     private String status;
 
+    @ApiField("是否为租户")
+    @Column
+    private Boolean rent;
+
+    public Boolean getRent() {
+        return rent;
+    }
+
+    public void setRent(Boolean rent) {
+        this.rent = rent;
+    }
 
     public String getBuildingId() {
         return buildingId;
@@ -413,5 +432,13 @@ public class Customer extends CommonDomain {
 
     public void setC10(String c10) {
         this.c10 = c10;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

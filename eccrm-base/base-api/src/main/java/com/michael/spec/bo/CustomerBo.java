@@ -1,5 +1,6 @@
 package com.michael.spec.bo;
 
+import com.michael.docs.annotations.ApiField;
 import com.ycrl.core.hibernate.criteria.BO;
 import com.ycrl.core.hibernate.criteria.Condition;
 import com.ycrl.core.hibernate.criteria.LikeModel;
@@ -17,6 +18,9 @@ public class CustomerBo implements BO {
 
     @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
     private String name;
+
+    @Condition
+    private String type;
 
     @Condition
     private String idCard;
@@ -59,6 +63,36 @@ public class CustomerBo implements BO {
     private List<String> statusExclude;
 
     private Boolean manager;
+
+    private Boolean master;
+
+    @ApiField("是否为租户")
+    @Condition
+    private Boolean rent;
+
+    public Boolean getMaster() {
+        return master;
+    }
+
+    public void setMaster(Boolean master) {
+        this.master = master;
+    }
+
+    public Boolean getRent() {
+        return rent;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setRent(Boolean rent) {
+        this.rent = rent;
+    }
 
     public Boolean getManager() {
         return manager;

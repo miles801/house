@@ -192,10 +192,78 @@
                 }
             });
         };
-        //
+
+        // 添加租户
+        $scope.addRent = function (roomId) {
+            CommonUtils.addTab({
+                title: '添加租户',
+                url: 'house/customer/add?roomId=' + roomId + '&rent=add',
+                onUpdate: function () {
+                    window.location.reload();
+                }
+            })
+        };
+
+        // 修改租户信息
+        $scope.updateRent = function (roomId, customerId) {
+            CommonUtils.addTab({
+                title: '租户信息修改',
+                url: 'house/customer/add?id=' + customerId + '&roomId=' + roomId + '&rent=modify',
+                onUpdate: function () {
+                    window.location.reload();
+                }
+            })
+        };
+
+        // 变更租户
+        $scope.changeRent = function (roomId, customerId) {
+            CommonUtils.addTab({
+                title: '变更租户',
+                url: 'house/customer/add?id=' + customerId + '&roomId=' + roomId + '&rent=change',
+                onUpdate: function () {
+                    window.location.reload();
+                }
+            })
+        };
+        // 删除租户
+        $scope.deleteRent = function (rentId) {
+            ModalFactory.confirm({
+                scope: $scope,
+                content: '是否要删除该房屋的租户信息,请确认!',
+                callback: function () {
+                    var promise = RoomService.deleteRent({rentId:rentId}, function () {
+                        AlertFactory.success('操作成功!页面即将返回!');
+                        CommonUtils.delay(function(){
+                            window.location.reload();
+                        }, 2000);
+                    });
+                    CommonUtils.loading(promise);
+                }
+            });
+        };
+        $scope.viewRent = function (roomId, customerId) {
+            CommonUtils.addTab({
+                title: '查看租户',
+                url: 'house/customer/add?id=' + customerId + '&roomId=' + roomId + '&rent=detail'
+            })
+        };
+        // 查询租户信息
+        $scope.loadRent = function () {
+            var promise = RoomService.rent({id: id}, function (o) {
+                $scope.rr = o.data || {};
+                if ($scope.rr.newCustomerId) {
+                    CustomerService.get({id: $scope.rr.newCustomerId}, function (data) {
+                        $scope.rent = data.data || {};
+                    });
+                }
+            });
+            CommonUtils.loading(promise);
+        };
+
         $scope.load(id);
         $scope.loadBuilding();
         $scope.loadCustomer();
+        $scope.loadRent();
         // $scope.loadNews();
     });
 })(window, angular, jQuery);

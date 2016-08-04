@@ -9,12 +9,18 @@
         'house.room'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, RoomParam, RoomService) {
-        $scope.condition = {
+        var defaults = {
             orderBy: 'roomKey',
             buildingId: $('#buildingId').val() || null,
             manager: $('#isManager').val()
         };
+        $scope.condition = angular.extend({}, defaults);
 
+        // 重置查询条件
+        $scope.reset = function () {
+            $scope.condition = angular.extend({}, defaults);
+            $scope.query();
+        };
         var condition = $scope.condition;
 
         // 房屋现状
@@ -139,7 +145,7 @@
             var o = angular.extend({}, $scope.condition);
             o.start = null;
             o.limit = null;
-            window.open(CommonUtils.contextPathURL('/house/room/export?' + $.param(o)));
+            window.open(CommonUtils.contextPathURL('/house/room/export?' + encodeURI(encodeURI($.param(o)))));
         };
     });
 })(window, angular, jQuery);

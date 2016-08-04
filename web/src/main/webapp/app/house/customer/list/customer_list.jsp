@@ -53,24 +53,6 @@
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
-                                <label>手机:</label>
-                            </div>
-                            <input class="w150" type="text" ng-model="condition.phone"/>
-                        </div>
-                        <div class="item w240">
-                            <div class="form-label w80">
-                                <label>微信:</label>
-                            </div>
-                            <input class="w150" type="text" ng-model="condition.wechat"/>
-                        </div>
-                        <div class="item w240">
-                            <div class="form-label w80">
-                                <label>职业:</label>
-                            </div>
-                            <input class="w150" type="text" ng-model="condition.duty"/>
-                        </div>
-                        <div class="item w240">
-                            <div class="form-label w80">
                                 <label>性别:</label>
                             </div>
                             <select class="w150" ng-model="condition.sex"
@@ -86,13 +68,6 @@
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
-                                <label>资产规模:</label>
-                            </div>
-                            <select class="w150" ng-model="condition.money"
-                                    ng-options="foo.value as foo.name for foo in money" ng-change="query();"></select>
-                        </div>
-                        <div class="item w240">
-                            <div class="form-label w80">
                                 <label>年龄段:</label>
                             </div>
                             <select class="w150" ng-model="condition.age"
@@ -100,18 +75,18 @@
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
-                                <label>学历:</label>
-                            </div>
-                            <select class="w150" ng-model="condition.education"
-                                    ng-options="foo.value as foo.name for foo in education"
-                                    ng-change="query();"></select>
-                        </div>
-                        <div class="item w240">
-                            <div class="form-label w80">
                                 <label>状态:</label>
                             </div>
                             <select class="w150" ng-model="condition.status"
                                     ng-options="foo.value as foo.name for foo in status" ng-change="query();"></select>
+                        </div>
+                        <div class="item w240">
+                            <div class="form-label w80">
+                                <label>客户类型:</label>
+                            </div>
+                            <select class="w150" ng-model="condition.type"
+                                    ng-options="foo.value as foo.name for foo in type"
+                                    ng-change="query();"></select>
                         </div>
                     </div>
                 </div>
@@ -155,9 +130,11 @@
                                 </td>
                                 <td>客户编号</td>
                                 <td>姓名</td>
+                                <td>类型</td>
                                 <td>性别</td>
                                 <td>年龄段</td>
                                 <td>名下房产</td>
+                                <td>在租房屋</td>
                                 <td style="width: 120px;">录入时间</td>
                                 <td>婚姻状况</td>
                                 <td>学历</td>
@@ -167,7 +144,7 @@
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans || !beans.total">
-                                <td colspan="11" class="text-center">没有查询到数据！</td>
+                                <td colspan="13" class="text-center">没有查询到数据！</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
                                 <td><input type="checkbox" ng-model="foo.isSelected"/></td>
@@ -175,10 +152,15 @@
                                     <a ng-click="view(foo.id)" bo-text="foo.code"></a>
                                 </td>
                                 <td bo-text="foo.name"></td>
+                                <td bo-text="foo.typeName"></td>
                                 <td bo-text="foo.sexName"></td>
                                 <td bo-text="foo.ageName"></td>
                                 <td style="white-space: normal">
                                     <a ng-click="viewRoom(key)" ng-repeat="key in foo.roomKeys.split(',')"
+                                       style="margin-left:8px;cursor: pointer;">{{key}}</a>
+                                </td>
+                                <td style="white-space: normal">
+                                    <a ng-click="viewRoom(key)" ng-repeat="key in foo.rentKeys.split(',')"
                                        style="margin-left:8px;cursor: pointer;">{{key}}</a>
                                 </td>
                                 <td bo-text="foo.createdDatetime|eccrmDatetime"></td>

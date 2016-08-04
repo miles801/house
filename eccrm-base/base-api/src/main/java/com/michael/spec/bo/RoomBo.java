@@ -64,6 +64,14 @@ public class RoomBo implements BO {
     @Condition
     private String type4;
 
+    @ApiField("待租")
+    @Condition
+    private Boolean onRent;
+    @ApiField("待售")
+    @Condition
+    private Boolean onSale;
+
+
     @Condition(matchMode = MatchModel.GE, target = "square")
     private Double square1;
     @Condition(matchMode = MatchModel.LT, target = "square")
@@ -97,6 +105,23 @@ public class RoomBo implements BO {
 
     @Condition
     private String customerId;
+
+
+    public Boolean getOnRent() {
+        return onRent;
+    }
+
+    public void setOnRent(Boolean onRent) {
+        this.onRent = onRent;
+    }
+
+    public Boolean getOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(Boolean onSale) {
+        this.onSale = onSale;
+    }
 
     public Boolean getMaster() {
         return master;

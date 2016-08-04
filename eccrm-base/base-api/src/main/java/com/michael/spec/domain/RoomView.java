@@ -92,7 +92,12 @@ public class RoomView {
     @Column
     private String customerId;
 
-
+    @ApiField("待租")
+    @Column
+    private Boolean onRent;
+    @ApiField("待售")
+    @Column
+    private Boolean onSale;
     // ===============  关联表属性  =================
     @Column
     private String buildingName;
@@ -196,6 +201,22 @@ public class RoomView {
     private String orientName;
     @Column
     private String modifierId;
+
+    public Boolean getOnRent() {
+        return onRent;
+    }
+
+    public void setOnRent(Boolean onRent) {
+        this.onRent = onRent;
+    }
+
+    public Boolean getOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(Boolean onSale) {
+        this.onSale = onSale;
+    }
 
     public String getSex() {
         return sex;

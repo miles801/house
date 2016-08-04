@@ -21,24 +21,25 @@
     </script>
 </head>
 <body>
-<c:set var="name" value='${roomId eq null ?"客户":"业主"}'/>
-<div class="main" ng-app="house.customer.edit" ng-controller="Ctrl">
+<div class="main" ng-app="house.customer.rent" ng-controller="Ctrl">
     <div class="block">
         <div class="block-header">
                 <span class="header-text">
                     <span class="glyphicons info-sign"></span>
                 </span>
                 <span class="header-button">
-                    <c:if test="${pageType eq 'add'}">
-                    <button type="button" class="btn btn-green btn-min" ng-click="save()" ng-disabled="form.$invalid">
+                    <button type="button" class="btn btn-green btn-min" ng-click="save()" ng-disabled="form.$invalid"
+                            ng-cloak ng-if="pageType=='add'">
                         <span class="glyphicons disk_save"></span> 保存
                     </button>
-                    </c:if>
-                    <c:if test="${pageType eq 'modify'}">
-                    <button type="button" class="btn btn-green btn-min" ng-click="update()" ng-disabled="form.$invalid">
+                    <button type="button" class="btn btn-green btn-min" ng-click="change()" ng-disabled="form.$invalid"
+                            ng-cloak ng-if="pageType=='change'">
+                        <span class="glyphicons disk_save"></span> 确认变更
+                    </button>
+                    <button type="button" class="btn btn-green btn-min" ng-click="update()" ng-disabled="form.$invalid"
+                            ng-cloak ng-if="pageType=='modify'">
                         <span class="glyphicons claw_hammer"></span> 更新
                     </button>
-                    </c:if>
                     <a type="button" class="btn btn-green btn-min" ng-click="back();">
                         <span class="glyphicons message_forward"></span> 返回
                     </a>
@@ -48,68 +49,68 @@
             <div class="content-wrap">
                 <form name="form" class="form-horizontal" role="form">
                     <div style="display: none;">
-                        <input type="hidden" id="pageType" value="${pageType}"/>
                         <input type="hidden" id="roomId" value="${roomId}"/>
                         <input type="hidden" id="id" value="${id}"/>
                         <input type="hidden" id="rent" value="${rent}"/>
                     </div>
-                    <%-- 变更房主 --%>
-                    <c:if test="${pageType eq 'add' && roomId ne null && id ne null}">
-                        <div class="row">
-                            <div class="form-label col-1-half">
-                                <label>交易时间:</label>
-                            </div>
-                            <div class="col-2-half">
-                                <input type="text" class="col-12" eccrm-my97="{}" ng-model="rb.occurDate" readonly
-                                       validate validate-required placeholder="点击选择时间..."/>
-                                <span class="add-on"><i class="icons icon clock"
-                                                        ng-click="rb.occurDate=null;"></i></span>
-                            </div>
-                            <div class="form-label col-1-half">
-                                <label validate-error="form.businessType">交易类型:</label>
-                            </div>
-                            <select ng-model="rb.type" class="col-2-half" name="businessType"
-                                    ng-options="foo.value as foo.name for foo in businessType"
-                                    validate validate-required>
-                            </select>
-                            <div class="form-label col-1-half">
-                                <label>成交价格:</label>
-                            </div>
-                            <input ng-model="rb.price" class="col-2-half" type="text" validate validate-required
-                                   validate-float
-                                   placeholder="单位是万元"/>
-                        </div>
-                        <div class="row">
-                            <div class="form-label col-1-half">
-                                <label>描述:</label>
-                            </div>
-                            <textarea rows="4" ng-model="rb.description" maxlength="500" class="col-10-half"></textarea>
-                        </div>
-                        <div class="ycrl split" style="margin-top:15px;"></div>
-                        <h3 class="text-center">新<c:out value="${name}"/>信息</h3>
-                    </c:if>
+                    <%-- 新增租户 --%>
                     <div class="row">
                         <div class="form-label col-1-half">
-                            <label><c:out value="${name}"/>编号:</label>
+                            <label>到期日:</label>
                         </div>
-                        <c:if test="${roomId ne null && pageType eq 'add'}">
+                        <div class="col-2-half">
+                            <input type="text" class="col-12" eccrm-my97="{}" ng-model="rr.endDate" readonly
+                                   validate validate-required placeholder="点击选择时间..."/>
+                                <span class="add-on"><i class="icons icon clock"
+                                                        ng-click="rb.rr.endDate=null;"></i></span>
+                        </div>
+                        <div class="form-label col-1-half">
+                            <label validate-error="form.price">租金:</label>
+                        </div>
+                        <input ng-model="rr.price" class="col-2-half" type="text" validate validate-required
+                               validate-float placeholder="元/月"/>
+                        </select>
+                        <div class="form-label col-1-half">
+                            <label validate-error="rentUsage">租赁用途:</label>
+                        </div>
+                        <select ng-model="rr.rentUsage" class="col-2-half" name="rentUsage"
+                                ng-options="foo.value as foo.name for foo in rentUsage"
+                                validate validate-required></select>
+                    </div>
+                    <div class="row">
+                        <div class="form-label col-1-half">
+                            <label validate-error="form.price">公司名称:</label>
+                        </div>
+                        <input ng-model="rr.company" class="col-2-half" type="text" validate
+                               validate-max-length="40"/>
+                        </select>
+                        <div class="form-label col-1-half">
+                            <label>描述:</label>
+                        </div>
+                        <input ng-model="rr.description" class="col-6-half" type="text" validate
+                               validate-max-length="200"/>
+                    </div>
+                    <div class="ycrl split" style="margin-top:15px;"></div>
+                    <h3 class="text-center">租户信息</h3>
+                    <div class="row">
+                        <div class="form-label col-1-half">
+                            <label>租户编号:</label>
+                        </div>
+                        <c:if test="${rent eq 'add' or rent eq 'change'}">
                             <div class="col-2-half">
                                 <input class="col-12" type="text" ng-model="beans.code" readonly
-                                       placeholder="点击选择<c:out value="${name}"/>或手动录入" ng-click="pickCustomer();"/>
+                                       placeholder="点击选择租户，或者手动录入" ng-click="pickCustomer();"/>
                                 <span class="add-on"><i class="icons icon user"></i></span>
                             </div>
                         </c:if>
-                        <c:if test="${roomId ne null && pageType ne 'add'}">
+                        <c:if test="${rent eq 'modify' or rent eq 'detail'}">
                             <div class="col-2-half">
                                 <input class="col-12" type="text" ng-model="beans.code" readonly/>
                             </div>
                         </c:if>
-                        <c:if test="${roomId eq null}">
-                            <input class="col-2-half" type="text" ng-model="beans.code" placeholder="自动生成" readonly/>
-                        </c:if>
 
                         <div class="form-label col-1-half">
-                            <label><c:out value="${name}"/>姓名:</label>
+                            <label>租户姓名:</label>
                         </div>
                         <input class="col-2-half" type="text" ng-model="beans.name" maxlength="20"
                                placeholder="如果没有可以写“匿名”"
@@ -225,13 +226,8 @@
                             <label>状态:</label>
                         </div>
                         <span class="col-2-half" ng-cloak>
-                        <span>{{beans.statusName}}</span>
-                        <a class="btn-op red" ng-click="applyInvalid(beans.id);" style="margin-left: 15px;;"
-                           ng-if="pageType=='modify' && beans.status=='ACTIVE'" ng-cloak>无效申请</a>
-                        <a class="btn-op green" ng-click="applyValid(beans.id);" style="margin-left: 15px;;"
-                           ng-if="pageType=='modify' && beans.status=='INVALID'" ng-cloak>有效申请</a>
+                            <span>{{beans.statusName}}</span>
                         </span>
-                        <div class="col-1-half">&nbsp; </div>
                         <div class="col-2-half">
                             <a type="button" class="btn btn-blue" ng-click="addCusInfo(beans.id);"> 录入跟进 </a>
                         </div>
@@ -277,5 +273,5 @@
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/customer.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>
 <script type="text/javascript" src="<%=contextPath%>/app/house/customer/customerNews.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/app/house/customer/edit/customer_edit.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/customer/edit/customer_rent.js"></script>
 </html>

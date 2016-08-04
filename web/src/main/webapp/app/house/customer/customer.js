@@ -70,6 +70,13 @@
     app.service('CustomerParam', function (ParameterLoader) {
         return {
             /**
+             * 客户类型
+             * @param callback
+             */
+            type: function (callback) {
+                ParameterLoader.loadBusinessParam('CUSTOMER_TYPE', callback);
+            },
+            /**
              * 年龄段
              * @param callback
              */

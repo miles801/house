@@ -51,4 +51,9 @@ public interface HouseParams {
      * 系统参数：房屋状态
      */
     public static final String HOUSE_STATUS = "HOUSE_STATUS";
+
+    /**
+     * 租赁用途
+     */
+    public static final String RENT_USAGE = "RENT_USAGE";
 }

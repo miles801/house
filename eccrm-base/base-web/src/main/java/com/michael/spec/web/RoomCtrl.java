@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.michael.poi.exp.ExportEngine;
 import com.michael.spec.bo.RoomBo;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomRent;
 import com.michael.spec.domain.RoomView;
 import com.michael.spec.service.RoomService;
 import com.michael.spec.vo.BuildingVo;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -125,6 +127,50 @@ public class RoomCtrl extends BaseController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/addRent", method = RequestMethod.POST)
+    public void addRent(HttpServletRequest request, HttpServletResponse response) {
+        RoomData roomData = GsonUtils.wrapDataToEntity(request, RoomData.class);
+        Assert.notNull(roomData, "操作失败!数据不能为空!");
+        Assert.notNull(roomData.getCustomer(), "操作失败!租户信息不能为空!");
+        Assert.notNull(roomData.getRoomRent(), "操作失败!租赁信息不能为空!");
+        roomService.addRent(roomData.getRoomId(), roomData.getCustomer(), roomData.getRoomRent());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/changeRent", method = RequestMethod.POST)
+    public void changeRent(HttpServletRequest request, HttpServletResponse response) {
+        RoomData roomData = GsonUtils.wrapDataToEntity(request, RoomData.class);
+        Assert.notNull(roomData, "操作失败!数据不能为空!");
+        Assert.notNull(roomData.getCustomer(), "操作失败!租户信息不能为空!");
+        Assert.notNull(roomData.getRoomRent(), "操作失败!租赁信息不能为空!");
+        roomService.changeRent(roomData.getRoomId(), roomData.getCustomer(), roomData.getRoomRent());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateRent", method = RequestMethod.POST)
+    public void updateRent(HttpServletRequest request, HttpServletResponse response) {
+        RoomData roomData = GsonUtils.wrapDataToEntity(request, RoomData.class);
+        Assert.notNull(roomData, "操作失败!数据不能为空!");
+        Assert.notNull(roomData.getCustomer(), "操作失败!租户信息不能为空!");
+        Assert.notNull(roomData.getRoomRent(), "操作失败!租赁信息不能为空!");
+        roomService.updateRent(roomData.getRoomId(), roomData.getCustomer(), roomData.getRoomRent());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/rent", params = "id", method = RequestMethod.GET)
+    public void findCurrentRent(String id, HttpServletResponse response) {
+        RoomRent roomRent = roomService.findCurrent(id);
+        GsonUtils.printData(response, roomRent);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteRent", params = "rentId", method = RequestMethod.POST)
+    public void deleteRent(String rentId, HttpServletResponse response) {
+        roomService.deleteRent(rentId);
+        GsonUtils.printSuccess(response);
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/customer", params = "roomId", method = RequestMethod.GET)
     public void getCustomer(String roomId, HttpServletRequest request, HttpServletResponse response) {
         CustomerVo customerVo = roomService.getCustomer(roomId);
@@ -209,7 +255,7 @@ public class RoomCtrl extends BaseController {
         o.add("c", element);
         String disposition = null;//
         try {
-            disposition = "attachment;filename=" + URLEncoder.encode("房屋数据.xlsx", "UTF-8");
+            disposition = "attachment;filename=" + URLEncoder.encode("房屋数据" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".xlsx", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

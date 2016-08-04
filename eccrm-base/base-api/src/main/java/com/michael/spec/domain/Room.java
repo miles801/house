@@ -61,10 +61,12 @@ public class Room extends CommonDomain {
     @Column(nullable = false, length = 40)
     private String unitId;
 
+    @ApiField("楼层")
     @NotNull(message = "楼层信息不能为空!")
     @Column(nullable = false)
     private Integer floor;
 
+    @ApiField("门牌号")
     @NotNull(message = "房间号不能为空")
     @Column(nullable = false, length = 20)
     private String code;
@@ -93,10 +95,18 @@ public class Room extends CommonDomain {
     @ApiField("产权性质")
     private String houseProperty;
 
+    @ApiField("待租")
+    @Column
+    private Boolean onRent;
+    @ApiField("待售")
+    @Column
+    private Boolean onSale;
+
     @Column(length = 40)
-    @ApiField("业务参数：房屋使用类型")
+    @ApiField(value = "房屋现状", desc = "业务参数")
     private String houseUseType;
 
+    @ApiField("描述")
     @Column(length = 1000)
     private String description;
 
@@ -111,6 +121,7 @@ public class Room extends CommonDomain {
     @Column(length = 100)
     private String col5;
 
+    @ApiField("状态")
     @NotNull(message = "房屋状态不能为空!")
     @Column(length = 40, nullable = false)
     private String status;
@@ -118,6 +129,22 @@ public class Room extends CommonDomain {
     @ApiField("客户ID")
     @Column
     private String customerId;
+
+    public Boolean getOnRent() {
+        return onRent;
+    }
+
+    public void setOnRent(Boolean onRent) {
+        this.onRent = onRent;
+    }
+
+    public Boolean getOnSale() {
+        return onSale;
+    }
+
+    public void setOnSale(Boolean onSale) {
+        this.onSale = onSale;
+    }
 
     public String getCustomerId() {
         return customerId;
