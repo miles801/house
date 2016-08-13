@@ -17,10 +17,13 @@
     </script>
 </head>
 <body>
-<div class="main condition-row-3" ng-app="house.room.apply" ng-controller="Ctrl">
-    <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
-        <input type="hidden" id="isManager" value="true"/>
-    </c:if>
+<div class="main condition-row-3" ng-app="house.room.sale" ng-controller="Ctrl">
+    <div class="dn">
+        <input type="hidden" id="buildingId" value="${param.buildingId}"/>
+        <c:if test='${sessionScope.get("POSTION_MANAGER") eq true}'>
+            <input type="hidden" id="isManager" value="true"/>
+        </c:if>
+    </div>
     <div class="list-condition">
         <div class="block">
             <div class="block-header">
@@ -28,7 +31,7 @@
                     <span class="glyphicons search"></span>
                 </span>
                 <span class="header-button">
-                    <a type="button" class="btn btn-green btn-min" ng-click="reset();">
+                        <a type="button" class="btn btn-green btn-min" ng-click="reset();">
                                 <span class="glyphicons search"></span>
                                 重置
                         </a>
@@ -68,12 +71,6 @@
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
-                                    <label>业主电话:</label>
-                                </div>
-                                <input type="text" class="w150" ng-model="condition.cusPhone"/>
-                            </div>
-                            <div class="item w240">
-                                <div class="form-label w80">
                                     <label>房屋现状:</label>
                                 </div>
                                 <select ng-model="condition.houseUseType" class="w150"
@@ -100,6 +97,12 @@
                                     <label>房屋编号:</label>
                                 </div>
                                 <input type="text" class="w150" ng-model="condition.roomKey"/>
+                            </div>
+                            <div class="item w240">
+                                <div class="form-label w80">
+                                    <label>业主电话:</label>
+                                </div>
+                                <input type="text" class="w150" ng-model="condition.cusPhone"/>
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
@@ -139,21 +142,6 @@
                                 <input type="checkbox" style="width: 14px;" ng-model="condition.reverse" value="true"
                                        ng-change="query();"/>
                             </div>
-                            <div class="item w100">
-                                <div class="form-label w80">
-                                    <label>待售:</label>
-                                </div>
-                                <input type="checkbox" style="width: 14px;" ng-model="condition.onSale" value="true"
-                                       ng-change="query();"/>
-                            </div>
-                            <div class="item w100">
-                                <div class="form-label w80">
-                                    <label>待租:</label>
-                                </div>
-                                <input type="checkbox" style="width: 14px;" ng-model="condition.onRent" value="true"
-                                       ng-change="query();"/>
-                            </div>
-
                             <div class="item w240">
                                 <div class="form-label w80">
                                     <label>户型:</label>
@@ -179,14 +167,13 @@
                     <span>房间管理</span>
                 </div>
                 <div class="header-button">
-                    <a type="button" class="btn btn-green btn-min" ng-click="pass();" ng-cloak
-                       ng-disabled="!anyone">
-                        <span class="glyphicons plus"></span> 批量通过
-                    </a>
-                    <a type="button" class="btn btn-green btn-min" ng-click="deny();" ng-cloak
-                       ng-disabled="!anyone">
-                        <span class="glyphicons plus"></span> 批量驳回
-                    </a>
+                    <c:if test='${sessionScope.get("ROOM_DATA_EXPORT") eq true}'>
+                        <a type="button" class="btn btn-green btn-min" ng-click="exportData();"
+                           ng-disabled="!beans.total">
+                            <span class="glyphicons search"></span>
+                            导出数据
+                        </a>
+                    </c:if>
                 </div>
             </div>
             <div class="block-content">
@@ -195,10 +182,6 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-header">
                             <tr>
-                                <td class="width-min">
-                                    <div select-all-checkbox checkboxes="beans.data" selected-items="items"
-                                         anyone-selected="anyone"></div>
-                                </td>
                                 <td>房屋编号</td>
                                 <td>楼盘</td>
                                 <td>栋座</td>
@@ -209,20 +192,17 @@
                                 <td>面积</td>
                                 <td>房屋现状</td>
                                 <td>业主姓名</td>
-                                <td>录入人</td>
-                                <td>录入时间</td>
                                 <td>状态</td>
-                                <td>跟进录入</td>
+                                <td>跟进维护</td>
                             </tr>
                             </thead>
                             <tbody class="table-body">
                             <tr ng-show="!beans.total">
-                                <td colspan="15" class="text-center">无房屋信息!</td>
+                                <td colspan="12" class="text-center">无房屋信息!</td>
                             </tr>
                             <tr bindonce ng-repeat="foo in beans.data" ng-cloak>
-                                <td><input type="checkbox" ng-model="foo.isSelected"/></td>
                                 <td>
-                                    <a class="cp" ng-click="detail(foo.id)" bo-text="foo.roomKey"></a>
+                                    <a class="cp" ng-click="detail(foo.roomKey)" bo-text="foo.roomKey"></a>
                                 </td>
                                 <td bo-text="foo.buildingName"></td>
                                 <td bo-text="foo.blockCode"></td>
@@ -233,12 +213,17 @@
                                 <td bo-text="foo.square"></td>
                                 <td bo-text="foo.houseUseTypeName"></td>
                                 <td bo-text="foo.cusName"></td>
-                                <td bo-text="foo.modifierName||foo.creatorName"></td>
-                                <td bo-text="(foo.modifiedDatetime||foo.createdDatetime)|eccrmDatetime"></td>
-                                <td bo-text="foo.statusName"></td>
-                                <td>
-                                    <a class="btn-op blue" ng-click="pass(foo.id);">通过</a>
-                                    <a class="btn-op red" ng-click="deny(foo.id);">驳回</a>
+                                <td bo-text="foo.statusName">
+                                    <span bo-text="foo.statusName"
+                                          ng-class="{'btn-danger':foo.status=='INACTIVE'}"></span>
+                                </td>
+                                <td class="text-left">
+                                    <a class="btn-op blue" ng-click="update(foo.id);">房屋录入</a>
+                                    <a class="btn-op yellow" ng-click="addCustomer(foo.id);" ng-if="!foo.customerId">业主录入</a>
+                                    <a class="btn-op yellow" ng-click="applyAdd(foo.id);"
+                                       ng-if="foo.status=='INACTIVE'||foo.status=='INVALID_ADD'">新增申请</a>
+                                    <a class="btn-op red" ng-click="remove(foo.id);"
+                                       ng-if="foo.status=='INACTIVE'||foo.status=='INVALID_ADD'">删除</a>
                                 </td>
                             </tr>
                             </tbody>
@@ -252,5 +237,5 @@
 </div>
 </body>
 <script type="text/javascript" src="<%=contextPath%>/app/house/room/room.js"></script>
-<script type="text/javascript" src="<%=contextPath%>/app/house/room/list/room_apply.js"></script>
+<script type="text/javascript" src="<%=contextPath%>/app/house/room/list/room_sale.js"></script>
 </html>

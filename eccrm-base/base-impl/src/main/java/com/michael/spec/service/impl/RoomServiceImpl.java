@@ -144,6 +144,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
         RoomNews news = new RoomNews();
         if (StringUtils.isEmpty(customerId)) {
+            customer.setStatus(Room.STATUS_APPLY_ADD);
             customerId = beanContainer.getBean(CustomerService.class).save(customer);
         } else {
             beanContainer.getBean(CustomerService.class).update(customer);
@@ -781,6 +782,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                             customer.setC1(dto.getCusDescription());
                             customer.setBuildingId(buildingId);
                             customer.setBuildingName(buildingName);
+                            customer.setStatus(Room.STATUS_APPLY_ADD);
                             cusId = beanContainer.getBean(CustomerService.class).save(customer);
                         }
                         room.setCustomerId(cusId);

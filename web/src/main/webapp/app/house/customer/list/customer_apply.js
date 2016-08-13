@@ -9,12 +9,19 @@
         'house.customer'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
-        $scope.condition = {
+
+        var defaults = {
             manager: $('#isManager').val(),
             master: !$('#isManager').val() || true,
             statusInclude: ['APPLY_ADD', 'APPLY_INVALID']
         };
 
+        $scope.condition = angular.extend({}, defaults);
+
+        $scope.reset = function () {
+            $scope.condition = angular.extend({}, defaults);
+            $scope.query();
+        };
         // 性别
         CustomerParam.sex(function (data) {
             $scope.sex = data;

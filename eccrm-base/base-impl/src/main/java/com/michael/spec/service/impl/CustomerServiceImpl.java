@@ -77,8 +77,10 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         DecimalFormat decimalFormat = new DecimalFormat("C000000");
         customer.setCode(decimalFormat.format(newNo));
 
-        // 设置状态
-        customer.setStatus(Room.STATUS_APPLY_ADD);
+        // 设置状态：默认为正常，不需要审批
+        if (StringUtils.isEmpty(customer.getStatus())) {
+            customer.setStatus(Room.STATUS_ACTIVE);
+        }
 
         validate(customer);
 
@@ -420,7 +422,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                     if (StringUtils.isNotEmpty(money)) {
                         customer.setMoney(parameterContainer.getBusinessValue(Customer.MONEY_STAGE, money));
                     }
-                    customer.setStatus(Room.STATUS_APPLY_ADD);
+                    customer.setStatus(Room.STATUS_ACTIVE);
                     try {
                         save(customer);
                     } catch (Exception e) {

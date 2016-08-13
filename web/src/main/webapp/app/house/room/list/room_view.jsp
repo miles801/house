@@ -100,6 +100,12 @@
                             </div>
                             <div class="item w240">
                                 <div class="form-label w80">
+                                    <label>业主电话:</label>
+                                </div>
+                                <input type="text" class="w150" ng-model="condition.cusPhone"/>
+                            </div>
+                            <div class="item w240">
+                                <div class="form-label w80">
                                     <label>录入人:</label>
                                 </div>
                                 <input type="text" class="w150" ng-model="condition.creatorName"/>

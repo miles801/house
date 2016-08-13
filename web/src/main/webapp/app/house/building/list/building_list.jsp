@@ -34,10 +34,7 @@
                     <span class="glyphicons search"></span>
                 </span>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="query();">
-                                <span class="glyphicons search"></span>
-                                查询
-                        </a>
+                        <a type="button" class="btn btn-green btn-min" ng-click="query();"> 查询 </a>
                 </span>
             </div>
             <div class="block-content">
@@ -54,6 +51,12 @@
                                 <label>楼盘编号:</label>
                             </div>
                             <input class="w120" type="text" ng-model="condition.code"/>
+                        </div>
+                        <div class="item w200">
+                            <div class="form-label w80">
+                                <label>负责人电话:</label>
+                            </div>
+                            <input class="w120" type="text" ng-model="condition.phone" placeholder="只针对负责人"/>
                         </div>
                         <div class="item w300">
                             <div class="form-label w80">

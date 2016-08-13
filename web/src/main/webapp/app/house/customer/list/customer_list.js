@@ -9,10 +9,16 @@
         'house.customer'
     ]);
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, CustomerService, CustomerParam) {
-        $scope.condition = {
+        var defaults = {
             manager: $('#isManager').val(),
             orderBy: 'code',
             reverse: true
+        };
+        $scope.condition = angular.extend({}, defaults);
+
+        $scope.reset = function () {
+            $scope.condition = angular.extend({}, defaults);
+            $scope.query();
         };
 
         // 性别

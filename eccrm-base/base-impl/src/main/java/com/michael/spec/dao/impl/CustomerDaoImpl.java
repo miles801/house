@@ -7,15 +7,13 @@ import com.michael.spec.bo.CustomerBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.domain.Customer;
+import com.michael.spec.domain.Room;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
 import com.ycrl.utils.string.StringUtils;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -169,6 +167,13 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
                         )
                 );
             }
+        }
+
+        // 业主
+        if (bo.getOwner() != null && bo.getOwner()) {
+            DetachedCriteria houseCriteria = DetachedCriteria.forClass(Room.class)
+                    .setProjection(Projections.distinct(Projections.property("customerId")));
+            criteria.add(Property.forName("id").in(houseCriteria));
         }
     }
 

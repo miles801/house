@@ -103,9 +103,21 @@ public class RoomBo implements BO {
     // 如果值为true，则表示只查询自己负责的楼盘的数据
     private Boolean master;
 
+
     @Condition
     private String customerId;
 
+    @ApiField("业主电话,只适用于RoomView")
+    @Condition
+    private String cusPhone;
+
+    public String getCusPhone() {
+        return cusPhone;
+    }
+
+    public void setCusPhone(String cusPhone) {
+        this.cusPhone = cusPhone;
+    }
 
     public Boolean getOnRent() {
         return onRent;

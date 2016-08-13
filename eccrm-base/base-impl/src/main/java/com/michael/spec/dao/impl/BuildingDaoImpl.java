@@ -1,5 +1,6 @@
 package com.michael.spec.dao.impl;
 
+import com.michael.base.emp.domain.Emp;
 import com.michael.spec.bo.BuildingBo;
 import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.domain.Building;
@@ -133,6 +134,13 @@ public class BuildingDaoImpl extends HibernateDaoHelper implements BuildingDao {
             or.add(Property.forName("city").in(regionCriteria));
             or.add(Property.forName("area").in(regionCriteria));
             criteria.add(or);
+        }
+
+        // 负责人电话
+        if (StringUtils.isNotEmpty(bo.getPhone())) {
+            DetachedCriteria masterId = DetachedCriteria.forClass(Emp.class).setProjection(Projections.property("id"))
+                    .add(Restrictions.eq("mobile", bo.getPhone()));
+            criteria.add(Property.forName("masterId").in(masterId));
         }
     }
 

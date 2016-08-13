@@ -30,10 +30,8 @@
                     <span class="glyphicons search"></span>
                 </span>
                 <span class="header-button">
-                        <a type="button" class="btn btn-green btn-min" ng-click="query();">
-                                <span class="glyphicons search"></span>
-                                查询
-                        </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="reset();"> 重置 </a>
+                    <a type="button" class="btn btn-green btn-min" ng-click="query();"> 查询 </a>
                 </span>
             </div>
             <div class="block-content">
@@ -53,18 +51,15 @@
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
-                                <label>性别:</label>
+                                <label>电话:</label>
                             </div>
-                            <select class="w150" ng-model="condition.sex"
-                                    ng-options="foo.value as foo.name for foo in sex" ng-change="query();"></select>
+                            <input class="w150" type="text" ng-model="condition.phone"/>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
-                                <label>婚姻状况:</label>
+                                <label>录入人:</label>
                             </div>
-                            <select class="w150" ng-model="condition.marriage"
-                                    ng-options="foo.value as foo.name for foo in marriage"
-                                    ng-change="query();"></select>
+                            <input class="w150" type="text" ng-model="condition.creatorName"/>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">
@@ -79,6 +74,22 @@
                             </div>
                             <select class="w150" ng-model="condition.status"
                                     ng-options="foo.value as foo.name for foo in status" ng-change="query();"></select>
+                        </div>
+                        <div class="item w100">
+                            <div class="form-label w80">
+                                <label>业主:</label>
+                            </div>
+                            <input type="checkbox" style="width: 14px;float: left;" ng-model="condition.owner"
+                                   value="true"
+                                   ng-change="query();"/>
+                        </div>
+                        <div class="item w100">
+                            <div class="form-label w80">
+                                <label>租户:</label>
+                            </div>
+                            <input type="checkbox" style="width: 14px;float: left;" ng-model="condition.rent"
+                                   value="true"
+                                   ng-change="query();"/>
                         </div>
                         <div class="item w240">
                             <div class="form-label w80">

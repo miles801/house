@@ -70,6 +70,28 @@ public class CustomerBo implements BO {
     @Condition
     private Boolean rent;
 
+    @ApiField("是否为业主")
+    private Boolean owner;
+
+    @Condition(matchMode = MatchModel.LIKE, likeMode = LikeModel.ANYWHERE)
+    private String creatorName;
+
+    public Boolean getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Boolean owner) {
+        this.owner = owner;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
     public Boolean getMaster() {
         return master;
     }
