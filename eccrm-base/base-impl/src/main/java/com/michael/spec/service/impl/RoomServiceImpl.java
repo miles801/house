@@ -241,12 +241,17 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         // 获取之前的租户信息
         RoomRent rr = roomRentDao.findCurrent(roomId);
         Assert.notNull(rr, "变更租户失败!没有查询到该房屋的租赁信息!请刷新后重试");
-        Assert.isTrue(!rr.getNewCustomerId().equals(customer), "操作失败!租户变更时不能是同一个租户!");
+        String customerId = customer.getId();
+        Assert.isTrue(StringUtils.notEquals(rr.getNewCustomerId(), customerId), "操作失败!租户变更时不能是同一个租户!");
         // 将状态置为完成
         rr.setFinish(true);
         RoomNews news = new RoomNews();
         news.setRoomId(roomId);
-        String customerId = beanContainer.getBean(CustomerService.class).save(customer);
+        if (StringUtils.isEmpty(customer.getId())) {
+            customerId = beanContainer.getBean(CustomerService.class).save(customer);
+        } else {
+            beanContainer.getBean(CustomerService.class).update(customer);
+        }
         news.setContent(String.format("变更租户：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", rr.getNewCustomerName(), customer.getName()));
 
 
@@ -282,6 +287,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             SystemContainer.getInstance().getBean(CustomerNewsService.class).save(news);
         }
         HibernateUtils.evict(origin);
+        roomRent.setFinish(false);
         roomRentDao.update(roomRent);
     }
 

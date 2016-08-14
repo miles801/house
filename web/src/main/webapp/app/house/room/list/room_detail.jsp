@@ -226,7 +226,7 @@
                     </div>
                     <%-- 租户信息 --%>
                     <div class="panel panel-tab" style="margin: 15px 0;position: relative;" ng-cloak
-                         ng-show="beans.onSale || beans.houseUseType==4">
+                         ng-show="beans.onRent || beans.houseUseType==4">
                         <ul class="nav nav-tabs" style="margin: 5px 0 0 0;width:100%;">
                             <li class="active"><i>租户信息</i></li>
                         </ul>

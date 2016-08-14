@@ -136,6 +136,8 @@ public class RoomDaoImpl extends HibernateDaoHelper implements RoomDao {
         return createCriteria(Room.class)
                 .setProjection(Projections.property("roomKey"))
                 .add(Restrictions.eq("customerId", customerId))
+                .setFirstResult(0)
+                .setMaxResults(Integer.MAX_VALUE)
                 .list();
     }
 

@@ -66,8 +66,6 @@ public class CustomerBo implements BO {
 
     private Boolean master;
 
-    @ApiField("是否为租户")
-    @Condition
     private Boolean rent;
 
     @ApiField("是否为业主")

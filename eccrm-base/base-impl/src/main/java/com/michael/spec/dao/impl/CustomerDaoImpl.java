@@ -8,6 +8,7 @@ import com.michael.spec.dao.BuildingDao;
 import com.michael.spec.dao.CustomerDao;
 import com.michael.spec.domain.Customer;
 import com.michael.spec.domain.Room;
+import com.michael.spec.domain.RoomRent;
 import com.ycrl.core.HibernateDaoHelper;
 import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.criteria.CriteriaUtils;
@@ -174,6 +175,13 @@ public class CustomerDaoImpl extends HibernateDaoHelper implements CustomerDao {
             DetachedCriteria houseCriteria = DetachedCriteria.forClass(Room.class)
                     .setProjection(Projections.distinct(Projections.property("customerId")));
             criteria.add(Property.forName("id").in(houseCriteria));
+        }
+        // 租户
+        if (bo.getRent() != null && bo.getRent()) {
+            DetachedCriteria rentCriteria = DetachedCriteria.forClass(RoomRent.class)
+                    .setProjection(Projections.distinct(Projections.property("newCustomerId")))
+                    .add(Restrictions.eq("finish", false));
+            criteria.add(Property.forName("id").in(rentCriteria));
         }
     }
 

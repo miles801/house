@@ -25,6 +25,7 @@ import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
+import com.ycrl.core.pager.Pager;
 import com.ycrl.utils.number.IntegerUtils;
 import com.ycrl.utils.string.StringUtils;
 import eccrm.base.attachment.AttachmentProvider;
@@ -450,6 +451,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
         vo.setTypeName(container.getBusinessName(Customer.TYPE, customer.getType()));
 
         // 名下房产
+        Pager.clear();
         List<String> roomKeys = roomDao.findCodeByCustomer(customer.getId());
         if (roomKeys != null && !roomKeys.isEmpty()) {
             StringBuilder builder = new StringBuilder();
