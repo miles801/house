@@ -130,7 +130,7 @@
         $scope.load = function (id) {
             var promise = EmpService.get({id: id}, function (data) {
                 $scope.beans = data.data || {};
-
+                $scope.beans.roles = $scope.beans.roleIds;
                 // 头像
                 var imageId = $scope.beans.icon;
                 if (imageId) {
