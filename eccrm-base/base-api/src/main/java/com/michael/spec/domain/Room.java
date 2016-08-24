@@ -2,7 +2,6 @@ package com.michael.spec.domain;
 
 import com.michael.docs.annotations.ApiField;
 import com.ycrl.base.common.CommonDomain;
-import com.ycrl.core.hibernate.criteria.Condition;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -132,7 +131,7 @@ public class Room extends CommonDomain {
     private String customerId;
 
     @ApiField("业主电话")
-    @Condition
+    @Column
     private String cusPhone;
 
     public String getCusPhone() {

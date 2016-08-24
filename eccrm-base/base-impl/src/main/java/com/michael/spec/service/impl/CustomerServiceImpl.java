@@ -122,7 +122,8 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             @Override
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 String fieldName = field.getName();
-                if ("id,creatorId,creatorName,modifierId,modifierName,createdDatetime,modifiedDatetime".contains(fieldName)) {
+                if (("id,creatorId,creatorName,modifierId,modifierName,createdDatetime,modifiedDatetime,ID,roomCounts," +
+                        "buildingId,buildingName,code").contains(fieldName)) {
                     return;
                 }
                 field.setAccessible(true);
@@ -197,6 +198,12 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             List<String> rooms = roomDao.findCodeByCustomer(id);
             Assert.isTrue(rooms == null || rooms.isEmpty(), "删除客户失败!该客户具有房产信息，请先变更房产的客户再行删除!");
 
+            // 判断该客户是否是租户
+            RoomRentBo bo = new RoomRentBo();
+            bo.setNewCustomerId(id);
+            Long total = roomRentDao.getTotal(bo);
+            Assert.isTrue(total == null || total == 0, "删除客户失败!该客户具有房屋租赁信息，请先变更该客户的租赁房屋信息后再行删除!");
+
             // 删除客户信息
             customerDao.deleteById(id);
         }
@@ -205,7 +212,33 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     @Override
     public void applyInvalid(String[] ids) {
         Assert.notEmpty(ids, "申请失败!客户ID不能为空!");
-        customerDao.batchSetStatus(ids, Room.STATUS_APPLY_INVALID);
+        ParameterContainer container = ParameterContainer.getInstance();
+        for (String id : ids) {
+            Customer customer = customerDao.findById(id);
+            Assert.notNull(customer, "客户已经不存在，请刷新后重试!");
+            // 判断是否为业主
+            List<String> codes = roomDao.findCodeByCustomer(id);
+            String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
+            String content = String.format(template, container.getSystemName(HouseParams.HOUSE_STATUS, customer.getStatus()), container.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID));
+
+            if (codes != null && !codes.isEmpty()) {
+                customer.setStatus(Room.STATUS_INACTIVE);
+                saveNews(id, content);
+                continue;
+            }
+
+            // 判断是否为租户
+            RoomRentBo bo = new RoomRentBo();
+            bo.setNewCustomerId(id);
+            Long total = roomRentDao.getTotal(bo);
+            if (total != null && total > 0) {
+                saveNews(id, content);
+                customer.setStatus(Room.STATUS_INACTIVE);
+                continue;
+            }
+
+            customer.setStatus(Room.STATUS_APPLY_INVALID);
+        }
     }
 
     @Override

@@ -137,7 +137,7 @@
                 return;
             }
             CommonUtils.addTab({
-                title: '变更客户',
+                title: '变更业主',
                 url: 'house/customer/add?id=' + customerId + '&roomId=' + id,
                 onUpdate: function () {
                     window.location.reload();

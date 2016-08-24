@@ -58,15 +58,14 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
 
         // 校验数量是否超越
         bo.setDoorCode(null);
-        total = unitDao.getTotal(bo);
-        if (total == null || total == 0) {
-            Integer counts = block.getUnitCounts();
-            if (counts != null && counts > 0) {
-                Integer realCounts = block.getRealCounts();
-                Assert.isTrue(IntegerUtils.add(realCounts, 1) <= IntegerUtils.add(counts, 0), "保存失败!该单元所关联的楼栋下已经具有足够的单元!请核对数据后再行尝试!");
-                block.setRealCounts(IntegerUtils.add(realCounts, 1));   // 更新楼栋的实际单元数量
-            }
+        Integer counts = IntegerUtils.add(block.getUnitCounts(), 0);
+        Integer realCounts = IntegerUtils.add(block.getRealCounts(), 0);
+        if (realCounts < 0) {
+            realCounts = 0;
         }
+        Assert.isTrue(counts >= realCounts + 1, "保存失败!该单元所关联的楼栋下已经具有足够的单元!请核对数据后再行尝试!");
+        block.setRealCounts(realCounts + 1);
+
         // 保存
         String id = unitDao.save(unit);
         return id;
@@ -117,6 +116,7 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
             String blockId = unit.getBlockId();
             Block block = blockDao.findById(blockId);
             if (block != null) {
+                Assert.isTrue(IntegerUtils.add(block.getRealCounts(), -1) >= 0, "操作失败!楼栋的单元数量不能小于0!");
                 block.setRealCounts(IntegerUtils.add(block.getRealCounts(), -1));
             }
             // 删除单元
@@ -146,7 +146,11 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
             String blockId = unit.getBlockId();
             Block block = blockDao.findById(blockId);
             if (block != null) {
-                block.setRealCounts(IntegerUtils.add(block.getRealCounts(), -1));
+                if (IntegerUtils.add(block.getRealCounts(), -1) < 0) {
+                    block.setRealCounts(0);
+                } else {
+                    block.setRealCounts(IntegerUtils.add(block.getRealCounts(), -1));
+                }
             }
             // 删除单元
             unitDao.delete(unit);

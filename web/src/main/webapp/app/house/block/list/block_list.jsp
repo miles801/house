@@ -93,7 +93,8 @@
                                            ng-if="!foo.id">保存</a>
                                         <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"
                                            ng-if="foo.id && !foo.realCounts">更新</a>
-                                        <a class="btn-op yellow" ng-click="createUnit(foo.id);" ng-if="!foo.realCounts">自动创建单元</a>
+                                        <a class="btn-op yellow" ng-click="createUnit(foo.id);"
+                                           ng-if="!foo.realCounts||foo.realCounts<0">自动创建单元</a>
                                         <a class="btn-op red" ng-click="clearUnit(foo.id);" ng-if="foo.realCounts>0">清除所有单元</a>
                                         <a class="btn-op red" ng-click="remove(foo.id,$index);" ng-if="!foo.realCounts">删除</a>
                                     </td>

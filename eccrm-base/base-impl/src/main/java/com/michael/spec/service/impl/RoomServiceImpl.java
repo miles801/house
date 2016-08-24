@@ -55,6 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.michael.spec.domain.Room.STATUS_APPLY_ADD;
+
 /**
  * @author Michael
  */
@@ -120,8 +122,8 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         RoomNews news = new RoomNews();
         news.setRoomId(id);
         String content = compare(room, origin, new String[]{"id", "creatorId", "creatorName", "modifierId", "modifierName", "createdDatetime", "modifiedDatetime"});
-        news.setContent(content);
-        if (StringUtils.isNotEmpty(news.getContent())) {
+        if (StringUtils.isNotEmpty(content)) {
+            news.setContent(content);
             SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
         }
         BeanCopyUtils.copyPropertiesExclude(room, origin, new String[]{"id"});
@@ -130,21 +132,21 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     @Override
     public void addCustomer(String id, Customer customer, RoomBusiness roomBusiness) {
         Assert.hasText(id, "操作失败!ID不能为空!");
-        Assert.notNull(customer, "操作失败!客户信息不能为空!");
+        Assert.notNull(customer, "操作失败!业主信息不能为空!");
         Room room = roomDao.findRoomById(id);
         Assert.notNull(room, "操作失败!房屋已经不存在，请刷新后重试!");
 
         SystemContainer beanContainer = SystemContainer.getInstance();
         RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
         String customerId = customer.getId();
-        // 给客户设置所属楼栋
+        // 给业主设置所属楼栋
         String buildingId = room.getBuildingId();
         customer.setBuildingId(buildingId);
 
 
         RoomNews news = new RoomNews();
         if (StringUtils.isEmpty(customerId)) {
-            customer.setStatus(Room.STATUS_APPLY_ADD);
+            customer.setStatus(STATUS_APPLY_ADD);
             customerId = beanContainer.getBean(CustomerService.class).save(customer);
         } else {
             beanContainer.getBean(CustomerService.class).update(customer);
@@ -155,14 +157,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
         String originCustomerId = room.getCustomerId();
         news.setRoomId(id);
         if (StringUtils.isEmpty(originCustomerId)) {
-            news.setContent(String.format("添加客户：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
+            news.setContent(String.format("添加业主：<span style=\"color:#ff0000\">%s</span>", customer.getName()));
         } else if (!StringUtils.equals(originCustomerId, customerId)) {
             Customer originCustomer = customerDao.findById(originCustomerId);
-            news.setContent(String.format("变更客户：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", originCustomer != null ? originCustomer.getName() : "", customer.getName()));
+            news.setContent(String.format("变更业主：<span>%s</span><span style=\"margin:0 15px;\">--></span><span style=\"color:#ff0000;font-weight:700;\">%s</span>", originCustomer != null ? originCustomer.getName() : "", customer.getName()));
 
             // 保存成交记录
-            Assert.notNull(roomBusiness, "变更客户时成交记录不能为空!");
-            Assert.notNull(roomBusiness.getPrice(), "变更客户时，成交价格不能为空!");
+            Assert.notNull(roomBusiness, "变更业主时成交记录不能为空!");
+            Assert.notNull(roomBusiness.getPrice(), "变更业主时，成交价格不能为空!");
             roomBusiness.setRoomId(id);
             roomBusiness.setOriginCustomerId(originCustomerId);
             roomBusiness.setNewCustomerId(customerId);
@@ -174,7 +176,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             roomNewsService.save(news);
         }
 
-        // 给房屋设置客户ID
+        // 给房屋设置业主ID
         room.setCustomerId(customerId);
     }
 
@@ -191,7 +193,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
         SystemContainer beanContainer = SystemContainer.getInstance();
         RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
-        // 给客户设置所属楼栋
+        // 给业主设置所属楼栋
         String buildingId = room.getBuildingId();
         customer.setBuildingId(buildingId);
 
@@ -233,7 +235,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
         SystemContainer beanContainer = SystemContainer.getInstance();
         RoomNewsService roomNewsService = beanContainer.getBean(RoomNewsService.class);
-        // 给客户设置所属楼栋
+        // 给业主设置所属楼栋
         String buildingId = room.getBuildingId();
         customer.setBuildingId(buildingId);
 
@@ -271,7 +273,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
     @Override
     public void updateRent(String roomId, Customer customer, RoomRent roomRent) {
-        // 更新客户信息
+        // 更新业主信息
         SystemContainer.getInstance().getBean(CustomerService.class).update(customer);
 
         // 更新租赁信息（并记录变更记录，如果发生了变更）
@@ -443,7 +445,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             Room room = roomDao.findRoomById(id);
             // 只有“未录入”可以申请为新增
             if (room != null && StringUtils.include(room.getStatus(), Room.STATUS_INACTIVE, Room.STATUS_INVALID_ADD, Room.STATUS_INVALID)) {
-                room.setStatus(Room.STATUS_APPLY_ADD);
+                room.setStatus(STATUS_APPLY_ADD);
             }
         }
     }
@@ -483,21 +485,21 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             String newStatus = null;
             if (Room.STATUS_APPLY_INVALID.equals(originStatus)) {     // 无效申请  -->  电话无效
                 newStatus = Room.STATUS_INVALID;
-            } else if (Room.STATUS_APPLY_ADD.equals(originStatus)) {    // 新增申请 --> 正常
+            } else if (STATUS_APPLY_ADD.equals(originStatus)) {    // 新增申请 --> 正常
                 newStatus = Room.STATUS_ACTIVE;
             }
             room.setStatus(Room.STATUS_ACTIVE);
 
-            // 同时将该房屋对应的客户的状态也变为正常
+            // 同时将该房屋对应的业主的状态也变为正常
             String customerId = room.getCustomerId();
             if (StringUtils.isNotEmpty(customerId)) {
                 Customer customer = customerDao.findById(customerId);
-                Assert.notNull(customer, "数据错误!房屋对应的客户已经不存在，请与管理员联系!房屋编号[" + room.getRoomKey() + "]");
+                Assert.notNull(customer, "数据错误!房屋对应的业主已经不存在，请与管理员联系!房屋编号[" + room.getRoomKey() + "]");
                 String customerStatus = customer.getStatus();
-                if (originStatus.equals(customerStatus)) { // 只有新增申请的客户状态才需要同时变更
+                if (originStatus.equals(customerStatus)) { // 只有新增申请的业主状态才需要同时变更
                     customer.setStatus(newStatus);
 
-                    // 写入客户最新状态
+                    // 写入业主最新状态
                     CustomerNews customerNews = new CustomerNews();
                     customerNews.setCustomerId(customerId);
                     String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
@@ -521,22 +523,22 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             String newStatus = null;
             if (Room.STATUS_APPLY_INVALID.equals(originStatus)) {         // 无效电话申请 --> 正常
                 newStatus = Room.STATUS_ACTIVE;
-            } else if (Room.STATUS_APPLY_ADD.equals(originStatus)) {    // 申请新增 --> 新增无效
+            } else if (STATUS_APPLY_ADD.equals(originStatus)) {    // 申请新增 --> 新增无效
                 newStatus = Room.STATUS_INVALID_ADD;
             }
 
             room.setStatus(newStatus);
 
-            // 对应的客户信息也要变更为“新增无效”
+            // 对应的业主信息也要变更为“新增无效”
             String customerId = room.getCustomerId();
             if (StringUtils.isNotEmpty(customerId)) {
                 Customer customer = customerDao.findById(customerId);
-                Assert.notNull(customer, "数据错误!房屋对应的客户已经不存在，请与管理员联系!房屋编号[" + room.getRoomKey() + "]");
+                Assert.notNull(customer, "数据错误!房屋对应的业主已经不存在，请与管理员联系!房屋编号[" + room.getRoomKey() + "]");
                 String customerStatus = customer.getStatus();
-                if (originStatus.equals(customerStatus)) { // 只有新增申请的客户状态才需要同时变更
+                if (originStatus.equals(customerStatus)) { // 只有新增申请的业主状态才需要同时变更
                     customer.setStatus(newStatus);
 
-                    // 写入客户最新状态
+                    // 写入业主最新状态
                     CustomerNews customerNews = new CustomerNews();
                     customerNews.setCustomerId(customerId);
                     String template = "状态：<span style=\"margin:0 15px;\">%s</span>--><span style=\"font-weight:700;color:#ff0000;margin:0 15px;\">%s</spa>";
@@ -628,7 +630,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             houseUseTypeName += "; 待售";
         }
         roomView.setHouseUseTypeName(houseUseTypeName);
-        // 设置客户信息
+        // 设置业主信息
         roomView.setAgeName(container.getBusinessName(Customer.AGE_STAGE, roomView.getAge()));
         roomView.setMoneyName(container.getBusinessName(Customer.MONEY_STAGE, roomView.getMoney()));
         roomView.setSexName(container.getBusinessName(BaseParameter.SEX, roomView.getSex()));
@@ -745,10 +747,10 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     // 房屋现状
                     room.setHouseUseType(parameterContainer.getBusinessValue(HouseParams.HOUSE_USE_TYPE, dto.getHouseUseType()));
                     // 设置参数-状态
-                    room.setStatus(Room.STATUS_APPLY_ADD);
+                    room.setStatus(STATUS_APPLY_ADD);
 
 
-                    // 设置客户
+                    // 设置业主
                     String cusName = dto.getCusName();
                     String cusPhone = dto.getCusPhone();
                     if (StringUtils.isNotEmpty(cusName)) {
@@ -788,7 +790,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                             customer.setC1(dto.getCusDescription());
                             customer.setBuildingId(buildingId);
                             customer.setBuildingName(buildingName);
-                            customer.setStatus(Room.STATUS_APPLY_ADD);
+                            customer.setStatus(STATUS_APPLY_ADD);
                             cusId = beanContainer.getBean(CustomerService.class).save(customer);
                         }
                         room.setCustomerId(cusId);
@@ -801,15 +803,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                         String roomId = null;
                         if (originRoom == null) {
                             roomId = save(room);
-                            // 给客户添加一套房源
+                            // 给业主添加一套房源
                             if (StringUtils.isNotEmpty(room.getCustomerId())) {
                                 beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
                             }
                         } else {
-                            String status = originRoom.getStatus();
-                            // 无效数据，进行覆盖
-                            if (StringUtils.include(status, Room.STATUS_INVALID, Room.STATUS_INACTIVE, Room.STATUS_INACTIVE, Room.STATUS_INVALID_ADD)) {
-
+                            // 如果“业主电话”不为空，则更新状态
+                            if (StringUtils.isNotEmpty(cusPhone)) {
+                                originRoom.setStatus(STATUS_APPLY_ADD);
                                 // 保存日志
                                 RoomNews news = new RoomNews();
                                 String content = compare(room, originRoom, new String[]{"creatorId", "creatorName", "modifierId", "modifierName", "createdDatetime", "modifiedDatetime"});
@@ -828,7 +829,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                                 originRoom.setSquare(room.getSquare());
                                 originRoom.setHouseProperty(room.getHouseProperty());
                                 originRoom.setHouseUseType(room.getHouseUseType());
-                                // 如果客户ID并不一致，则使用新的
+                                // 如果业主ID并不一致，则使用新的
                                 if (!StringUtils.equals(originRoom.getCustomerId(), room.getCustomerId())) {
                                     originRoom.setCustomerId(room.getCustomerId());
                                 }
