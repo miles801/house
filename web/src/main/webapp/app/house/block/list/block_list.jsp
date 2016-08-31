@@ -54,7 +54,6 @@
                                 </td>
                                 <td style="width: 40px;">序号</td>
                                 <td>楼栋号</td>
-                                <td>单元数</td>
                                 <td>已创建单元数</td>
                                 <td>物理层高</td>
                                 <td>标号层高</td>
@@ -64,7 +63,7 @@
                             <tbody class="table-body">
                             <c:if test="${param.pageType ne 'detail'}">
                                 <tr ng-show="!beans.length">
-                                    <td colspan="8" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a>
+                                    <td colspan="7" class="text-center"><a class="btn-op blue" ng-click="add();">新建</a>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="foo in beans" ng-cloak>
@@ -73,10 +72,6 @@
                                     <td title="点击查询明细！" style="cursor: pointer;">
                                         <input type="text" ng-model="foo.code" validate validate-required
                                                ng-change="check(foo)"/>
-                                    </td>
-                                    <td>
-                                        <input type="text" ng-model="foo.unitCounts" validate validate-required
-                                               validate-int ng-change="check(foo)"/>
                                     </td>
                                     <td>{{foo.realCounts||0}}</td>
                                     <td>
@@ -93,9 +88,6 @@
                                            ng-if="!foo.id">保存</a>
                                         <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"
                                            ng-if="foo.id && !foo.realCounts">更新</a>
-                                        <a class="btn-op yellow" ng-click="createUnit(foo.id);"
-                                           ng-if="!foo.realCounts||foo.realCounts<0">自动创建单元</a>
-                                        <a class="btn-op red" ng-click="clearUnit(foo.id);" ng-if="foo.realCounts>0">清除所有单元</a>
                                         <a class="btn-op red" ng-click="remove(foo.id,$index);" ng-if="!foo.realCounts">删除</a>
                                     </td>
                                 </tr>

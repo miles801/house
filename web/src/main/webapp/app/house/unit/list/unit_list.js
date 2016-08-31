@@ -136,6 +136,7 @@
             var promise = UnitService.save(bean, function (data) {
                 bean.id = data.data;
                 bean.$valid = false;
+                CommonUtils.addTab('update');
                 AlertFactory.success('保存成功!');
             });
             CommonUtils.loading(promise);

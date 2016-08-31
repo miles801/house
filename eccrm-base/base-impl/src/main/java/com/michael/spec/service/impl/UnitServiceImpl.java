@@ -57,14 +57,14 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
         Assert.notNull(block, "保存失败!该单元关联的楼栋不存在!请刷新后重试!");
 
         // 校验数量是否超越
-        bo.setDoorCode(null);
-        Integer counts = IntegerUtils.add(block.getUnitCounts(), 0);
-        Integer realCounts = IntegerUtils.add(block.getRealCounts(), 0);
-        if (realCounts < 0) {
-            realCounts = 0;
-        }
-        Assert.isTrue(counts >= realCounts + 1, "保存失败!该单元所关联的楼栋下已经具有足够的单元!请核对数据后再行尝试!");
-        block.setRealCounts(realCounts + 1);
+//        bo.setDoorCode(null);
+//        Integer counts = IntegerUtils.add(block.getUnitCounts(), 0);
+//        Integer realCounts = IntegerUtils.add(block.getRealCounts(), 0);
+//        if (realCounts < 0) {
+//            realCounts = 0;
+//        }
+//        Assert.isTrue(counts >= realCounts + 1, "保存失败!该单元所关联的楼栋下已经具有足够的单元!请核对数据后再行尝试!");
+        block.setRealCounts(IntegerUtils.add(block.getRealCounts(), 1));
 
         // 保存
         String id = unitDao.save(unit);
