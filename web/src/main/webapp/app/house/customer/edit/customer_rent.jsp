@@ -71,7 +71,7 @@
                                validate-float placeholder="元/月"/>
                         </select>
                         <div class="form-label col-1-half">
-                            <label validate-error="rentUsage">租赁用途:</label>
+                            <label validate-error="form.rentUsage">租赁用途:</label>
                         </div>
                         <select ng-model="rr.rentUsage" class="col-2-half" name="rentUsage"
                                 ng-options="foo.value as foo.name for foo in rentUsage"

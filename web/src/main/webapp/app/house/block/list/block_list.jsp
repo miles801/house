@@ -87,7 +87,7 @@
                                         <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="save(foo);"
                                            ng-if="!foo.id">保存</a>
                                         <a class="btn-op blue" ng-disabled="!foo.$valid" ng-click="update(foo);"
-                                           ng-if="foo.id && !foo.realCounts">更新</a>
+                                           ng-if="foo.id">更新</a>
                                         <a class="btn-op red" ng-click="remove(foo.id,$index);" ng-if="!foo.realCounts">删除</a>
                                     </td>
                                 </tr>

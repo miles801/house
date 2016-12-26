@@ -132,10 +132,13 @@ public class UnitServiceImpl implements UnitService, BeanWrapCallback<Unit, Unit
         for (String id : ids) {
             bo.setUnitId(id);
             List<Room> rooms = roomDao.queryRoom(bo);
+            RoomService roomService = SystemContainer.getInstance().getBean(RoomService.class);
             if (rooms != null) {
-                for (Room room : rooms) {
-                    roomDao.delete(room);
+                String[] roomIds = new String[rooms.size()];
+                for (int i = 0; i < roomIds.length; i++) {
+                    roomIds[i] = rooms.get(i).getId();
                 }
+                roomService.deleteByIds(roomIds);
             }
 
             Unit unit = unitDao.findById(id);

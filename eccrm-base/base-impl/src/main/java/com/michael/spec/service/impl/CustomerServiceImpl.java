@@ -92,8 +92,8 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
     private void validate(Customer customer) {
         ValidatorUtils.validate(customer);
         // 验证重复
-        boolean exists = customerDao.hasSame(customer.getBuildingId(), customer.getName(), customer.getPhone1(), customer.getId());
-        Assert.isTrue(!exists, "操作失败!客户信息重复!");
+//        boolean exists = customerDao.hasSame(customer.getBuildingId(), customer.getName(), customer.getPhone1(), customer.getId());
+//        Assert.isTrue(!exists, "操作失败!客户信息重复!");
     }
 
     @Override
@@ -222,7 +222,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             String content = String.format(template, container.getSystemName(HouseParams.HOUSE_STATUS, customer.getStatus()), container.getSystemName(HouseParams.HOUSE_STATUS, Room.STATUS_INVALID));
 
             if (codes != null && !codes.isEmpty()) {
-                customer.setStatus(Room.STATUS_INACTIVE);
+                customer.setStatus(Room.STATUS_APPLY_INVALID);
                 saveNews(id, content);
                 continue;
             }
@@ -233,11 +233,11 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
             Long total = roomRentDao.getTotal(bo);
             if (total != null && total > 0) {
                 saveNews(id, content);
-                customer.setStatus(Room.STATUS_INACTIVE);
+                customer.setStatus(Room.STATUS_APPLY_INVALID);
                 continue;
             }
 
-            customer.setStatus(Room.STATUS_APPLY_INVALID);
+            customer.setStatus(Room.STATUS_INVALID);
         }
     }
 
@@ -460,7 +460,7 @@ public class CustomerServiceImpl implements CustomerService, BeanWrapCallback<Cu
                     try {
                         save(customer);
                     } catch (Exception e) {
-                        Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex(), e.getMessage()));
+                        Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex() + 1, e.getMessage()));
                     }
                 }
             });

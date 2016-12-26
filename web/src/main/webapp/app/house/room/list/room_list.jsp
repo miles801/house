@@ -60,7 +60,7 @@
                                 <label>单元:</label>
                             </div>
                             <select ng-model="condition.unitId" class="col-2-half"
-                                    ng-options="o.id as o.name for o in units"
+                                    ng-options="o.id as o.code for o in units"
                                     ng-change="unitChange();"></select>
                             <div class="form-label col-1-half">
                                 <label>楼层:</label>

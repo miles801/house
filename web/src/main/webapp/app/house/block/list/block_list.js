@@ -144,7 +144,7 @@
         $scope.check = function (bean) {
             bean.$valid = false;
             var flag = true;
-            if (!bean.code || !bean.unitCounts || !bean.physicalLevels || !bean.levels) {
+            if (!bean.code || !bean.physicalLevels || !bean.levels) {
                 flag = false;
             }
             bean.$valid = flag;

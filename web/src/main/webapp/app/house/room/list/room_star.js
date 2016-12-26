@@ -83,5 +83,18 @@
                 }
             });
         };
+
+
+        // 导出数据
+        $scope.exportData = function () {
+            if ($scope.pager.total < 1) {
+                AlertFactory.error('未获取到可以导出的数据!请先查询出数据!');
+                return;
+            }
+            var o = angular.extend({}, $scope.condition);
+            o.start = null;
+            o.limit = null;
+            window.open(CommonUtils.contextPathURL('/house/roomStar/export?' + encodeURI(encodeURI($.param(o)))));
+        };
     });
 })(window, angular, jQuery);

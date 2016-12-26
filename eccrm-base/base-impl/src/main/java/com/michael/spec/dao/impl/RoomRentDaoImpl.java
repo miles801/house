@@ -73,6 +73,24 @@ public class RoomRentDaoImpl extends HibernateDaoHelper implements RoomRentDao {
                 .uniqueResult();
     }
 
+    @Override
+    public void deleteByRoom(String roomId) {
+        Assert.hasText("操作失败!房屋ID不能为空!");
+        getSession().createQuery("delete from " + RoomRent.class.getName() + " rr where rr.roomId=?")
+                .setParameter(0, roomId)
+                .executeUpdate();
+
+    }
+
+    @Override
+    public boolean isRent(String customerId) {
+        Assert.hasText(customerId, "查询失败!客户ID不能为空!");
+        Long total = (Long) createRowCountsCriteria(RoomRent.class)
+                .add(Restrictions.eq("newCustomerId", customerId))
+                .uniqueResult();
+        return total != null && total > 0;
+    }
+
     private void initCriteria(Criteria criteria, RoomRentBo bo) {
         Assert.notNull(criteria, "criteria must not be null!");
         CriteriaUtils.addCondition(criteria, bo);

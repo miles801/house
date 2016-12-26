@@ -41,4 +41,19 @@ public interface RoomRentDao {
      * @return 租赁信息
      */
     RoomRent findCurrent(String roomId);
+
+    /**
+     * 删除指定房屋的所有租赁信息
+     *
+     * @param roomId 房屋ID
+     */
+    void deleteByRoom(String roomId);
+
+    /**
+     * 判断一个客户是否是租户
+     *
+     * @param customerId 客户id
+     * @return true是租户
+     */
+    boolean isRent(String customerId);
 }

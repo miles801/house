@@ -23,7 +23,6 @@ import com.michael.spec.vo.RoomVo;
 import com.ycrl.core.SystemContainer;
 import com.ycrl.core.beans.BeanWrapBuilder;
 import com.ycrl.core.beans.BeanWrapCallback;
-import com.ycrl.core.context.SecurityContext;
 import com.ycrl.core.hibernate.HibernateUtils;
 import com.ycrl.core.hibernate.validator.ValidatorUtils;
 import com.ycrl.core.pager.PageVo;
@@ -56,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.michael.spec.domain.Room.STATUS_APPLY_ADD;
+import static com.michael.spec.domain.Room.STATUS_INACTIVE;
 
 /**
  * @author Michael
@@ -576,7 +576,24 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
     public void deleteByIds(String[] ids) {
         if (ids == null || ids.length == 0) return;
         for (String id : ids) {
-            roomDao.deleteById(id);
+            // 删除租赁信息
+            roomRentDao.deleteByRoom(id);
+
+            // 删除房屋
+            Room room = roomDao.findRoomById(id);
+            String customerId = room.getCustomerId();
+            if (StringUtils.isNotEmpty(customerId)) {
+                // 更新客户的状态
+                Customer customer = customerDao.findById(customerId);
+                // 是否还是租户
+                boolean isRent = roomRentDao.isRent(customerId);
+                customer.setRent(isRent);
+
+            }
+
+            roomDao.delete(room);
+
+
         }
     }
 
@@ -717,13 +734,14 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
 
                     // 设置单元
                     Integer floor = dto.getFloor();
-                    Assert.isTrue(floor != null && floor > 0, String.format("数据错误,楼层必须大于0!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    int rowIndex = RuntimeContext.get().getRowIndex() + 1;
+                    Assert.isTrue(floor != null && floor > 0, String.format("数据错误,楼层必须大于0!发生在第%d行!", rowIndex));
                     String doorCode = dto.getCode();
-                    Assert.hasText(doorCode, String.format("数据错误,门牌号不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
-                    Assert.isTrue(doorCode.startsWith(floor + ""), String.format("数据错误!门牌号与楼层不匹配!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    Assert.hasText(doorCode, String.format("数据错误,门牌号不能为空!发生在第%d行!", rowIndex));
+                    Assert.isTrue(doorCode.startsWith(floor + ""), String.format("数据错误!门牌号与楼层不匹配!发生在第%d行!", rowIndex));
                     String dc = doorCode.substring((floor + "").length());
                     String unitName = dto.getUnitName();
-                    Assert.hasText(unitName, String.format("数据错误,单元信息不能为空!发生在第%d行!", RuntimeContext.get().getRowIndex()));
+                    Assert.hasText(unitName, String.format("数据错误,单元信息不能为空!发生在第%d行!", rowIndex));
                     String unitId = (String) session.createQuery("select b.id from " + Unit.class.getName() + " b where b.code=? and b.blockId=? and b.doorCode=?")
                             .setParameter(0, unitName)
                             .setParameter(1, blockId)
@@ -733,6 +751,7 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     if (StringUtils.isEmpty(unitId)) {
                         Unit unit = new Unit();
                         unit.setBlockId(blockId);
+                        unit.setDoorCode(dc);
                         unit.setCode(unitName);
                         unitId = beanContainer.getBean(UnitService.class).save(unit);
                     }
@@ -747,80 +766,39 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                     // 房屋现状
                     room.setHouseUseType(parameterContainer.getBusinessValue(HouseParams.HOUSE_USE_TYPE, dto.getHouseUseType()));
                     // 设置参数-状态
-                    room.setStatus(STATUS_APPLY_ADD);
-
-
-                    // 设置业主
-                    String cusName = dto.getCusName();
                     String cusPhone = dto.getCusPhone();
-                    if (StringUtils.isNotEmpty(cusName)) {
-                        String cusId = (String) session.createQuery("select c.id from " + Customer.class.getName() + " c where c.name=? and c.phone1=? and c.buildingId=?")
-                                .setParameter(0, cusName)
-                                .setParameter(1, cusPhone)
-                                .setParameter(2, buildingId)
-                                .setMaxResults(1)
-                                .uniqueResult();
-                        if (StringUtils.isEmpty(cusId)) {
-                            Customer customer = new Customer();
-                            customer.setName(cusName);
-                            customer.setIdCard(dto.getCusIDCard());
-                            customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, dto.getCusSex()));
-                            customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, dto.getCusAge()));
-                            customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, dto.getCusMarriage()));
-                            customer.setFamilyCounts(dto.getCusFamilyCount());
-                            customer.setPhone1(cusPhone);
-                            customer.setPhone2(dto.getCusPhone2());
-                            customer.setPhone3(dto.getCusPhone3());
-                            customer.setEmail(dto.getCusEmail());
-                            customer.setWechat(dto.getCusWechat());
-                            customer.setDuty(dto.getCusDuty());
-                            customer.setCompany(dto.getCusCompany());
-                            String eduction = dto.getCusEducation();
-                            if (StringUtils.isNotEmpty(eduction)) {
-                                customer.setEducation(parameterContainer.getBusinessValue(BaseParameter.EDU, eduction));
-                            }
-                            String money = dto.getCusMoney();
-                            if (StringUtils.isNotEmpty(money)) {
-                                customer.setMoney(parameterContainer.getBusinessValue(Customer.MONEY_STAGE, money));
-                            }
-                            customer.setCarSite1(dto.getCusCarSite1());
-                            customer.setCarSite2(dto.getCusCarSite2());
-                            customer.setCarNo(dto.getCusCarNo());
-                            customer.setCarType(dto.getCusCarType());
-                            customer.setC1(dto.getCusDescription());
-                            customer.setBuildingId(buildingId);
-                            customer.setBuildingName(buildingName);
-                            customer.setStatus(STATUS_APPLY_ADD);
-                            cusId = beanContainer.getBean(CustomerService.class).save(customer);
-                        }
-                        room.setCustomerId(cusId);
+                    if (StringUtils.isNotEmpty(cusPhone)) { // 有电话时，新增申请
+                        room.setStatus(STATUS_APPLY_ADD);
+                    } else {
+                        room.setStatus(STATUS_INACTIVE);    // 无电话时，未录入
                     }
 
                     // 真的保存房屋信息
                     try {
                         // 去重
                         Room originRoom = roomDao.findSame(unitId, room.getCode(), room.getFloor());
-                        String roomId = null;
+
+                        // 是否为新增的房屋
                         if (originRoom == null) {
-                            roomId = save(room);
+                            // 新增客户
+                            Customer customer1 = newCustomer(dto);
+                            customer1.setBuildingId(buildingId);
+                            customer1.setBuildingName(buildingName);
+                            String customerId = beanContainer.getBean(CustomerService.class).save(customer1);
+
+                            // 新增房屋
+                            room.setCustomerId(customerId);
+                            String roomId = save(room);
+
                             // 给业主添加一套房源
                             if (StringUtils.isNotEmpty(room.getCustomerId())) {
                                 beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
                             }
                         } else {
-                            // 如果“业主电话”不为空，则更新状态
-                            if (StringUtils.isNotEmpty(cusPhone)) {
-                                originRoom.setStatus(STATUS_APPLY_ADD);
-                                // 保存日志
-                                RoomNews news = new RoomNews();
-                                String content = compare(room, originRoom, new String[]{"creatorId", "creatorName", "modifierId", "modifierName", "createdDatetime", "modifiedDatetime"});
-                                news.setContent(content);
-                                news.setRoomId(originRoom.getId());
-                                news.setEmpId(SecurityContext.getEmpId());
-                                news.setEmpName(SecurityContext.getEmpName());
-                                SystemContainer.getInstance().getBean(RoomNewsService.class).save(news);
-                                // 覆盖信息
-                                roomId = originRoom.getId();
+
+                            // 只有特定的状态才允许更新房屋信息
+                            String roomStatus = originRoom.getStatus();
+                            if (!StringUtils.include(roomStatus, new String[]{Room.STATUS_INVALID, Room.STATUS_ACTIVE})) {
                                 originRoom.setOrient(room.getOrient());
                                 originRoom.setType1(room.getType1());
                                 originRoom.setType2(room.getType2());
@@ -829,18 +807,41 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
                                 originRoom.setSquare(room.getSquare());
                                 originRoom.setHouseProperty(room.getHouseProperty());
                                 originRoom.setHouseUseType(room.getHouseUseType());
-                                // 如果业主ID并不一致，则使用新的
-                                if (!StringUtils.equals(originRoom.getCustomerId(), room.getCustomerId())) {
-                                    originRoom.setCustomerId(room.getCustomerId());
+                            }
+
+                            // 查询之前的客户
+                            String originCus = originRoom.getCustomerId();
+                            if (StringUtils.isNotEmpty(originCus)) {    // 之前存在
+                                Customer originCustomer = customerDao.findById(originCus);
+                                if (originCustomer == null) {
+                                    originRoom.setCustomerId(null);
+                                } else {
+                                    // 更新客户信息
+                                    setCustomer(originCustomer, dto);
+                                    originCustomer.setBuildingId(buildingId);
+                                    originCustomer.setBuildingName(buildingName);
+                                    if (!StringUtils.equals(originCustomer.getStatus(), STATUS_APPLY_ADD)) {
+                                        originRoom.setStatus(STATUS_APPLY_ADD);
+                                    }
                                 }
-                                if (StringUtils.isEmpty(originRoom.getCustomerId()) && StringUtils.isNotEmpty(room.getCustomerId())) {
-                                    beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), roomId);
+                            } else if (StringUtils.isNotEmpty(cusPhone) && StringUtils.isEmpty(originCus)) {  // 之前不存在
+                                Customer customer = newCustomer(dto);
+                                customer.setBuildingId(buildingId);
+                                customer.setBuildingName(buildingName);
+                                customer.setStatus(STATUS_APPLY_ADD);
+                                String customerId = SystemContainer.getInstance().getBean(CustomerService.class).save(customer);
+                                originRoom.setCustomerId(customerId);
+                                originRoom.setStatus(STATUS_APPLY_ADD);
+
+                                // 给业主添加一套房源
+                                if (StringUtils.isNotEmpty(room.getCustomerId())) {
+                                    beanContainer.getBean(CustomerService.class).addRoom(room.getCustomerId(), originRoom.getId());
                                 }
                             }
                         }
 
                     } catch (Exception e) {
-                        Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex(), e.getMessage()));
+                        Assert.isTrue(false, String.format("数据异常!发生在第%d行!原因:%s", context.getRowIndex() + 1, e.getMessage()));
                     }
                 }
             });
@@ -854,6 +855,80 @@ public class RoomServiceImpl implements RoomService, BeanWrapCallback<RoomView, 
             logger.info(String.format("导入数据成功,用时(%d)s....", (System.currentTimeMillis() - start) / 1000));
             new File(newFilePath).delete();
         }
+    }
+
+    private Customer newCustomer(RoomDTO dto) {
+        Customer customer = new Customer();
+        String name = dto.getCusName();
+        if (StringUtils.isEmpty(name)) {
+            name = "匿名";
+        }
+        customer.setName(name);
+        customer.setIdCard(dto.getCusIDCard());
+        ParameterContainer parameterContainer = ParameterContainer.getInstance();
+        customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, dto.getCusSex()));
+        customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, dto.getCusAge()));
+        customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, dto.getCusMarriage()));
+        customer.setFamilyCounts(dto.getCusFamilyCount());
+        customer.setPhone1(dto.getCusPhone());
+        customer.setPhone2(dto.getCusPhone2());
+        customer.setPhone3(dto.getCusPhone3());
+        customer.setEmail(dto.getCusEmail());
+        customer.setWechat(dto.getCusWechat());
+        customer.setDuty(dto.getCusDuty());
+        customer.setCompany(dto.getCusCompany());
+        String eduction = dto.getCusEducation();
+        if (StringUtils.isNotEmpty(eduction)) {
+            customer.setEducation(parameterContainer.getBusinessValue(BaseParameter.EDU, eduction));
+        }
+        String money = dto.getCusMoney();
+        if (StringUtils.isNotEmpty(money)) {
+            customer.setMoney(parameterContainer.getBusinessValue(Customer.MONEY_STAGE, money));
+        }
+        customer.setCarSite1(dto.getCusCarSite1());
+        customer.setCarSite2(dto.getCusCarSite2());
+        customer.setCarNo(dto.getCusCarNo());
+        customer.setCarType(dto.getCusCarType());
+        customer.setC1(dto.getCusDescription());
+        customer.setStatus(STATUS_APPLY_ADD);
+        return customer;
+    }
+
+    private void setCustomer(Customer customer, RoomDTO dto) {
+        ParameterContainer parameterContainer = ParameterContainer.getInstance();
+        customer.setIdCard(dto.getCusIDCard());
+        customer.setSex(parameterContainer.getBusinessValue(BaseParameter.SEX, dto.getCusSex()));
+        customer.setAge(parameterContainer.getBusinessValue(Customer.AGE_STAGE, dto.getCusAge()));
+        customer.setMarriage(parameterContainer.getBusinessValue(BaseParameter.MARRIAGE, dto.getCusMarriage()));
+        customer.setFamilyCounts(dto.getCusFamilyCount());
+        if (!StringUtils.equals(customer.getPhone1(), dto.getCusPhone())) {
+            customer.setStatus(STATUS_APPLY_ADD);
+        }
+        customer.setPhone1(dto.getCusPhone());
+        customer.setPhone2(dto.getCusPhone2());
+        customer.setPhone3(dto.getCusPhone3());
+        customer.setEmail(dto.getCusEmail());
+        customer.setWechat(dto.getCusWechat());
+        customer.setDuty(dto.getCusDuty());
+        customer.setCompany(dto.getCusCompany());
+        String eduction = dto.getCusEducation();
+        if (StringUtils.isNotEmpty(eduction)) {
+            customer.setEducation(parameterContainer.getBusinessValue(BaseParameter.EDU, eduction));
+        }
+        String money = dto.getCusMoney();
+        if (StringUtils.isNotEmpty(money)) {
+            customer.setMoney(parameterContainer.getBusinessValue(Customer.MONEY_STAGE, money));
+        }
+        customer.setCarSite1(dto.getCusCarSite1());
+        customer.setCarSite2(dto.getCusCarSite2());
+        customer.setCarNo(dto.getCusCarNo());
+        customer.setCarType(dto.getCusCarType());
+        customer.setC1(dto.getCusDescription());
+        String name = dto.getCusName();
+        if (StringUtils.isEmpty(name)) {
+            name = "匿名";
+        }
+        customer.setName(name);
     }
 
     @Override

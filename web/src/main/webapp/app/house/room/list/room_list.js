@@ -13,7 +13,7 @@
     app.controller('Ctrl', function ($scope, CommonUtils, AlertFactory, ModalFactory, UnitParam, UnitService, BlockService, RoomService) {
         $scope.beans = [];
         var buildingId = $('#buildingId').val();
-        $scope.condition = {buildingId: buildingId, orderBy: 'floor', manager: $('#isManager').val()};
+        $scope.condition = {buildingId: buildingId, orderBy: 'floor', manager: $('#isManager').val(), unitId: ''};
         if (!buildingId) {
             AlertFactory.error('错误的访问方式!没有获得楼盘ID!');
             return false;
@@ -38,18 +38,18 @@
             });
             CommonUtils.loading(promise);
         };
-        $scope.units = [{id: null, code: '', name: '请选择'}];
+        $scope.units = [{id: '', code: '请选择'}];
         // 获取单元列表
         $scope.loadUnit = function () {
+            $scope.units = [{id: '', code: '请选择'}];
             var promise = UnitService.query({blockId: $scope.condition.blockId}, function (data) {
                 data = data.data || [];
                 // 查询出来的是单元的ID等信息，实际需要的是单元的编号
                 // 所以需要将单元编号进行去重处理
                 var code = {};
                 angular.forEach(data, function (o) {
-                    if (!code[o.id]) {
-                        code[o.id] = true;
-                        o.name = o.code;
+                    if (!code[o.code]) {
+                        code[o.code] = true;
                         $scope.units.push(o);
                     }
                 });
@@ -68,8 +68,7 @@
         };
 
         $scope.blockChange = function () {
-            $scope.units.length = 1;
-            $scope.condition.unitId = null;
+            $scope.condition.unitId = '';
             $scope.unit = null;
             $scope.query();
             $scope.loadUnit();

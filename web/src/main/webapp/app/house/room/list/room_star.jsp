@@ -173,6 +173,11 @@
                     <span class="glyphicons list"></span>
                     <span>房间管理</span>
                 </div>
+                <div class="header-button">
+                    <a type="button" class="btn btn-green btn-min" ng-click="exportData();" ng-disabled="!beans.total" ng-cloak>
+                        导出数据
+                    </a>
+                </div>
             </div>
             <div class="block-content">
                 <div class="content-wrap">
